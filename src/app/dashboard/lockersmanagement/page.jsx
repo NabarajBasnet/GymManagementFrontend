@@ -279,7 +279,7 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-5 px-4">
+        <div className="w-full bg-gray-100 dark:bg-gray-800 py-5 px-4">
 
             <div className="w-full space-y-4">
                 {/* Enhanced Breadcrumb */}
@@ -789,61 +789,57 @@ const Lockers = () => {
                                         Lockers.map((locker) => (
                                             <div
                                                 key={locker.lockerNumber}
-                                                className="relative group rounded-2xl overflow-hidden my-4 md:my-0 transition-all duration-500 hover:duration-300"
+                                                className="relative group rounded-lg overflow-hidden my-4 md:my-0 transition-all duration-300 hover:shadow-lg"
                                             >
-                                                {/* Sophisticated gray gradient background */}
-                                                <div className="absolute inset-0 bg-white border dark:border-none dark:bg-gradient-to-br opacity-20 group-hover:opacity-30 transition-opacity duration-300 dark:opacity-15 dark:group-hover:opacity-25
-          from-gray-600 via-gray-700 to-gray-800" />
+                                                {/* Clean card background */}
+                                                <div className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
+                                                    {/* Clean status indicator */}
+                                                    <div className={`h-2 ${locker.status === 'Expired'
+                                                            ? 'bg-red-500'
+                                                            : locker.status === 'Booked'
+                                                                ? 'bg-green-500'
+                                                                : locker.status === 'Empty'
+                                                                    ? 'bg-orange-500'
+                                                                    : 'bg-blue-500'
+                                                        }`} />
 
-                                                <div className="relative backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border border-white/40 dark:border-gray-700/60 rounded-2xl overflow-hidden">
-                                                    {/* Status bar with gray-based gradients */}
-                                                    <div className={`h-1.5 ${locker.status === 'Expired'
-                                                        ? 'bg-gradient-to-r from-gray-600 to-rose-700'
-                                                        : locker.status === 'Booked'
-                                                            ? 'bg-gradient-to-r from-gray-600 to-emerald-600'
-                                                            : locker.status === 'Empty'
-                                                                ? 'bg-gradient-to-r from-gray-600 to-amber-600'
-                                                                : 'bg-gradient-to-r from-gray-600 to-blue-600'
-                                                        }`}
-                                                    />
-
-                                                    <div className="p-5">
-                                                        <div className="flex justify-between items-start mb-2">
+                                                    <div className="p-4">
+                                                        {/* Header section */}
+                                                        <div className="flex justify-between items-start mb-3">
                                                             <div>
-                                                                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
-                                                                    Locker <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-400 dark:to-gray-300">
-                                                                        #{locker.lockerNumber}
-                                                                    </span>
+                                                                <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                                    Locker #{locker.lockerNumber}
                                                                 </h2>
                                                                 <div className="flex items-center mt-1">
-                                                                    <span className={`w-2 h-2 rounded-full mr-2 ${locker.status === 'Expired'
-                                                                        ? 'bg-rose-600'
-                                                                        : locker.status === 'Booked'
-                                                                            ? 'bg-emerald-600'
-                                                                            : locker.status === 'Empty'
-                                                                                ? 'bg-amber-500'
-                                                                                : 'bg-blue-600'
+                                                                    <div className={`w-2 h-2 rounded-full mr-2 ${locker.status === 'Expired'
+                                                                            ? 'bg-red-500'
+                                                                            : locker.status === 'Booked'
+                                                                                ? 'bg-green-500'
+                                                                                : locker.status === 'Empty'
+                                                                                    ? 'bg-orange-500'
+                                                                                    : 'bg-blue-500'
                                                                         }`} />
-                                                                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                                    <span className="text-sm text-gray-600 dark:text-gray-400">
                                                                         {locker.isAssigned ? 'Assigned' : 'Not Assigned'}
                                                                     </span>
                                                                 </div>
                                                             </div>
 
-                                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md ${locker.status === 'Expired'
-                                                                ? 'bg-rose-600/10 text-rose-800 dark:text-rose-300 border border-rose-600/20'
-                                                                : locker.status === 'Booked'
-                                                                    ? 'bg-emerald-600/10 text-emerald-800 dark:text-emerald-300 border border-emerald-600/20'
-                                                                    : locker.status === 'Empty'
-                                                                        ? 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20'
-                                                                        : 'bg-blue-600/10 text-blue-800 dark:text-blue-300 border border-blue-600/20'
+                                                            {/* Status badge */}
+                                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${locker.status === 'Expired'
+                                                                    ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
+                                                                    : locker.status === 'Booked'
+                                                                        ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+                                                                        : locker.status === 'Empty'
+                                                                            ? 'bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800'
+                                                                            : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
                                                                 }`}>
                                                                 {locker.status}
                                                             </span>
                                                         </div>
 
-                                                        {/* Locker details with subtle hover effect */}
-                                                        <div className="space-y-0 text-sm mb-0">
+                                                        {/* Locker details */}
+                                                        <div className="space-y-2 mb-4">
                                                             {[
                                                                 ['Locker ID', locker.lockerId],
                                                                 ['Member Name', locker.memberName],
@@ -855,17 +851,19 @@ const Lockers = () => {
                                                             ].map(([label, value]) => (
                                                                 <div
                                                                     key={label}
-                                                                    className="flex justify-between py-2 px-3 -mx-3 rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-700/50 transition-colors"
+                                                                    className="flex justify-between items-center py-1.5 border-b border-gray-100 dark:border-gray-800 last:border-b-0"
                                                                 >
-                                                                    <span className="text-gray-700 dark:text-gray-300">{label}</span>
-                                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                                    <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                                                        {label}
+                                                                    </span>
+                                                                    <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                                                                         {value || '-'}
                                                                     </span>
                                                                 </div>
                                                             ))}
                                                         </div>
 
-                                                        {/* Button with gray-based gradient */}
+                                                        {/* Action button */}
                                                         <button
                                                             onClick={() => {
                                                                 setCurrentLockerNumber(locker.lockerNumber);
@@ -873,38 +871,34 @@ const Lockers = () => {
                                                                 setLockerId(locker._id);
                                                                 getSingleLockerInfo(locker._id);
                                                             }}
-                                                            className={`w-full mt-2 py-3 px-4 rounded-xl font-medium text-white relative overflow-hidden transition-all duration-300 shadow-md
-              ${locker.status === 'Expired'
-                                                                    ? 'bg-red-600 hover:shadow-rose-700/20'
+                                                            className={`w-full py-2.5 px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-2 ${locker.status === 'Expired'
+                                                                    ? 'bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-200 dark:focus:ring-red-800'
                                                                     : locker.status === 'Booked'
-                                                                        ? 'bg-green-500 hover:shadow-emerald-700/20'
+                                                                        ? 'bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800'
                                                                         : locker.status === 'Empty'
-                                                                            ? 'bg-blue-600 hover:shadow-amber-600/20'
-                                                                            : 'bg-gradient-to-r from-gray-700 to-gray-600 hover:shadow-blue-700/20'
-                                                                }`}
+                                                                            ? 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800'
+                                                                            : 'bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700'
+                                                                } focus:outline-none active:scale-95`}
                                                         >
-                                                            <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-300" />
-                                                            <div className="relative flex items-center justify-center gap-2">
-                                                                <FaLock className="text-lg" />
-                                                                <span>Manage Locker</span>
-                                                            </div>
+                                                            <FaLock className="text-sm" />
+                                                            <span>Manage Locker</span>
                                                         </button>
                                                     </div>
                                                 </div>
-
-                                                {/* Subtle decorative elements */}
-                                                <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 bg-gray-600/10 rounded-full filter blur-xl" />
-                                                <div className="absolute bottom-0 left-0 w-32 h-32 -ml-10 -mb-10 bg-gray-700/10 rounded-full filter blur-xl" />
                                             </div>
                                         ))
                                     ) : (
-                                        <div className="col-span-full text-center py-12">
-                                            <div className="text-gray-600 dark:text-gray-400">
-                                                <div className="inline-block p-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-200/60 dark:border-gray-700/60">
-                                                    <FaLockOpen className="mx-auto text-4xl text-gray-500 dark:text-gray-400 mb-3" />
-                                                    <p className="text-lg text-gray-800 dark:text-gray-200">No lockers available</p>
-                                                    <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">Create a new locker to get started</p>
+                                        <div className="col-span-full text-center py-16">
+                                            <div className="max-w-sm mx-auto">
+                                                <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
+                                                    <FaLockOpen className="text-2xl text-gray-500 dark:text-gray-400" />
                                                 </div>
+                                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                                    No lockers available
+                                                </h3>
+                                                <p className="text-gray-600 dark:text-gray-400">
+                                                    Create a new locker to get started with your locker management system.
+                                                </p>
                                             </div>
                                         </div>
                                     )}
