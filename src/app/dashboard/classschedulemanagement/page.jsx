@@ -1,7 +1,7 @@
 'use client';
 
 import { MdHome } from 'react-icons/md';
-import {  FiInfo } from 'react-icons/fi';
+import { FiInfo } from 'react-icons/fi';
 import { BsSpeedometer2, BsCalendar2Week } from 'react-icons/bs';
 import { TiEye } from "react-icons/ti";
 import { useState, useEffect, useRef } from "react";
@@ -27,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink,BreadcrumbPage, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -318,7 +318,9 @@ const ScheduleManagement = () => {
                                 <FiRefreshCcw className="w-4 h-4" />
                                 <span>Refresh</span>
                             </Button>
-                            <Button className="h-10 px-4 py-2 bg-primary dark:bg-gray-900 hover:bg-primary/90 text-white flex items-center gap-2">
+                            <Button
+                                onClick={() => setActiveTab('create')}
+                                className="h-10 px-4 py-2 bg-primary dark:hover:bg-gray-700 dark:bg-gray-900 hover:bg-primary/90 text-white flex items-center gap-2">
                                 <FiPlus className="w-4 h-4" />
                                 <span>New Schedule</span>
                             </Button>
