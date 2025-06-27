@@ -145,10 +145,10 @@ const RevenewDashboard = () => {
                                     <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
                                         <UserPlus className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                                     </div>
-                                    <div className="flex items-center text-green-600 dark:text-green-400">
+                                    {/* <div className="flex items-center text-green-600 dark:text-green-400">
                                         <TrendingUp className="w-4 h-4 mr-1" />
                                         <span className="text-sm font-medium">+12%</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="text-lg text-start font-semibold text-gray-800 dark:text-gray-100">
@@ -158,7 +158,7 @@ const RevenewDashboard = () => {
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
                                             {loggedInUser?.organization?.currency || 'N/A'} {totalNewMemberRevenue ? totalNewMemberRevenue : 'N/A'}
                                         </span>
-                                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                                        {/* <ArrowUpRight className="w-4 h-4 text-green-500" /> */}
                                     </div>
                                     <p className="text-sm text-start text-gray-600 dark:text-gray-400">
                                         New members revenue
@@ -178,10 +178,10 @@ const RevenewDashboard = () => {
                                     <div className="p-3 rounded-xl bg-green-50 dark:bg-green-900/20 group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
                                         <RefreshCw className="w-6 h-6 text-green-600 dark:text-green-400" />
                                     </div>
-                                    <div className="flex items-center text-green-600 dark:text-green-400">
+                                    {/* <div className="flex items-center text-green-600 dark:text-green-400">
                                         <TrendingUp className="w-4 h-4 mr-1" />
                                         <span className="text-sm font-medium">+8%</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="text-lg text-start font-semibold text-gray-800 dark:text-gray-100">
@@ -191,7 +191,7 @@ const RevenewDashboard = () => {
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
                                             {loggedInUser?.organization?.currency || 'N/A'} {totalRenewMemberRevenue ? totalRenewMemberRevenue : 0}
                                         </span>
-                                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                                        {/* <ArrowUpRight className="w-4 h-4 text-green-500" /> */}
                                     </div>
                                     <p className="text-sm text-start text-gray-600 dark:text-gray-400">
                                         Membership renewal revenue
@@ -211,10 +211,10 @@ const RevenewDashboard = () => {
                                     <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
                                         <Lock className="w-6 h-6 text-purple-600 dark:text-purple-400" />
                                     </div>
-                                    <div className="flex items-center text-green-600 dark:text-green-400">
+                                    {/* <div className="flex items-center text-green-600 dark:text-green-400">
                                         <TrendingUp className="w-4 h-4 mr-1" />
                                         <span className="text-sm font-medium">+15%</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-start text-gray-800 dark:text-gray-100">
@@ -224,7 +224,7 @@ const RevenewDashboard = () => {
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
                                             {loggedInUser?.organization?.currency || 'N/A'} {totalRevenue || 'N/A'}
                                         </span>
-                                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                                        {/* <ArrowUpRight className="w-4 h-4 text-green-500" /> */}
                                     </div>
                                     <p className="text-sm text-gray-600 text-start dark:text-gray-400">
                                         Revenue generated by lockers
@@ -244,10 +244,10 @@ const RevenewDashboard = () => {
                                     <div className="p-3 rounded-xl bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20 group-hover:from-orange-100 group-hover:to-yellow-100 dark:group-hover:from-orange-900/30 dark:group-hover:to-yellow-900/30 transition-all">
                                         <DollarSign className="w-6 h-6 text-orange-600 dark:text-orange-400" />
                                     </div>
-                                    <div className="flex items-center text-green-600 dark:text-green-400">
+                                    {/* <div className="flex items-center text-green-600 dark:text-green-400">
                                         <TrendingUp className="w-4 h-4 mr-1" />
                                         <span className="text-sm font-medium">+11%</span>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="space-y-2">
                                     <h3 className="text-lg font-semibold text-gray-800 text-start dark:text-gray-100">
@@ -262,7 +262,7 @@ const RevenewDashboard = () => {
                                                 (totalRevenue || 0)
                                             ).toLocaleString()}
                                         </span>
-                                        <ArrowUpRight className="w-4 h-4 text-green-500" />
+                                        {/* <ArrowUpRight className="w-4 h-4 text-green-500" /> */}
                                     </div>
                                     <p className="text-sm text-start text-gray-600 dark:text-gray-400">
                                         Total revenue generated
