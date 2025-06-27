@@ -474,11 +474,11 @@ const Header = () => {
           title: "Reports & Analytics",
           link: "/dashboard/analyticsandreports",
         },
-        {
-          icon: MdFeedback,
-          title: "Feedback Management",
-          link: "/dashboard/feedbacks",
-        },
+        // {
+        //   icon: MdFeedback,
+        //   title: "Feedback Management",
+        //   link: "/dashboard/feedbacks",
+        // },
         // {
         //   icon: FaBoxOpen,
         //   title: "Logs",

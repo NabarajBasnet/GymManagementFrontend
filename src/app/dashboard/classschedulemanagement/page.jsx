@@ -1,10 +1,12 @@
 'use client';
 
+import { MdHome } from 'react-icons/md';
+import {  FiInfo } from 'react-icons/fi';
+import { BsSpeedometer2, BsCalendar2Week } from 'react-icons/bs';
 import { TiEye } from "react-icons/ti";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader, FiRefreshCcw, FiSearch } from "react-icons/fi";
-import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
 
@@ -25,7 +27,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink,BreadcrumbPage, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -68,8 +70,6 @@ const ScheduleManagement = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editingScheduleId, setEditingScheduleId] = useState(null);
     const queryClient = useQueryClient();
-
-    const ref = useRef(null);
 
     const [selectedRoom, setSelectedRoom] = useState('');
     const [trainer, setTrainerId] = useState('');
@@ -269,44 +269,58 @@ const ScheduleManagement = () => {
         <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen px-4 py-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
-                <div className='w-full mb-4'>
-                    <Breadcrumb className="mb-4">
+                <div className='w-full mb-6'>
+                    <Breadcrumb className="mb-6">
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <MdHome className='w-4 h-4' />
-                                <BreadcrumbLink href="/" className="ml-2 font-semibold">Home</BreadcrumbLink>
+                                <MdHome className='w-4 h-4 text-gray-500 dark:text-gray-400' />
+                                <BreadcrumbLink href="/" className="ml-2 font-medium text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4" />
+                                <FiChevronRight className="h-4 w-4 text-gray-400" />
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
+                                <BsSpeedometer2 className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                <BreadcrumbLink className="ml-2 font-medium text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary">Dashboard</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4" />
+                                <FiChevronRight className="h-4 w-4 text-gray-400" />
                             </BreadcrumbSeparator>
                             <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold">Class Schedule Management</BreadcrumbLink>
+                                <BsCalendar2Week className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                <BreadcrumbPage className="ml-2 font-medium text-primary">Class Schedule Management</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
 
-                    {/* Header with dark mode support */}
-                    <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-5 py-5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm md:items-center gap-4">
-                        <div>
-                            <h1 className="text-xl font-bold mb-2 dark:text-gray-100">Class Schedule Management</h1>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                Create and manage class schedules
-                            </p>
+                    {/* Enhanced Header Card */}
+                    <div className="flex flex-col md:flex-row justify-between items-start bg-gradient-to-r from-primary/5 to-blue-50 dark:from-gray-700/50 dark:to-gray-800 p-6 border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm md:items-center gap-4">
+                        <div className="flex items-start gap-4">
+                            <div className="p-3 rounded-lg bg-primary/10 dark:bg-primary/20">
+                                <BsCalendar2Week className="w-6 h-6 text-primary dark:text-primary/80" />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-bold mb-1.5 dark:text-white flex items-center gap-2">
+                                    Class Schedule Management
+                                </h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-300 font-medium flex items-center gap-1.5">
+                                    <FiInfo className="w-4 h-4" />
+                                    Create and manage class schedules efficiently
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-3">
                             <Button
                                 variant="outline"
                                 onClick={() => window.location.reload()}
-                                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                className="h-10 px-4 py-2 border-gray-300 dark:bg-gray-900 dark:border-none hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-200 flex items-center gap-2"
                             >
-                                <FiRefreshCcw className="mr-2" />
-                                Refresh
+                                <FiRefreshCcw className="w-4 h-4" />
+                                <span>Refresh</span>
+                            </Button>
+                            <Button className="h-10 px-4 py-2 bg-primary dark:bg-gray-900 hover:bg-primary/90 text-white flex items-center gap-2">
+                                <FiPlus className="w-4 h-4" />
+                                <span>New Schedule</span>
                             </Button>
                         </div>
                     </div>
@@ -317,7 +331,7 @@ const ScheduleManagement = () => {
                     <TabsList className="grid w-full grid-cols-2 mb-6 dark:text-white bg-white dark:bg-gray-800">
                         <TabsTrigger
                             value="create"
-                            className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                            className="flex items-center gap-2 py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
                             {isEditing ? (
                                 <>
@@ -333,7 +347,7 @@ const ScheduleManagement = () => {
                         </TabsTrigger>
                         <TabsTrigger
                             value="view"
-                            className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                            className="flex items-center gap-2 py-3 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
                             <FiEye className="h-4 w-4" />
                             View Schedules
@@ -359,7 +373,7 @@ const ScheduleManagement = () => {
                                                 {...register('className', { required: 'Class Name is required' })}
                                                 placeholder="e.g., Morning Yoga, HIIT Training"
                                                 required
-                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
                                             {errors.className && <p className="text-red-500 dark:text-red-400">{errors.className.message}</p>}
                                         </div>
@@ -382,7 +396,7 @@ const ScheduleManagement = () => {
                                                                         setTrainerName('');
                                                                     }}
                                                                     onFocus={handleTrainerSearchFocus}
-                                                                    className="w-full rounded-sm py-6 border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm px-4 pl-10 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                                    className="w-full rounded-sm bg-white py-6 border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm px-4 pl-10 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
                                                                     placeholder="Search staff..."
                                                                 />
                                                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
@@ -461,7 +475,7 @@ const ScheduleManagement = () => {
                                                 min="1"
                                                 max="100"
                                                 required
-                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
                                             {errors.capacity && <p className="text-red-500 dark:text-red-400">{errors.capacity.message}</p>}
                                         </div>
@@ -476,7 +490,7 @@ const ScheduleManagement = () => {
                                                 name="startTime"
                                                 {...register('startTime', { required: 'Start Time is required' })}
                                                 required
-                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100"
+                                                className="dark:bg-gray-900 py-6 bg-white rounded-sm dark:border-gray-700 dark:text-gray-100"
                                             />
                                             {errors.startTime && <p className="text-red-500 dark:text-red-400">{errors.startTime.message}</p>}
                                         </div>
@@ -488,7 +502,7 @@ const ScheduleManagement = () => {
                                                 name="endTime"
                                                 {...register('endTime', { required: 'End Time is required' })}
                                                 required
-                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100"
+                                                className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-gray-700 dark:text-gray-100"
                                             />
                                             {errors.endTime && <p className="text-red-500 dark:text-red-400">{errors.endTime.message}</p>}
                                         </div>
@@ -548,7 +562,7 @@ const ScheduleManagement = () => {
                                 <Loader />
                             </div>
                         ) : Array.isArray(schedules) && schedules.length > 0 ? (
-                            <Card>
+                            <Card className='dark:border-none dark:bg-gray-800'>
                                 <CardHeader>
                                     <CardTitle>Scheduled Classes</CardTitle>
                                     <CardDescription>
@@ -584,7 +598,7 @@ const ScheduleManagement = () => {
                                                             <Badge variant={
                                                                 schedule.status === 'Pending' ? 'secondary' :
                                                                     schedule.status === 'OnGoing' ? 'default' :
-                                                                        schedule.status === 'Completed' ? 'success' :
+                                                                        schedule.status === 'Completed' ? 'green' :
                                                                             'destructive'
                                                             }>
                                                                 {schedule.status}

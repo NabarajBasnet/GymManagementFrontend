@@ -363,11 +363,13 @@ const Sidebar = () => {
           title: "Personal Training",
           link: "/dashboard/personaltraining",
           subObj: [
-            {
+            ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'?[
+{
               icon: FaDumbbell,
               title: "Training Packages",
               link: "/dashboard/personaltraining/trainingpackages",
             },
+            ]:[]),
             {
               icon: FaDumbbell,
               title: "Book Training",
@@ -391,11 +393,11 @@ const Sidebar = () => {
           title: "Reports & Analytics",
           link: "/dashboard/analyticsandreports",
         },
-        {
-          icon: MdFeedback,
-          title: "Feedback Management",
-          link: "/dashboard/feedbacks",
-        },
+        // {
+        //   icon: MdFeedback,
+        //   title: "Feedback Management",
+        //   link: "/dashboard/feedbacks",
+        // },
         // {
         //   icon: FaBoxOpen,
         //   title: "Logs",
