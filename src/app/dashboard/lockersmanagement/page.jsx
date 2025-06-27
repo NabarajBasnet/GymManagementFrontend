@@ -1,9 +1,11 @@
 'use client';
 
-import { toast as sonnerToast } from 'sonner';
 import { LiaHomeSolid } from "react-icons/lia";
+import { FiChevronRight } from "react-icons/fi";
+import { BsThreeDots, BsBoxSeam } from "react-icons/bs";
+import { toast as sonnerToast } from 'sonner';
 import { RiResetRightFill } from "react-icons/ri";
-import { FaLockOpen } from "react-icons/fa";
+import { FaLockOpen, FaLock } from "react-icons/fa";
 import Badge from '@mui/material/Badge';
 import {
     Tooltip,
@@ -11,7 +13,6 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { FaLock } from "react-icons/fa";
 import {
     Select,
     SelectContent,
@@ -40,7 +41,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import * as React from "react"
+import * as React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
@@ -279,33 +280,74 @@ const Lockers = () => {
 
     return (
         <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-5 px-4">
-            <Breadcrumb>
-                <BreadcrumbList>
-                    <BreadcrumbItem>
-                        <BreadcrumbLink className='flex items-center font-medium' href="/"> <LiaHomeSolid className="mr-2 w-4 h-4" /> Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className={'font-medium'} />
-                    <BreadcrumbItem>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger className="flex items-center gap-1">
-                                <BreadcrumbEllipsis className="h-4 w-4 font-medium" />
-                            </DropdownMenuTrigger>
-                        </DropdownMenu>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className={'font-medium'} />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href="/dashboard" className='font-medium'>Dashboard</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator className={'font-medium'} />
-                    <BreadcrumbItem>
-                        <BreadcrumbLink className='font-medium'>Lockers</BreadcrumbLink>
-                    </BreadcrumbItem>
-                </BreadcrumbList>
-            </Breadcrumb>
 
-            <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border'>
-                <div className='w-full flex justify-between items-center'>
-                    <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
+            <div className="w-full space-y-4">
+                {/* Enhanced Breadcrumb */}
+                <Breadcrumb>
+                    <BreadcrumbList className="flex items-center gap-2">
+                        <BreadcrumbItem>
+                            <BreadcrumbLink
+                                href="/"
+                                className="flex items-center font-medium text-sm text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors"
+                            >
+                                <LiaHomeSolid className="mr-2 w-4 h-4" />
+                                Home
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-3 w-3 text-gray-400" />
+                        </BreadcrumbSeparator>
+
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center focus:outline-none">
+                                    <BsThreeDots className="h-4 w-4 text-gray-500" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    {/* Dropdown content here */}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-3 w-3 text-gray-400" />
+                        </BreadcrumbSeparator>
+
+                        <BreadcrumbItem>
+                            <BreadcrumbLink
+                                href="/dashboard"
+                                className="font-medium text-sm text-gray-600 hover:text-primary dark:text-gray-300 dark:hover:text-primary transition-colors"
+                            >
+                                Dashboard
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-3 w-3 text-gray-400" />
+                        </BreadcrumbSeparator>
+
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="font-medium text-sm text-primary dark:text-primary">
+                                <div className="flex items-center">
+                                    <BsBoxSeam className="mr-2 w-4 h-4" />
+                                    Lockers
+                                </div>
+                            </BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+
+                {/* Enhanced Card */}
+                <div className="w-full dark:border-none bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                    <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg">
+                                <BsBoxSeam className="w-5 h-5 text-primary dark:text-primary/90" />
+                            </div>
+                            <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
+                        </div>
+                    </div>
                 </div>
             </div>
 
