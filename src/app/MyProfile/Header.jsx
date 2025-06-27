@@ -101,8 +101,6 @@ const StaffHeader = ({ activeTab }) => {
         { id: '/MyProfile/taskmanagement', icon: <GoTasklist size={20} />, label: "Task Management", color: "from-purple-500 to-violet-500" },
         { id: '/MyProfile/attendance', icon: <FaUserCheck size={20} />, label: "Attendance", color: "from-orange-500 to-red-500" },
         { id: '/MyProfile/feedbacks', icon: <VscFeedback size={20} />, label: "Feedbacks & Ratings", color: "from-pink-500 to-rose-500" },
-        { id: '/MyProfile/promotions&offers', icon: <MdLocalOffer size={20} />, label: "Promotions & Offers", color: "from-yellow-500 to-amber-500" },
-        { id: '/MyProfile/customersupport', icon: <RiCustomerServiceFill size={20} />, label: "Customer Support", color: "from-indigo-500 to-blue-500" },
         { id: '/MyProfile/settings', icon: <Settings size={20} />, label: "Settings", color: "from-gray-500 to-slate-500" },
     ];
 
