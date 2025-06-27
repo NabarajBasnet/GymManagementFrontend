@@ -150,7 +150,9 @@ const AnalyticsDashboard = () => {
             </CardTitle>
             <CardDescription>Comprehensive overview of your gym performance</CardDescription>
           </div>
-          <Button>
+          <Button
+            disabled
+          >
             <FaFileDownload className="mr-2" /> Download Reports
           </Button>
         </CardHeader>

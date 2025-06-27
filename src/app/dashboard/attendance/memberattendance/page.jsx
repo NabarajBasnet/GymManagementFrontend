@@ -81,7 +81,6 @@ const MemberAttendance = () => {
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
-            hotToast.error(error.message)
             sonnerToast.error(error.message)
         }
     };
@@ -106,14 +105,12 @@ const MemberAttendance = () => {
             setValidationResult(responseBody);
 
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
-                hotToast.error(responseBody.message)
                 sonnerToast.error(responseBody.message)
                 setTextAreaColor('text-red-500');
             }
 
             if (response.status === 200) {
                 setTextAreaColor('text-green-600');
-                hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
             }
 
@@ -123,7 +120,6 @@ const MemberAttendance = () => {
             }
 
             if (response.status !== 403 && response.status !== 200) {
-                hotToast.error(responseBody.message);
                 sonnerToast.error(responseBody.message);
                 setTextAreaColor('text-red-600');
             }
@@ -131,7 +127,6 @@ const MemberAttendance = () => {
         } catch (error) {
             console.log('Error: ', error);
             setTextAreaColor('text-red-600');
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
         }
     };
@@ -162,7 +157,6 @@ const MemberAttendance = () => {
 
             const responseBody = await response.json();
             if (response.status === 200) {
-                hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
                 setMembershipHoldToggle(false);
             }
@@ -170,7 +164,6 @@ const MemberAttendance = () => {
             queryClient.invalidateQueries(['members']);
         } catch (error) {
             console.error("Error:", error);
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
         } finally {
             setActivating(false);
