@@ -310,7 +310,7 @@ const MyProfile = () => {
                         icon={<FaBriefcase />}
                     />
                     <InfoItem label="Role" value={staffDetails?.role} icon={<FaUser />} />
-                    <InfoItem label="Salary" value={staffDetails?.salary ? `₹${staffDetails.salary.toLocaleString()}` : 'N/A'} icon={<FaBriefcase />} />
+                    <InfoItem label="Salary" value={staffDetails?.salary ? `${staffDetails?.organization?.currency} ${staffDetails.salary.toLocaleString()}` : 'N/A'} icon={<FaBriefcase />} />
                     <InfoItem label="Status" value={staffDetails?.status} icon={<FaUser />} />
                 </div>
             </div>
