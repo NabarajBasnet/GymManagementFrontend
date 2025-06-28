@@ -593,8 +593,8 @@ const NewMemberRegistrationForm = () => {
                           {step === 1
                             ? "Personal Info"
                             : step === 2
-                              ? "Membership"
-                              : "Payment"}
+                              ? "Membership Info"
+                              : "Payment Info"}
                         </span>
                       </div>
                     ))}
