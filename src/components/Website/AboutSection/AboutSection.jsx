@@ -61,27 +61,13 @@ const AboutSection = () => {
     ];
 
     return (
-        <section id="about" className="py-28 relative overflow-hidden bg-gray-950">
-            {/* White Glowing Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                />
-                <motion.div
-                    className="absolute top-1/2 left-1/2 w-64 h-64 bg-blue-500/5 rounded-full filter blur-[80px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.4 }}
-                    transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", delay: 0.8 }}
-                />
+        <section id="about" className="py-28 relative overflow-hidden bg-gray-900/40">
+            {/* Glowing Background Effects - Matching Hero Section */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -98,10 +84,10 @@ const AboutSection = () => {
                         animate={headingInView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Story</span> and Vision
+                        Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Story</span> and Vision
                     </motion.h2>
                     <motion.p
-                        className="text-xl text-gray-400 max-w-3xl mx-auto"
+                        className="text-xl text-gray-300 max-w-3xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={headingInView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
@@ -132,7 +118,7 @@ const AboutSection = () => {
                         </motion.div>
 
                         <motion.div
-                            className="absolute -bottom-6 -right-6 bg-gradient-to-br from-blue-600 to-blue-800 p-5 rounded-xl shadow-xl backdrop-blur-sm border border-blue-500/20"
+                            className="absolute -bottom-6 -right-6 bg-gradient-to-br from-blue-600 to-cyan-500 p-5 rounded-xl shadow-xl backdrop-blur-sm border border-blue-500/20"
                             initial={{ opacity: 0, y: 20 }}
                             animate={contentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             transition={{ delay: 0.6 }}
@@ -159,7 +145,7 @@ const AboutSection = () => {
                         </motion.h3>
 
                         <motion.p
-                            className="text-gray-400 mb-6 text-md font-medium"
+                            className="text-gray-300 mb-6 text-md font-medium"
                             initial={{ opacity: 0 }}
                             animate={contentInView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.5 }}
@@ -169,7 +155,7 @@ const AboutSection = () => {
                         </motion.p>
 
                         <motion.p
-                            className="text-gray-400 mb-8 text-md font-medium"
+                            className="text-gray-300 mb-8 text-md font-medium"
                             initial={{ opacity: 0 }}
                             animate={contentInView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.6 }}
@@ -189,7 +175,7 @@ const AboutSection = () => {
                                 {values.map((value, index) => (
                                     <motion.div
                                         key={index}
-                                        className="bg-gray-900/50 p-6 rounded-xl border border-gray-800 hover:border-blue-500/30 transition-all"
+                                        className="bg-white/5 backdrop-blur-sm p-6 rounded-xl border border-white/10 hover:border-blue-500/30 transition-all"
                                         whileHover={{ y: -5 }}
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={contentInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -201,7 +187,7 @@ const AboutSection = () => {
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-white text-lg mb-2">{value.title}</h4>
-                                                <p className="text-gray-400">{value.description}</p>
+                                                <p className="text-gray-300">{value.description}</p>
                                             </div>
                                         </div>
                                     </motion.div>

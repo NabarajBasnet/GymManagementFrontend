@@ -45,21 +45,13 @@ const FAQSection = () => {
     ];
 
     return (
-        <section id="faq" className="py-28 relative overflow-hidden bg-gray-950">
-            {/* White Glowing Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                />
+        <section id="faq" className="py-28 relative overflow-hidden bg-gray-900/40">
+            {/* Glowing Background Effects - Matching Hero Section */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -76,15 +68,15 @@ const FAQSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        Frequently Asked <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Questions</span>
+                        Frequently Asked <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Questions</span>
                     </motion.h2>
                     <motion.p
-                        className="text-md text-gray-400 max-w-3xl mx-auto"
+                        className="text-lg text-gray-300 max-w-3xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        Find answers to commonly asked questions about FitLoft.
+                        Find answers to commonly asked questions about GeoFit.
                     </motion.p>
                 </motion.div>
 
@@ -97,7 +89,7 @@ const FAQSection = () => {
                     <Accordion
                         type="single"
                         collapsible
-                        className="w-full bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 overflow-hidden"
+                        className="w-full bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 overflow-hidden"
                     >
                         {faqs.map((faq, index) => (
                             <motion.div
@@ -108,7 +100,7 @@ const FAQSection = () => {
                             >
                                 <AccordionItem
                                     value={`item-${index}`}
-                                    className="border-b border-gray-800 last:border-b-0 px-6"
+                                    className="border-b border-white/10 last:border-b-0 px-6"
                                 >
                                     <AccordionTrigger className="hover:no-underline py-6 text-left">
                                         <div className="flex items-center space-x-4">
@@ -120,7 +112,7 @@ const FAQSection = () => {
                                             </h3>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className="pb-6 text-gray-400 pl-12">
+                                    <AccordionContent className="pb-6 text-gray-300 pl-12">
                                         {faq.answer}
                                     </AccordionContent>
                                 </AccordionItem>
@@ -134,12 +126,12 @@ const FAQSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.8 }}
                     >
-                        <p className="text-gray-400 mb-6 text-lg">
+                        <p className="text-gray-300 mb-6 text-lg">
                             Still have questions? We're here to help!
                         </p>
                         <motion.a
                             href="#contact"
-                            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >

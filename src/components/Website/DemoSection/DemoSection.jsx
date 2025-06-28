@@ -23,21 +23,13 @@ const DemoSection = () => {
     };
 
     return (
-        <section id="demo" className="py-28 relative overflow-hidden bg-gray-950">
-            {/* White Glowing Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                />
+        <section id="demo" className="py-28 relative overflow-hidden bg-gray-900/40">
+            {/* Glowing Background Effects - Matching Hero Section */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -55,10 +47,10 @@ const DemoSection = () => {
                             animate={inView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.2 }}
                         >
-                            Ready to Transform Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Gym Management</span>?
+                            Ready to Transform Your <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Gym Management</span>?
                         </motion.h2>
                         <motion.p
-                            className="text-xl text-gray-400 mb-10"
+                            className="text-xl text-gray-300 mb-10"
                             initial={{ opacity: 0 }}
                             animate={inView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.4 }}
@@ -68,7 +60,7 @@ const DemoSection = () => {
                         </motion.p>
 
                         <motion.div
-                            className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 shadow-xl p-8 mb-10"
+                            className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8 mb-10"
                             initial={{ opacity: 0, y: 20 }}
                             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                             transition={{ delay: 0.6 }}
@@ -79,7 +71,7 @@ const DemoSection = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-white text-lg mb-1">Schedule a Demo</h3>
-                                    <p className="text-gray-400">Fill out the form to book your personalized demo</p>
+                                    <p className="text-gray-300">Fill out the form to book your personalized demo</p>
                                 </div>
                             </div>
 
@@ -89,7 +81,7 @@ const DemoSection = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-white text-lg mb-1">Explore Features</h3>
-                                    <p className="text-gray-400">See how GeoFit can address your specific needs</p>
+                                    <p className="text-gray-300">See how GeoFit can address your specific needs</p>
                                 </div>
                             </div>
 
@@ -99,7 +91,7 @@ const DemoSection = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-white text-lg mb-1">Get Started</h3>
-                                    <p className="text-gray-400">Launch with our team's full support</p>
+                                    <p className="text-gray-300">Launch with our team's full support</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -118,11 +110,11 @@ const DemoSection = () => {
                                 />
                             </div>
                             <div>
-                                <p className="text-gray-400 italic mb-2">
+                                <p className="text-gray-300 italic mb-2">
                                     "GeoFit has transformed how we manage our gym. The interface is intuitive, and the support is exceptional."
                                 </p>
                                 <p className="text-white font-medium">Sarah Johnson</p>
-                                <p className="text-sm text-gray-500">Fitness Center Owner</p>
+                                <p className="text-sm text-gray-400">Fitness Center Owner</p>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -133,13 +125,13 @@ const DemoSection = () => {
                         animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 80 }}
                         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
                     >
-                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 shadow-xl p-8">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
                             {!submitted ? (
                                 <>
                                     <h3 className="text-2xl font-bold text-white mb-8">Request Your Demo</h3>
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-400 mb-2">
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
                                                 Full Name
                                             </label>
                                             <input
@@ -147,13 +139,13 @@ const DemoSection = () => {
                                                 required
                                                 value={name}
                                                 onChange={(e) => setName(e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                                 placeholder="John Doe"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-400 mb-2">
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
                                                 Work Email
                                             </label>
                                             <input
@@ -161,13 +153,13 @@ const DemoSection = () => {
                                                 required
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                                 placeholder="john@example.com"
                                             />
                                         </div>
 
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-400 mb-2">
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
                                                 Company / Gym Name
                                             </label>
                                             <input
@@ -175,14 +167,14 @@ const DemoSection = () => {
                                                 required
                                                 value={company}
                                                 onChange={(e) => setCompany(e.target.value)}
-                                                className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                                 placeholder="Fitness Center"
                                             />
                                         </div>
 
                                         <motion.button
                                             type="submit"
-                                            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-lg font-medium shadow-lg hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2"
+                                            className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2"
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
                                         >
@@ -190,7 +182,7 @@ const DemoSection = () => {
                                         </motion.button>
                                     </form>
 
-                                    <p className="text-xs text-gray-500 mt-6 text-center">
+                                    <p className="text-xs text-gray-400 mt-6 text-center">
                                         By submitting this form, you agree to our Privacy Policy and Terms of Service.
                                     </p>
                                 </>
@@ -205,7 +197,7 @@ const DemoSection = () => {
                                         <Check size={24} className="text-green-400" />
                                     </div>
                                     <h3 className="text-2xl font-bold text-white mb-3">Thank You!</h3>
-                                    <p className="text-gray-400 mb-6">
+                                    <p className="text-gray-300 mb-6">
                                         We've received your demo request and will contact you shortly at <span className="text-blue-400">{email}</span>.
                                     </p>
                                     <motion.button

@@ -30,21 +30,13 @@ const ContactSection = () => {
     };
 
     return (
-        <section id="contact" className="py-28 relative overflow-hidden bg-gray-950">
-            {/* White Glowing Background Elements */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                />
+        <section id="contact" className="py-28 relative overflow-hidden bg-gray-900/40">
+            {/* Glowing Background Effects - Matching Hero Section */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -61,10 +53,10 @@ const ContactSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.2 }}
                     >
-                        Get In <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Touch</span>
+                        Get In <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Touch</span>
                     </motion.h2>
                     <motion.p
-                        className="text-md text-gray-400 max-w-3xl mx-auto"
+                        className="text-lg text-gray-300 max-w-3xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
@@ -80,7 +72,7 @@ const ContactSection = () => {
                         animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 }}
                         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
                     >
-                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 shadow-xl p-8">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
                             <h3 className="text-2xl font-bold text-white mb-8">Send Us a Message</h3>
 
                             {submitted ? (
@@ -98,7 +90,7 @@ const ContactSection = () => {
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">
                                             Name
                                         </label>
                                         <input
@@ -106,13 +98,13 @@ const ContactSection = () => {
                                             required
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                             placeholder="Your name"
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">
                                             Email
                                         </label>
                                         <input
@@ -120,13 +112,13 @@ const ContactSection = () => {
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                             placeholder="your@email.com"
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-400 mb-2">
+                                        <label className="block text-sm font-medium text-gray-300 mb-2">
                                             Message
                                         </label>
                                         <textarea
@@ -134,14 +126,14 @@ const ContactSection = () => {
                                             rows={5}
                                             value={message}
                                             onChange={(e) => setMessage(e.target.value)}
-                                            className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-500 transition-all"
+                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                             placeholder="How can we help you?"
                                         ></textarea>
                                     </div>
 
                                     <motion.button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 rounded-lg font-medium shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
+                                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                     >
@@ -159,7 +151,7 @@ const ContactSection = () => {
                         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
                         className="space-y-8"
                     >
-                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 shadow-xl p-8">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
                             <h3 className="text-2xl font-bold text-white mb-8">Contact Information</h3>
 
                             <div className="space-y-6">
@@ -173,8 +165,8 @@ const ContactSection = () => {
                                         <Mail className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-400">Email</p>
-                                        <a href="mailto:info@flexgym.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
+                                        <p className="text-sm text-gray-300">Email</p>
+                                        <a href="mailto:info@geofit.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
                                             info@geofit.com
                                         </a>
                                     </div>
@@ -190,8 +182,8 @@ const ContactSection = () => {
                                         <Phone className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-400">Phone</p>
-                                        <a href="tel:+11234567890" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
+                                        <p className="text-sm text-gray-300">Phone</p>
+                                        <a href="tel:+9779763427690" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
                                             +977 976-3427690
                                         </a>
                                     </div>
@@ -207,7 +199,7 @@ const ContactSection = () => {
                                         <MapPin className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-400">Office</p>
+                                        <p className="text-sm text-gray-300">Office</p>
                                         <p className="text-lg font-medium text-white">
                                             Baneshwor Height 10<br />
                                             Bagmati, Kathmandu, NP 44600
@@ -217,7 +209,7 @@ const ContactSection = () => {
                             </div>
                         </div>
 
-                        <div className="bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 shadow-xl p-8">
+                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
                             <h3 className="text-2xl font-bold text-white mb-6">Customer Support Hours</h3>
 
                             <div className="space-y-4">
@@ -231,7 +223,7 @@ const ContactSection = () => {
                                         <Clock className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-400">Monday - Friday:</span>
+                                        <span className="text-gray-300">Monday - Friday:</span>
                                         <span className="font-medium text-white">8:00 AM - 8:00 PM EST</span>
                                     </div>
                                 </motion.div>
@@ -246,7 +238,7 @@ const ContactSection = () => {
                                         <Clock className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-400">Saturday:</span>
+                                        <span className="text-gray-300">Saturday:</span>
                                         <span className="font-medium text-white">10:00 AM - 6:00 PM EST</span>
                                     </div>
                                 </motion.div>
@@ -261,21 +253,21 @@ const ContactSection = () => {
                                         <Clock className="h-6 w-6 text-blue-400" />
                                     </div>
                                     <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-400">Sunday:</span>
+                                        <span className="text-gray-300">Sunday:</span>
                                         <span className="font-medium text-white">Closed</span>
                                     </div>
                                 </motion.div>
                             </div>
 
                             <motion.div
-                                className="mt-8 pt-6 border-t border-gray-800"
+                                className="mt-8 pt-6 border-t border-white/10"
                                 initial={{ opacity: 0 }}
                                 animate={inView ? { opacity: 1 } : { opacity: 0 }}
                                 transition={{ delay: 1.2 }}
                             >
-                                <p className="text-gray-400">
+                                <p className="text-gray-300">
                                     For urgent matters outside of business hours, please email{' '}
-                                    <a href="mailto:support@flexgym.com" className="text-blue-400 font-medium hover:underline">
+                                    <a href="mailto:support@geofit.com" className="text-blue-400 font-medium hover:underline">
                                         support@geofit.com
                                     </a>
                                 </p>

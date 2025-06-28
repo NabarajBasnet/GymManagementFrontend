@@ -66,21 +66,13 @@ const TrustedBySection = () => {
     };
 
     return (
-        <section id="trusted" className="py-28 relative overflow-hidden bg-gray-950">
-            {/* Background elements */}
-            <div className="absolute inset-0 overflow-hidden">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 0.8 } : { opacity: 0 }}
-                    transition={{ duration: 2 }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-blue-500/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={inView ? { opacity: 0.6 } : { opacity: 0 }}
-                    transition={{ duration: 2.5, delay: 0.5 }}
-                />
+        <section id="trusted" className="py-28 relative overflow-hidden bg-gray-900/40">
+            {/* Glowing Background Effects - Matching Hero Section */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -120,7 +112,7 @@ const TrustedBySection = () => {
                             key={index}
                             variants={itemVariants}
                             whileHover="hover"
-                            className="bg-gray-900/50 backdrop-blur-sm cursor-pointer rounded-xl p-6 border border-gray-800 hover:border-white/50 transition-all duration-300"
+                            className="bg-white/5 backdrop-blur-sm cursor-pointer rounded-xl p-6 border border-white/10 hover:border-blue-400/30 transition-all duration-300"
                         >
                             <div className="flex flex-col items-center">
                                 <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-gray-700 mb-4">
@@ -143,7 +135,7 @@ const TrustedBySection = () => {
                     transition={{ delay: 1 }}
                     className="mt-16 text-center"
                 >
-                    <div className="inline-flex items-center cursor-pointer bg-gray-900/50 backdrop-blur-sm rounded-full px-6 py-3 border border-gray-800">
+                    <div className="inline-flex items-center cursor-pointer bg-white/5 backdrop-blur-sm rounded-full px-6 py-3 border border-white/10 hover:border-blue-400/30 transition-colors duration-200">
                         <Star className="text-yellow-400 fill-yellow-400/20 mr-2" size={18} />
                         <span className="text-white font-medium">500+ Gyms Worldwide</span>
                     </div>
