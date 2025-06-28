@@ -21,14 +21,14 @@ const ClientAreaLayout = ({ children }) => {
           <div
             className={`w-full md:flex hidden ${hideSidebar ? "hidden" : ""}`}
           >
-            {clientSidebar && !hideSidebar && <ClientAreaSidebar />}
+            {!hideSidebar && <ClientAreaSidebar />}
           </div>
 
           {/* Main Content Area */}
           <div
-            className={`w-full ${
-              clientSidebar && !hideSidebar ? "pl-0 md:pl-[235px]" : "pl-0"
-            } ${hideSidebar ? "!pl-0" : ""}`}
+            className={`w-full transition-all duration-300 ${
+              clientSidebar ? "pl-[235px]" : "pl-[75px]"
+            }`}
           >
             {/* Header */}
             {!hideHeader && <ClientAreaHeader />}

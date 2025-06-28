@@ -1,51 +1,50 @@
 "use client";
 
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import RTKProvider from "@/state/ReduxProvider";
-import { useSelector } from "react-redux";
-import DashboardFooter from "@/components/DashboardFooter/Footer";
+import ClientAreaHeader from "./Header";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
+import { usePathname } from "next/navigation";
+import ClientAreaSidebar from "./Sidebar";
+import { useSelector } from "react-redux";
 
-export default function ClientLayout({ children }) {
+const ClientAreaLayout = ({ children }) => {
+  const pathname = usePathname();
   const adminSidebar = useSelector((state) => state.rtkreducer.adminSidebar);
-  const sidebarMinimized = useSelector(
-    (state) => state.rtkreducer.sidebarMinimized
-  );
+  const sidebarMinimized = useSelector((state) => state.rtkreducer.sidebarMinimized);
+
+  const hideHeader = pathname === "/clientarea/setupwizard";
+  const hideSidebar = pathname === "/clientarea/setupwizard";
 
   return (
-    <RTKProvider>
+    <div className="w-full">
       <ReactQueryClientProvider>
-        <div className="w-full flex">
-          {adminSidebar && (
-            <aside className="hidden md:flex">
-              <Sidebar />
-            </aside>
+        <div>
+          {/* Sidebar */}
+          {adminSidebar && !hideSidebar && (
+            <div className="w-full md:flex hidden">
+              <ClientAreaSidebar />
+            </div>
           )}
 
-          {/* Right-side container with constrained height */}
+          {/* Main Content Area */}
           <div
-            className={`w-full transition-all dark:bg-gray-900 duration-500 ${
-              sidebarMinimized ? "md:pl-20" : "md:pl-60"
-            } flex flex-col min-h-screen`}
+            className={`w-full ${
+              adminSidebar && !hideSidebar
+                ? sidebarMinimized
+                  ? "pl-0 md:pl-[70px]"
+                  : "pl-0 md:pl-[235px]"
+                : "pl-0"
+            } ${hideSidebar ? "!pl-0" : ""}`}
           >
-            {/* Header with fixed height */}
-            <header className="mt-14">
-              <Header />
-            </header>
+            {/* Header */}
+            {!hideHeader && <ClientAreaHeader />}
 
-            {/* Scrollable content area */}
-            <main className="flex-1 overflow-x-auto bg-white dark:bg-gray-900">
-              <div className="w-full mb-1">{children}</div>
-            </main>
-
-            {/* Fixed footer at the bottom */}
-            <footer>
-              <DashboardFooter />
-            </footer>
+            {/* Children */}
+            {children}
           </div>
         </div>
       </ReactQueryClientProvider>
-    </RTKProvider>
+    </div>
   );
-}
+};
+
+export default ClientAreaLayout;

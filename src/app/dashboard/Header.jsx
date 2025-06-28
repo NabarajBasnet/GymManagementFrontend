@@ -511,7 +511,6 @@ const Header = () => {
   ];
 
   const [activeItem, setActiveItem] = useState("");
-  const [hoveredItem, setHoveredItem] = useState(null);
   const [notifications, setNotifications] = useState(3);
 
   // Function to determine if a link is active

@@ -26,10 +26,12 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
+import { useSelector } from "react-redux";
 
 const ClientAreaSidebar = ({ activeTab }) => {
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const clientSidebar = useSelector((state) => state.rtkreducer.clientSidebar);
   const router = useRouter();
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
@@ -38,73 +40,93 @@ const ClientAreaSidebar = ({ activeTab }) => {
     return feature.toString() === 'Multi Branch Support'
   });
 
-  // Get the nav items based on features
-  const navItems = [
+  // Categorized nav items
+  const navCategories = [
     {
-      id: "/clientarea/dashboard",
-      icon: <Home size={20} />,
-      label: "Dashboard",
-      description: "Overview & Analytics",
+      title: "General",
+      items: [
+        {
+          id: "/clientarea/dashboard",
+          icon: <Home size={18} />,
+          label: "Dashboard",
+          description: "Overview & Analytics",
+        },
+        {
+          id: "/userlogin",
+          icon: <QrCode size={18} />,
+          label: "Gym Dashboard",
+          description: "Access Control",
+        },
+      ]
     },
     {
-      id: "/userlogin",
-      icon: <QrCode size={20} />,
-      label: "Gym Dashboard",
-      description: "Access Control & Monitoring",
-    },
-    ...(multiBranchSupport || loggedInTenant?.freeTrailStatus === 'Active' ? [
-      {
-        id: "/clientarea/branchmanagement",
-        icon: <Building2 size={20} />,
-        label: "Branch Management",
-        description: "Manage Branch",
-      },
-    ] : []),
-    {
-      id: "/clientarea/mysubscriptions",
-      icon: <MdOutlineShoppingCart size={20} />,
-      label: "My Subscriptions",
-      description: "My Subscriptions",
-    },
-    {
-      id: "/clientarea/pricing",
-      icon: <CreditCard size={20} />,
-      label: "Pricing",
-      description: "Purchase Subscriptions",
-    },
-    {
-      id: "/clientarea/systemusers",
-      icon: <User size={20} />,
-      label: "System Users",
-      description: "Manage System Users",
-    },
-    {
-      id: "/clientarea/lockermanagement",
-      icon: < FaLockOpen size={20} />,
-      label: "Locker Management",
-      description: "Manage Lockers",
+      title: "Management",
+      items: [
+        ...(multiBranchSupport || loggedInTenant?.freeTrailStatus === 'Active' ? [
+          {
+            id: "/clientarea/branchmanagement",
+            icon: <Building2 size={18} />,
+            label: "Branches",
+            description: "Manage Locations",
+          },
+        ] : []),
+        {
+          id: "/clientarea/systemusers",
+          icon: <User size={18} />,
+          label: "Users",
+          description: "Manage Team",
+        },
+        {
+          id: "/clientarea/lockermanagement",
+          icon: <FaLockOpen size={18} />,
+          label: "Lockers",
+          description: "Manage Storage",
+        },
+        {
+          id: "/clientarea/membershipplans",
+          icon: <Package size={18} />,
+          label: "Plans",
+          description: "Membership Plans",
+        },
+      ]
     },
     {
-      id: "/clientarea/myorders",
-      icon: <Package size={20} />,
-      label: "My Orders",
-      description: "My Orders",
+      title: "Billing",
+      items: [
+        {
+          id: "/clientarea/mysubscriptions",
+          icon: <MdOutlineShoppingCart size={18} />,
+          label: "Subscriptions",
+          description: "My Plans",
+        },
+        {
+          id: "/clientarea/pricing",
+          icon: <CreditCard size={18} />,
+          label: "Pricing",
+          description: "Upgrade Plan",
+        },
+        {
+          id: "/clientarea/myorders",
+          icon: <Package size={18} />,
+          label: "Orders",
+          description: "Purchase History",
+        },
+      ]
     },
     {
-      id: "/clientarea/membershipplans",
-      icon: <Package size={20} />,
-      label: "Membership Plans",
-      description: "Gym Membership Plans",
-    },
-    {
-      id: "/clientarea/settings",
-      icon: <Settings size={20} />,
-      label: "Settings",
-      description: "Configuration & Preferences",
+      title: "Settings",
+      items: [
+        {
+          id: "/clientarea/settings",
+          icon: <Settings size={18} />,
+          label: "Settings",
+          description: "Configuration",
+        }
+      ]
     }
   ];
 
-  const handleNavClick = (id, tab) => {
+  const handleNavClick = (id) => {
     router.push(id);
   };
 
@@ -155,78 +177,134 @@ const ClientAreaSidebar = ({ activeTab }) => {
   }, [darkMode, mounted]);
 
   return (
-    <div className="bg-white/95 dark:bg-gray-900/95 w-[235px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
+    <div className={`
+      bg-white/95 dark:bg-gray-900/95 
+      ${clientSidebar ? 'w-[235px]' : 'w-[75px]'} 
+      min-h-screen py-2 shadow-lg border-r border-gray-200/50 dark:border-gray-800/50 
+      fixed left-0 top-0 z-50 flex flex-col transition-all duration-300 ease-in-out
+      backdrop-blur-sm
+    `}>
       {/* Fixed Header Section */}
-      <div className="flex-shrink-0">
-        {/* Tenant Profile Section */}
-        <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center space-x-3">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
-                {loggedInTenant?.fullName.split(" ").map((name) => name.charAt(0)).join("")}
-              </div>
-            </div>
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-white">
+      <div className="flex-shrink-0 px-4 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shrink-0">
+            {loggedInTenant?.fullName.split(" ").map((name) => name.charAt(0)).join("")}
+          </div>
+
+          {clientSidebar && (
+            <div className="overflow-hidden transition-all duration-300 ease-in-out">
+              <h3 className="font-medium text-gray-900 dark:text-white truncate">
                 {loggedInTenant?.fullName || "Tenant"}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-1">
-                <span className={`font-medium text-xs ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
-                  {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName}
+              <p className="text-xs text-gray-500 dark:text-gray-400 flex items-center space-x-1 truncate">
+                <span className={`font-medium ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
+                  {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trial' : loggedInTenant?.subscription?.subscriptionName}
                 </span>
-
-                <span className={`text-xs font-medium ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
-                  ( {loggedInTenant?.freeTrailStatus === 'Active' ? loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays} Days left )
+                <span>•</span>
+                <span className={`font-medium ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
+                  {loggedInTenant?.freeTrailStatus === 'Active' ? loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays}d left
                 </span>
               </p>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Scrollable Navigation Section */}
       <div className="flex-grow overflow-y-auto">
-        <ScrollArea className="h-[80vh] w-full">
-          <ul className="space-y-1 px-2">
-            {navItems.map((item) => (
-              <li key={item.id}>
-                <button
-                  onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-3 rounded-md text-sm font-medium ${activeTab === item.id
-                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                    }`}
-                >
-                  <span className="text-white dark:text-gray-200 bg-blue-700/70 dark:bg-blue-700/50 p-2 rounded-md">
-                    {item.icon}
-                  </span>
-                  <div className="flex flex-col items-start">
-                    <span className="text-md font-medium text-dark dark:text-white">{item.label}</span>
-                    <span className="text-[11px] text-start text-gray-500 dark:text-gray-400 font-medium">{item.description}</span>
-                  </div>
-                </button>
-              </li>
+        <ScrollArea className="h-[calc(100vh-180px)] w-full">
+          <div className="px-3 py-4 space-y-6">
+            {navCategories.map((category) => (
+              <div key={category.title}>
+                {clientSidebar && (
+                  <h4 className="px-2 mb-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider transition-opacity duration-300 ease-in-out">
+                    {category.title}
+                  </h4>
+                )}
+                <ul className="space-y-1">
+                  {category.items.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => handleNavClick(item.id)}
+                        className={`
+                          w-full flex items-center 
+                          ${clientSidebar ? 'px-3' : 'px-0 justify-center'}
+                          py-2.5 rounded-lg text-sm font-medium 
+                          ${activeTab === item.id
+                            ? "bg-blue-50/80 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                            : "text-gray-600 hover:bg-gray-100/50 dark:text-gray-300 dark:hover:bg-gray-800/50"
+                          }
+                          transition-all duration-200
+                        `}
+                      >
+                        <span className={`
+                          ${clientSidebar ? 'mr-3' : 'mx-auto'}
+                          p-4 rounded-md
+                          ${activeTab === item.id
+                            ? 'bg-blue-500 text-blue-600 dark:bg-blue-800/50 dark:text-blue-300'
+                            : 'bg-gray-200 text-gray-600 dark:bg-gray-600 dark:text-gray-300'
+                          }
+                        `}>
+                          {item.icon}
+                        </span>
+                        {clientSidebar && (
+                          <div className="text-left overflow-hidden transition-all duration-300 ease-in-out">
+                            <span className="block text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                              {item.label}
+                            </span>
+                            <span className="block text-xs text-gray-500 dark:text-gray-400 truncate">
+                              {item.description}
+                            </span>
+                          </div>
+                        )}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         </ScrollArea>
       </div>
 
       {/* Fixed Footer Section */}
-      <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200 dark:border-gray-700">
+      <div className="flex-shrink-0 px-3 py-4 border-t border-gray-200 dark:border-gray-700">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <div className="flex justify-between items-center">
-              <div>
-                <h1 className="text-sm font-medium dark:text-white text-gray-700">{loggedInTenant?.fullName}</h1>
-                <p className='text-xs font-medium dark:text-white text-gray-700'>{loggedInTenant?.email}</p>
+            <button className={`
+              w-full flex items-center 
+              ${clientSidebar ? 'px-3' : 'px-0 justify-center'}
+              py-2 rounded-lg text-sm
+              hover:bg-gray-100/50 dark:hover:bg-gray-800/50
+              transition-all duration-200
+            `}>
+              <div className={`
+                ${clientSidebar ? 'mr-3' : 'mx-auto'}
+                p-1.5 rounded-md bg-gray-100/50 dark:bg-gray-800/50
+                text-gray-600 dark:text-gray-300
+              `}>
+                <Settings size={18} />
               </div>
-              <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                <Settings size={20} />
-              </button>
-            </div>
+
+              {clientSidebar && (
+                <div className="text-left overflow-hidden transition-all duration-300 ease-in-out">
+                  <span className="block text-sm font-medium text-gray-800 dark:text-gray-100 truncate">
+                    {loggedInTenant?.fullName?.split(" ")[0] || "Account"}
+                  </span>
+                  <span className="block text-xs text-gray-500 dark:text-gray-400 truncate">
+                    {loggedInTenant?.email}
+                  </span>
+                </div>
+              )}
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end">
-            <DropdownMenuLabel>Settings</DropdownMenuLabel>
+
+          <DropdownMenuContent
+            className="w-56"
+            align={clientSidebar ? "end" : "start"}
+            side={clientSidebar ? "right" : "bottom"}
+          >
+            <DropdownMenuLabel>Account Settings</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleNavClick("/clientarea/settings")}>
               <Settings className="mr-2 h-4 w-4" />
@@ -234,7 +312,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleNavClick("/clientarea/help")}>
               <HelpCircle className="mr-2 h-4 w-4" />
-              <span>Help</span>
+              <span>Help Center</span>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logOutTenant}>
