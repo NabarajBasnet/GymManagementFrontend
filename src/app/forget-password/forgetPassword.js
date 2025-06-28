@@ -1,8 +1,8 @@
 "use client";
+
 import {
   InputOTP,
   InputOTPGroup,
-  InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
@@ -18,13 +18,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [renderOTPSection, setRenderOTPSection] = useState(false);
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -46,11 +46,29 @@ const ForgotPassword = () => {
 
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/tenant/forget-password?email=${email}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      const responseBody = await response.json();
+      if (response.ok) {
+        toast.success(responseBody.message);
+        setIsSubmitted(true);
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        toast.error(responseBody.message);
+      }
+      console.log(responseBody);
+    } catch (error) {
       setIsLoading(false);
-      setIsSubmitted(true);
-    }, 2000);
+      toast.error(error.message);
+      console.log("Error: ", error);
+    }
   };
 
   const handleBackToLogin = () => {
@@ -185,7 +203,7 @@ const ForgotPassword = () => {
                   Sending link...
                 </div>
               ) : (
-                "Send reset link"
+                "Send OTP"
               )}
             </Button>
 
