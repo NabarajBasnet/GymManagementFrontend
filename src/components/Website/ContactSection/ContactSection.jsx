@@ -30,7 +30,7 @@ const ContactSection = () => {
     };
 
     return (
-        <section id="contact" className="py-28 relative overflow-hidden bg-gray-900/40">
+        <section id="contact" className="py-28 relative overflow-auto bg-gray-900/40">
             {/* Glowing Background Effects - Matching Hero Section */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>

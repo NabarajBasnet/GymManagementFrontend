@@ -40,7 +40,7 @@ const HeroSection = () => {
             >
               <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
               <span className="text-white/90 text-sm font-medium">
-                Powering 1,000+ Multi-Location Gyms
+                Powering Multi-Location Gyms
               </span>
             </motion.div>
 
@@ -147,14 +147,12 @@ const HeroSection = () => {
               transition={{ delay: 1 }}
             >
               <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400 mb-2">
-                  500+
-                </div>
+                <div className="text-3xl font-bold text-blue-400 mb-2">50+</div>
                 <div className="text-gray-400 text-sm">Enterprise Clients</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-400 mb-2">
-                  2.5M+
+                  5000K+
                 </div>
                 <div className="text-gray-400 text-sm">Members Managed</div>
               </div>
@@ -175,6 +173,7 @@ const HeroSection = () => {
             transition={{ delay: 1.2 }}
           >
             <motion.div
+              className="flex flex-col items-center"
               animate={{ y: [0, 8, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
