@@ -252,7 +252,9 @@ export default function TenantSignUpPage() {
                                 <Dumbbell className="w-8 h-8 text-white" />
                             </div>
                             <div className="ml-4">
-                                <h1 className="text-2xl font-bold">GeoFit</h1>
+                                <a
+                                    href={'/'}
+                                    className="text-2xl font-bold cursor-pointer">GeoFit</a>
                                 <p className="text-blue-100">Automate your gym workflow</p>
                             </div>
                         </div>

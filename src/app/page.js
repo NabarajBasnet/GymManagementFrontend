@@ -16,10 +16,10 @@ import BackToTop from "@/components/Website/BackToTop/BackToTop";
 
 const HeroSection = () => {
   return (
-    <div>
+    <div className="w-full">
       <section
         id="home"
-        className="w-full min-h-screen bg-gray-900/40 relative overflow-hidden flex items-center"
+        className="w-full min-h-screen bg-gray-900/40 relative flex items-center"
       >
         {/* Glowing Background Effects */}
         <div className="absolute inset-0 z-0">

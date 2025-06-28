@@ -45,21 +45,13 @@ const FAQSection = () => {
     ];
 
     return (
-        <section id="faq" className="py-28 relative bg-gray-950">
-            {/* White Glowing Background Elements */}
+        <section id="faq" className="w-full min-h-screen bg-gray-900/40 relative flex items-center py-24">
+            {/* Glowing Background Effects - Matching Contact Section */}
             <div className="absolute inset-0 z-0">
-                <motion.div
-                    className="absolute top-1/4 left-1/4 w-80 h-80 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
-                />
-                <motion.div
-                    className="absolute bottom-1/3 right-1/4 w-96 h-96 bg-white/5 rounded-full filter blur-[100px]"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.6 }}
-                    transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                />
+                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
             <div className="container mx-auto px-4 relative z-10">
@@ -84,7 +76,7 @@ const FAQSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        Find answers to commonly asked questions about FitLoft.
+                        Find answers to commonly asked questions about GeoFit.
                     </motion.p>
                 </motion.div>
 
@@ -97,7 +89,7 @@ const FAQSection = () => {
                     <Accordion
                         type="single"
                         collapsible
-                        className="w-full bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800 overflow-hidden"
+                        className="w-full bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800"
                     >
                         {faqs.map((faq, index) => (
                             <motion.div

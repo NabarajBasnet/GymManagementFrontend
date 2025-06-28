@@ -75,7 +75,7 @@
     font-weight: normal;
     font-style: normal;
   }
-  
+
   @font-face {
     font-family: 'Lobster-Regular';
     src: url('../../public/fonts/Lobster/Lobster-Regular.ttf') format('truetype');
@@ -93,6 +93,15 @@
     min-width: 320px;
     min-height: 100vh;
   }
+}
+
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+}
+
+body {
+  overflow-x: hidden;
 }
 
 /* Animations */

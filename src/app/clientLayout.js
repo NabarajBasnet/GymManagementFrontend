@@ -9,44 +9,9 @@ import { Toaster as Sooner } from "@/components/ui/sonner";
 
 export default function MainClientLayout({ children }) {
   const pathname = usePathname();
-  const lenisRef = useRef(null);
   const [scrollDir, setScrollDir] = useState(null);
-  const [isScrolling, setIsScrolling] = useState(false);
-
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-    let scrollTimeout;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      if (currentScrollY > lastScrollY) {
-        setScrollDir("down");
-      } else if (currentScrollY < lastScrollY) {
-        setScrollDir("up");
-      }
-
-      lastScrollY = currentScrollY;
-      setIsScrolling(true);
-
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-
-      scrollTimeout = setTimeout(() => {
-        setIsScrolling(false);
-      }, 150);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
-      }
-    };
-  }, []);
+  const lastScrollY = useRef(0);
+  const ticking = useRef(false);
 
   const hideNavbar =
     pathname.startsWith("/dashboard") ||
@@ -64,6 +29,32 @@ export default function MainClientLayout({ children }) {
     pathname.startsWith("/member") ||
     pathname.startsWith("/unauthorized");
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (!ticking.current) {
+        window.requestAnimationFrame(() => {
+          if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+            setScrollDir("down");
+          } else if (currentScrollY < lastScrollY.current) {
+            setScrollDir("up");
+          }
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+        });
+        ticking.current = true;
+      }
+    };
+
+    // Use passive event listener for better performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <ThemeProvider
       attribute="class"
@@ -71,28 +62,26 @@ export default function MainClientLayout({ children }) {
       enableSystem
       disableTransitionOnChange
     >
-      <div className={`min-h-screen`}>
+      <div className="min-h-screen flex flex-col">
         {/* Navbar */}
-        {!hideNavbar && (scrollDir === null || scrollDir === "up") && (
-          <div className="fixed top-0 left-0 right-0 z-50">
+        {!hideNavbar && (
+          <div
+            className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
+              scrollDir === "down" ? "-translate-y-full" : "translate-y-0"
+            }`}
+          >
             <Navbar />
           </div>
         )}
 
-        {/* Main Content with Footer */}
-        <div className="">
-          <main className="min-h-screen">
-            {children}
-            <Sooner />
-          </main>
+        {/* Main Content */}
+        <main className="flex-1">
+          {children}
+          <Sooner />
+        </main>
 
-          {/* Footer */}
-          {!hideNavbar && (
-            <div className="w-full">
-              <Footer />
-            </div>
-          )}
-        </div>
+        {/* Footer */}
+        {!hideNavbar && <Footer />}
       </div>
     </ThemeProvider>
   );
