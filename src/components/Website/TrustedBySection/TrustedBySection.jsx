@@ -92,7 +92,7 @@ const TrustedBySection = () => {
                         Trusted By <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-blue-600">Leading Gyms</span>
                     </motion.h2>
                     <motion.p
-                        className="text-xl text-gray-400 max-w-3xl mx-auto"
+                        className="text-lg text-gray-400 max-w-3xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}

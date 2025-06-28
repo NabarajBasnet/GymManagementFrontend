@@ -2,10 +2,11 @@
 
 import { motion } from 'framer-motion';
 import {
-  Users, Calendar, Lock, UserCog, ChartBar,
-  CreditCard, Bell, MessageSquare, ArrowRight
+  Dumbbell, Network, Users, Calendar, Lock, UserCog, ChartBar,
+  Bell, ArrowRight, CreditCard, Clock, MessageSquare, FileText
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
+import { useState } from 'react';
 
 const FeatureCard = ({ icon, title, description, delay }) => {
   const [ref, inView] = useInView({
@@ -27,7 +28,7 @@ const FeatureCard = ({ icon, title, description, delay }) => {
         </div>
         <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
         <p className="text-gray-400 mb-6">{description}</p>
-        
+
         <button className="flex items-center gap-1 text-blue-400 hover:text-white text-sm font-medium transition-colors duration-200">
           Learn more
           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
@@ -42,8 +43,9 @@ const FeaturesSection = () => {
     triggerOnce: true,
     threshold: 0.1,
   });
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
 
-  const features = [
+  const initialFeatures = [
     {
       icon: <Users className="text-white" size={24} />,
       title: "Member Management",
@@ -52,7 +54,7 @@ const FeaturesSection = () => {
     {
       icon: <Calendar className="text-white" size={24} />,
       title: "Attendance Tracking",
-      description: "Monitor gym attendance with automated check-ins and generate detailed reports."
+      description: "Monitor gym attendance with QR code check-ins and generate detailed reports."
     },
     {
       icon: <Lock className="text-white" size={24} />,
@@ -62,7 +64,7 @@ const FeaturesSection = () => {
     {
       icon: <UserCog className="text-white" size={24} />,
       title: "Staff Management",
-      description: "Handle staff scheduling, payroll, and performance tracking in one place."
+      description: "Handle staff scheduling, staff attendance, payroll, and performance tracking in one place."
     },
     {
       icon: <ChartBar className="text-white" size={24} />,
@@ -70,9 +72,9 @@ const FeaturesSection = () => {
       description: "Get insights into revenue, membership growth, and other key performance indicators."
     },
     {
-      icon: <CreditCard className="text-white" size={24} />,
-      title: "Payment Processing",
-      description: "Process payments, handle billing cycles, and manage recurring memberships."
+      icon: <Dumbbell className="text-white" size={24} />,
+      title: "Personal Training",
+      description: "Manage personal training sessions, assign trainers, and track client progress effortlessly."
     },
     {
       icon: <Bell className="text-white" size={24} />,
@@ -80,9 +82,52 @@ const FeaturesSection = () => {
       description: "Send automated reminders for payments, class schedules, and membership renewals."
     },
     {
+      icon: <Network className="text-white" size={24} />,
+      title: "Multi-Branch Support",
+      description: "Manage multiple gym branches from a single platform with centralized control and insights."
+    }
+  ];
+
+  const additionalFeatures = [
+    {
+      icon: <CreditCard className="text-white" size={24} />,
+      title: "Billing & Payments",
+      description: "Automated billing, payment processing, and invoice generation with multiple payment options."
+    },
+    {
+      icon: <Clock className="text-white" size={24} />,
+      title: "Class Schedules",
+      description: "Create and manage class schedules with capacity limits and waitlist functionality."
+    },
+    {
+      icon: <FileText className="text-white" size={24} />,
+      title: "Activity Logs",
+      description: "Detailed logs of all system activities for security and compliance purposes."
+    },
+    {
       icon: <MessageSquare className="text-white" size={24} />,
-      title: "Member Communication",
-      description: "Keep your members engaged with built-in messaging and announcement systems."
+      title: "Real-time Communication",
+      description: "Integrated messaging system for staff and members with push notifications."
+    },
+    {
+      icon: <Dumbbell className="text-white" size={24} />,
+      title: "Equipment Maintenance",
+      description: "Track gym equipment maintenance schedules and service history."
+    },
+    {
+      icon: <Users className="text-white" size={24} />,
+      title: "Group Challenges",
+      description: "Create and manage fitness challenges to engage your members."
+    },
+    {
+      icon: <ChartBar className="text-white" size={24} />,
+      title: "Goal Tracking",
+      description: "Help members set and track fitness goals with progress visualization."
+    },
+    {
+      icon: <Calendar className="text-white" size={24} />,
+      title: "Resource Booking",
+      description: "Allow members to book courts, pools, or other facilities online."
     }
   ];
 
@@ -107,15 +152,15 @@ const FeaturesSection = () => {
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Powerful <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Features</span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
             Everything you need to run your fitness business efficiently, all in one integrated platform.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
+          {initialFeatures.map((feature, index) => (
             <FeatureCard
-              key={index}
+              key={`initial-${index}`}
               icon={feature.icon}
               title={feature.title}
               description={feature.description}
@@ -124,13 +169,35 @@ const FeaturesSection = () => {
           ))}
         </div>
 
+        {showAllFeatures && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.5 }}
+            className="mt-12"
+          >
+            <h3 className="text-2xl font-bold text-white mb-8 text-center">More Amazing Features</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {additionalFeatures.map((feature, index) => (
+                <FeatureCard
+                  key={`additional-${index}`}
+                  icon={feature.icon}
+                  title={feature.title}
+                  description={feature.description}
+                  delay={index * 0.05}
+                />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         <div className="text-center mt-20">
-          <a
-            href="#demo"
+          <button
+            onClick={() => setShowAllFeatures(!showAllFeatures)}
             className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:opacity-90 transition-opacity duration-200"
           >
-            See All Features
-          </a>
+            {showAllFeatures ? 'Hide Additional Features' : 'See All Features'}
+          </button>
         </div>
       </div>
     </section>

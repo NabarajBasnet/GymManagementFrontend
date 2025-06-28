@@ -195,8 +195,8 @@ const PricingSection = () => {
                                     <div
                                         key={plan._id}
                                         className={`relative group ${isPopular
-                                                ? "lg:scale-105 lg:-mt-4 lg:mb-4"
-                                                : "hover:scale-[1.02]"
+                                            ? "lg:scale-105 lg:-mt-4 lg:mb-4"
+                                            : "hover:scale-[1.02]"
                                             } transition-all duration-500 ease-out`}
                                     >
                                         {/* Popular Badge */}
@@ -211,8 +211,8 @@ const PricingSection = () => {
 
                                         {/* Card */}
                                         <div className={`relative ${cardBg} backdrop-blur-sm rounded-3xl p-8 border transition-all duration-500 h-full flex flex-col group-hover:shadow-2xl ${isPopular
-                                                ? "border-purple-500/30 shadow-xl shadow-purple-900/20"
-                                                : "border-gray-700 shadow-lg hover:border-gray-600"
+                                            ? "border-purple-500/30 shadow-xl shadow-purple-900/20"
+                                            : "border-gray-700 shadow-lg hover:border-gray-600"
                                             }`}>
 
                                             {/* Plan Header */}
@@ -271,8 +271,8 @@ const PricingSection = () => {
                                                     onClick={() => window.location.href = '/login'}
                                                     disabled={loadingButtons[plan._id]}
                                                     className={`w-full py-4 px-6 rounded-2xl font-semibold text-lg transition-all duration-300 flex items-center justify-center gap-2 group/btn ${isPopular
-                                                            ? `bg-gradient-to-r ${gradient} hover:shadow-lg hover:shadow-${accent}-500/25 text-white transform hover:-translate-y-0.5`
-                                                            : "bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
+                                                        ? `bg-gradient-to-r ${gradient} hover:shadow-lg hover:shadow-${accent}-500/25 text-white transform hover:-translate-y-0.5`
+                                                        : "bg-gray-700 hover:bg-gray-600 text-white border border-gray-600"
                                                         } ${loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""}`}
                                                 >
                                                     {loadingButtons[plan._id] ? (
@@ -297,23 +297,6 @@ const PricingSection = () => {
                                     </div>
                                 );
                             })}
-                        </div>
-
-                        {/* Trust Indicators */}
-                        <div className="mt-20 text-center">
-                            <p className="text-gray-300 mb-12 text-lg">
-                                Trusted by <span className="font-semibold text-white">10,000+</span> fitness professionals worldwide
-                            </p>
-                            <div className="flex flex-wrap justify-center items-center gap-8 lg:gap-12">
-                                {["FitnessPro", "GymTech", "PowerFit", "FlexManage"].map((brand, index) => (
-                                    <div
-                                        key={brand}
-                                        className="text-xl lg:text-2xl font-bold text-gray-500 hover:text-gray-300 transition-colors duration-300"
-                                    >
-                                        {brand}
-                                    </div>
-                                ))}
-                            </div>
                         </div>
 
                         {/* FAQ Section */}
