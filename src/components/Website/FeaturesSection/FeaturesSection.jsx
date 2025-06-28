@@ -16,12 +16,12 @@ const FeatureCard = ({ icon, title, description, delay }) => {
   return (
     <motion.div
       ref={ref}
-      className="group"
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.3, delay }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      className="relative h-full"
     >
-      <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-gray-200/10 hover:border-blue-400/30 transition-colors duration-200">
+      <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-400/30 transition-colors duration-200">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center mb-4">
           {icon}
         </div>
@@ -87,8 +87,16 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="w-full py-28 bg-gray-950">
-      <div className="container w-full mx-auto px-4">
+    <section id="features" className="w-full py-28 bg-gray-900/40 relative overflow-hidden">
+      {/* Glowing Background Effects - Matching Hero Section */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
+        <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
+      </div>
+
+      <div className="container w-full mx-auto px-4 relative z-10">
         <motion.div
           ref={headingRef}
           className="text-center w-full mx-auto mb-20"
