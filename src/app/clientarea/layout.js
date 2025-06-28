@@ -27,7 +27,7 @@ const ClientAreaLayout = ({ children }) => {
           {/* Main Content Area */}
           <div
             className={`w-full transition-all duration-300 ${
-              clientSidebar ? "pl-[235px]" : "pl-[75px]"
+              clientSidebar ? "md:pl-[235px]" : "md:pl-[75px]"
             }`}
           >
             {/* Header */}
