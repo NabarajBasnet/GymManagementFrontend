@@ -248,7 +248,7 @@ const TenantLoginForm = ({ className, ...props }) => {
               </div>
               <div className="text-sm">
                 <Link
-                  href="#"
+                  href="/forget-password"
                   className="text-blue-600 hover:text-blue-500 font-medium"
                 >
                   Forgot password?

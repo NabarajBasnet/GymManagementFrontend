@@ -27,6 +27,8 @@ export default function MainClientLayout({ children }) {
     pathname.startsWith("/MyProfile") ||
     pathname.startsWith("/memberlogin") ||
     pathname.startsWith("/member") ||
+    pathname.startsWith("/forget-password") ||
+    pathname.startsWith("/reset-password") ||
     pathname.startsWith("/unauthorized");
 
   useEffect(() => {

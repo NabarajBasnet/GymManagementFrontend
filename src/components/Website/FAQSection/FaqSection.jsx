@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import {
@@ -112,7 +111,7 @@ const FAQSection = () => {
                                             </h3>
                                         </div>
                                     </AccordionTrigger>
-                                    <AccordionContent className="pb-6 text-gray-400 pl-12">
+                                    <AccordionContent className="pb-6 text-md text-gray-400 pl-12">
                                         {faq.answer}
                                     </AccordionContent>
                                 </AccordionItem>
