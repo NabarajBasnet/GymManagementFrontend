@@ -5,14 +5,14 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { toast as soonerToast } from "sonner";
-import { User, Settings, LogOut, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
+import { User, Settings, LogOut, Clock, Shield, Activity, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { GiBiceps } from "react-icons/gi";
-import { FaUsers, FaBuilding, FaDumbbell, FaCreditCard } from "react-icons/fa6";
+import { FaUsers, FaBuilding, FaDumbbell } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { useQuery } from "@tanstack/react-query";
@@ -444,12 +444,6 @@ const TenantDashboard = () => {
                         value={loggedInTenant?.organization?.currency}
                         className="bg-yellow-100 dark:bg-yellow-900/30"
                       />
-                      <DetailItem
-                        icon={FileText}
-                        label="Tax ID"
-                        value={loggedInTenant?.organization?.taxId}
-                        className="bg-indigo-100 dark:bg-indigo-900/30"
-                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -550,94 +544,9 @@ const TenantDashboard = () => {
                         ))}
                       </div>
                     </div>
-
-                    {/* Payment Information */}
-                    <div className="mt-6 space-y-4">
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Payment Information</h4>
-                      <DetailItem
-                        icon={FaCreditCard}
-                        label="Payment Provider"
-                        value={loggedInTenant?.organization?.paymentProvider}
-                      />
-                      <DetailItem
-                        icon={CreditCard}
-                        label="Payment Account"
-                        value={loggedInTenant?.organization?.paymentAccountId}
-                      />
-                      <DetailItem
-                        icon={Mail}
-                        label="Invoice Email"
-                        value={loggedInTenant?.organization?.invoiceEmail}
-                      />
-                    </div>
                   </CardContent>
                 </Card>
               </div>
-            </div>
-
-            {/* Billing Address Section */}
-            <div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm h-full">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
-                        Billing Address
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        Your business billing information
-                      </p>
-                    </div>
-                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
-                      <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Primary Address</h4>
-                      <DetailItem
-                        icon={MapPin}
-                        label="Address Line 1"
-                        value={loggedInTenant?.organization?.billingAddress?.addressLine1}
-                      />
-                      <DetailItem
-                        icon={MapPin}
-                        label="Address Line 2"
-                        value={loggedInTenant?.organization?.billingAddress?.addressLine2}
-                      />
-                      <DetailItem
-                        icon={MapPin}
-                        label="City"
-                        value={loggedInTenant?.organization?.billingAddress?.city}
-                      />
-                    </div>
-                    <div className="space-y-4">
-                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Additional Details</h4>
-                      <DetailItem
-                        icon={MapPin}
-                        label="State/Province"
-                        value={loggedInTenant?.organization?.billingAddress?.state}
-                      />
-                      <DetailItem
-                        icon={Globe}
-                        label="Country"
-                        value={loggedInTenant?.organization?.billingAddress?.country}
-                      />
-                      <DetailItem
-                        icon={FileText}
-                        label="ZIP/Postal Code"
-                        value={loggedInTenant?.organization?.billingAddress?.zipCode}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

@@ -115,7 +115,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
           id: "/clientarea/billingprofile",
           icon: <FaMoneyBill size={18} />,
           label: "Billing Profile",
-          description: "Organization billing info",
+          description: "Billing Details",
         },
       ]
     },
