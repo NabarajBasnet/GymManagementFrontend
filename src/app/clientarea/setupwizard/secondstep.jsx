@@ -241,13 +241,15 @@ const SecondStep = () => {
 
     const onSubmit = async (data) => {
         try {
+            const selectedCountry = countries.find(country => country.value === data.country);
+
             const response = await fetch(`http://localhost:3000/api/organization/second-step`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    country: data.country,
+                    country: selectedCountry ? selectedCountry.label : data.country,
                     state: data.state,
                     city: data.city,
                     timezone: data.timezone,

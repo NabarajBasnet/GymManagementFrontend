@@ -439,11 +439,6 @@ const Header = () => {
               link: "/dashboard/billing/servicesandproducts",
             },
             {
-              icon: TbListDetails,
-              title: "Billing Profile",
-              link: "/dashboard/billing/billingprofile",
-            },
-            {
               icon: IoReceiptSharp,
               title: "Payment Receipt",
               link: "/dashboard/billing/paymentreceipts",
