@@ -220,26 +220,27 @@ export default function GymBillingProfileForm() {
     };
 
     return (
-        <div className="w-full bg-gray-50 mx-auto py-6 px-4 md:px-6">
-            <div className="mb-6">
+        <div className="w-full bg-gray-50 dark:bg-gray-900 mx-auto py-6 px-4">
+            <div className="mb-4">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="text-sm font-medium text-gray-600 hover:text-primary flex items-center">
-                                <Home className="h-4 w-4 mr-1" /> Home
-                            </BreadcrumbLink>
+                            <BreadcrumbPage className="text-sm font-medium text-primary flex items-center">
+                                <Home className="h-4 w-4 mr-1" />
+                                Home
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="text-gray-400" />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-primary">
+                            <BreadcrumbPage className="text-sm font-medium text-primary">
                                 Dashboard
-                            </BreadcrumbLink>
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="text-gray-400" />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/billing" className="text-sm font-medium text-gray-600 hover:text-primary">
+                            <BreadcrumbPage className="text-sm font-medium text-primary">
                                 Billing
-                            </BreadcrumbLink>
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator className="text-gray-400" />
                         <BreadcrumbItem>
@@ -251,10 +252,18 @@ export default function GymBillingProfileForm() {
                 </Breadcrumb>
             </div>
 
-            <div className="mb-6 bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <h1 className="text-2xl font-bold tracking-tight text-gray-900">Gym Billing Profile</h1>
-                <p className="text-gray-500 text-sm mt-2">
-                    Manage your gym's billing information and settings for invoices and receipts.
+            <div className="mb-4 bg-white dark:bg-gray-800 p-6 rounded-md shadow-md border border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-primary/10 dark:bg-primary/20 rounded-full text-primary">
+                        <CreditCard className="w-6 h-6" />
+                    </div>
+                    <h1 className="text-2xl font-semibold text-gray-900 dark:text-white tracking-tight">
+                        Billing Profile
+                    </h1>
+                </div>
+                <p className="text-sm text-gray-600 font-medium dark:text-gray-300 leading-relaxed ml-1 flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    Manage your gym's billing info, invoices & receipts from here.
                 </p>
             </div>
 
@@ -265,7 +274,7 @@ export default function GymBillingProfileForm() {
             ) : (
                 <>
                     {billingProfileLength >= 1 && (
-                        <div className="mb-6 bg-white shadow-sm rounded-lg border border-gray-100 overflow-hidden">
+                        <div className="mb-6 bg-white shadow-sm rounded-md border border-gray-100 overflow-hidden">
                             <div className="p-6 border-b border-gray-100">
                                 <div className="flex justify-between items-center">
                                     <h2 className="font-semibold text-gray-900">Billing Profile Details</h2>

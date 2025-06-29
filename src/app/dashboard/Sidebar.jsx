@@ -1,5 +1,9 @@
 "use client";
 
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { IoReceiptSharp } from "react-icons/io5";
+import { TbListDetails } from "react-icons/tb";
+import { AiFillProduct } from "react-icons/ai";
 import { ImUsers } from "react-icons/im";
 import Loader from "@/components/Loader/Loader";
 import { useState, useEffect } from "react";
@@ -22,6 +26,7 @@ import {
   FaUserCog,
   FaBoxOpen,
   FaRulerHorizontal,
+  FaTags
 } from "react-icons/fa";
 import {
   MdPayments,
@@ -345,35 +350,35 @@ const Sidebar = () => {
           title: "Payment History",
           link: "/dashboard/paymenthistory",
         },
-        // {
-        //   icon: MdAttachMoney,
-        //   title: "Billing",
-        //   link: "/dashboard/billing",
-        //   subObj: [
-        //     {
-        //       icon: AiFillProduct,
-        //       title: "Services & Products",
-        //       link: "/dashboard/billing/servicesandproducts",
-        //     },
-        //     {
-        //       icon: TbListDetails,
-        //       title: "Billing Profile",
-        //       link: "/dashboard/billing/billingprofile",
-        //     },
-        //     {
-        //       icon: IoReceiptSharp,
-        //       title: "Payment Receipt",
-        //       link: "/dashboard/billing/paymentreceipts",
-        //     },
-        //     {
-        //       icon: FaMoneyBillAlt,
-        //       title: "Sales Invoice",
-        //       link: "/dashboard/billing/salesinvoice",
-        //     },
-        //     // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-        //     // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
-        //   ],
-        // },
+        {
+          icon: MdAttachMoney,
+          title: "Billing",
+          link: "/dashboard/billing",
+          subObj: [
+            {
+              icon: AiFillProduct,
+              title: "Services & Products",
+              link: "/dashboard/billing/servicesandproducts",
+            },
+            {
+              icon: TbListDetails,
+              title: "Billing Profile",
+              link: "/dashboard/billing/billingprofile",
+            },
+            {
+              icon: IoReceiptSharp,
+              title: "Payment Receipt",
+              link: "/dashboard/billing/paymentreceipts",
+            },
+            {
+              icon: FaMoneyBillAlt,
+              title: "Sales Invoice",
+              link: "/dashboard/billing/salesinvoice",
+            },
+            // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+            // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+          ],
+        },
         // {
         //   icon: FaTags,
         //   title: "Promotions & Offers",

@@ -428,35 +428,35 @@ const Header = () => {
           title: "Payment History",
           link: "/dashboard/paymenthistory",
         },
-        // {
-        //   icon: MdAttachMoney,
-        //   title: "Billing",
-        //   link: "/dashboard/billing",
-        //   subObj: [
-        //     {
-        //       icon: AiFillProduct,
-        //       title: "Services & Products",
-        //       link: "/dashboard/billing/servicesandproducts",
-        //     },
-        //     {
-        //       icon: TbListDetails,
-        //       title: "Billing Profile",
-        //       link: "/dashboard/billing/billingprofile",
-        //     },
-        //     {
-        //       icon: IoReceiptSharp,
-        //       title: "Payment Receipt",
-        //       link: "/dashboard/billing/paymentreceipts",
-        //     },
-        //     {
-        //       icon: FaMoneyBillAlt,
-        //       title: "Sales Invoice",
-        //       link: "/dashboard/billing/salesinvoice",
-        //     },
-        //     // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-        //     // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
-        //   ],
-        // },
+        {
+          icon: MdAttachMoney,
+          title: "Billing",
+          link: "/dashboard/billing",
+          subObj: [
+            {
+              icon: AiFillProduct,
+              title: "Services & Products",
+              link: "/dashboard/billing/servicesandproducts",
+            },
+            {
+              icon: TbListDetails,
+              title: "Billing Profile",
+              link: "/dashboard/billing/billingprofile",
+            },
+            {
+              icon: IoReceiptSharp,
+              title: "Payment Receipt",
+              link: "/dashboard/billing/paymentreceipts",
+            },
+            {
+              icon: FaMoneyBillAlt,
+              title: "Sales Invoice",
+              link: "/dashboard/billing/salesinvoice",
+            },
+            // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+            // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+          ],
+        },
         // {
         //   icon: FaTags,
         //   title: "Promotions & Offers",
