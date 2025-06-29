@@ -54,7 +54,7 @@ export function BarChartInterActive() {
     const chartData = transformData()
 
     return (
-        <div className="w-full dark:border-none rounded-2xl">
+        <div className="w-full dark:border-none rounded-2xl border-none">
             <Card className="w-full dark:border-none dark:bg-gray-800 rounded-2xl shadow-xl">
                 <CardHeader className="flex flex-col items-stretch space-y-0 border-b border-gray-200 dark:border-gray-400 p-0 sm:flex-row">
                     <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">

@@ -1,9 +1,8 @@
 'use client';
 
-import { FaUsers, FaChartLine } from 'react-icons/fa';
+import { FaUsers } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { RiUserShared2Fill } from 'react-icons/ri';
-import { ArrowUp } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
@@ -183,6 +182,7 @@ const AdminDashboard = () => {
       color: 'text-blue-600',
       bg: 'bg-blue-100 dark:bg-blue-700/20',
       border: 'border-blue-300',
+      description: "Total membership of this organization till today"
     },
     {
       id: 'renewals',
@@ -194,6 +194,7 @@ const AdminDashboard = () => {
       color: 'text-green-600',
       bg: 'bg-green-100 dark:bg-green-700/20',
       border: 'border-green-300',
+      description: "Total renewals from starting of this month"
     },
     {
       id: 'new-admissions',
@@ -205,6 +206,7 @@ const AdminDashboard = () => {
       color: 'text-yellow-600',
       bg: 'bg-yellow-100 dark:bg-yellow-700/20',
       border: 'border-yellow-300',
+      description: "Total new member from starting of this month"
     },
     {
       id: 'active-members',
@@ -216,6 +218,7 @@ const AdminDashboard = () => {
       color: 'text-green-600',
       bg: 'bg-green-100 dark:bg-green-700/20',
       border: 'border-green-300',
+      description: "Total active member of today"
     },
     {
       id: 'average-active',
@@ -227,6 +230,7 @@ const AdminDashboard = () => {
       color: 'text-blue-600',
       bg: 'bg-blue-100 dark:bg-blue-700/20',
       border: 'border-blue-300',
+      description: "Average active member of today"
     },
     {
       id: 'inactive-members',
@@ -238,15 +242,16 @@ const AdminDashboard = () => {
       color: 'text-red-600',
       bg: 'bg-red-100 dark:bg-red-700/20',
       border: 'border-red-300',
+      description: "Todays inactive member count"
     },
   ];
 
   return (
     <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">
-      <div className="w-full px-5 py-7">
+      <div className="w-full px-4 py-7">
 
         {/* Welcome Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
           {/* Main Welcome Card - Now with max height */}
           <Card className="lg:col-span-8 relative overflow-hidden rounded-xl shadow-md group transition-all duration-500 hover:shadow-xl bg-white dark:bg-gray-900/95 border-0 dark:border dark:border-gray-800/50 max-h-[24rem]">
             {/* Light mode background */}
@@ -427,7 +432,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-6 dark:border dark:border-none border border-gray-200">
+        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-4 dark:border dark:border-none border border-gray-200">
           <div className="px-3 py-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -512,51 +517,76 @@ const AdminDashboard = () => {
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {gridContents.map((item) => (
             <Card
               key={item.id}
               className={`
-                overflow-hidden 
-                rounded-2xl 
-                shadow-md 
-                border 
-                dark:border-none
-                bg-gradient-to-br from-gray-100 via-gray-50 to-white
-                dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-800 dark:to-gray-900
-                ${item.border}
-              `}
+        group relative overflow-hidden 
+        rounded-2xl 
+        bg-white dark:bg-gray-800
+        border-0 shadow-sm hover:shadow-xl
+        transition-all duration-300 ease-out
+        hover:-translate-y-1
+        ${item.border}
+        backdrop-blur-sm
+      `}
             >
-              <div className="p-5 py-6">
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{item.text}</p>
-                    <div className="flex items-baseline">
-                      <h3 className={`text-4xl pt-6 pb-2 font-bold ${item.color}`}>
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent dark:from-gray-800/50 pointer-events-none" />
+
+              {/* Content */}
+              <div className="relative p-8">
+                <div className="flex justify-between items-start space-x-4">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3">
+                      {item.text}
+                    </p>
+                    <div className="flex items-baseline space-x-3 mb-2">
+                      <h1 className={`text-4xl font-bold ${item.color} tracking-tight`}>
                         {item.value.toLocaleString()}
-                      </h3>
-                      <span className={`ml-2 text-sm font-medium ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                        <span className="flex items-center">
-                          {item.trend === 'up' ? (
-                            <TrendingUp className="h-4 w-4 mr-1" />
-                          ) : (
-                            <TrendingDown className="h-4 w-4 mr-1" />
-                          )}
-                          {Math.abs(item.percentage)}% This Month
-                        </span>
+                      </h1>
+                      <span className={`
+                flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold
+                ${item.trend === 'up'
+                          ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        }
+              `}>
+                        {item.trend === 'up' ? (
+                          <TrendingUp className="h-3 w-3" />
+                        ) : (
+                          <TrendingDown className="h-3 w-3" />
+                        )}
+                        {Math.abs(item.percentage)}%
                       </span>
                     </div>
+                    <p className="text-xs font-medium text-gray-500 dark:text-gray-500">
+                      {item.description}
+                    </p>
                   </div>
-                  <div className={`p-3 rounded-xl ${item.bg}`}>
-                    <item.icon className={`text-3xl ${item.color}`} />
+
+                  <div className={`
+            p-4 rounded-xl ${item.bg} 
+            group-hover:scale-110 transition-transform duration-300
+          `}>
+                    <item.icon className={`w-6 h-6 ${item.color}`} />
                   </div>
                 </div>
+
+                {/* Bottom accent line */}
+                <div className={`
+          absolute bottom-0 left-0 right-0 h-1 
+          bg-gradient-to-r ${item.color.replace('text-', 'from-').replace(' dark:text-', ' to-')}
+          opacity-60 group-hover:opacity-100 transition-opacity duration-300
+        `} />
               </div>
             </Card>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           <Card className="border dark:border-none dark:bg-gray-800 shadow-lg rounded-2xl">
             <BarChartMultiple />
           </Card>
@@ -566,7 +596,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
           <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
             <RenewRadialChart startDate={startDate} endDate={endDate} />
           </Card>
@@ -576,7 +606,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg mb-6">
+        <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg mb-4">
           <ActiveInactiveMemberChart />
         </Card>
 

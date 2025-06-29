@@ -95,7 +95,7 @@ export function ActiveInactiveMemberChart() {
   }, [apiData, timeRange])
 
   return (
-    <Card className="pt-0 border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
+    <Card className="pt-0 border dark:border-none rounded-2xl dark:bg-gray-800 border-none">
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1">
           <CardTitle>Active and Inactive Members</CardTitle>
