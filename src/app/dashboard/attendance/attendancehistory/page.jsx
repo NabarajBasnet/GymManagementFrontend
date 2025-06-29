@@ -60,8 +60,12 @@ import {
 } from "@/components/ui/tooltip";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const AttendanceHistory = () => {
+    const { user } = useUser();
+    const loggedInUser = user?.user;
+
     // State variables
     const [isLoading, setIsLoading] = useState(false);
     const [body, setBody] = useState(null);
@@ -373,6 +377,7 @@ const AttendanceHistory = () => {
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 onFocus={() => setRenderDropdown(true)}
+                                                autoComplete="off"
                                                 className="border-0 focus-visible:ring-0 py-6 focus-visible:ring-offset-0 dark:bg-gray-800 dark:text-gray-300"
                                                 placeholder={`Search ${membershipType === 'Members' ? 'members' : 'staff'}...`}
                                             />
@@ -470,7 +475,7 @@ const AttendanceHistory = () => {
                                                 <CardTitle className="text-sm font-medium text-red-800 dark:text-red-400">Salary Deducted</CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-2xl font-bold text-red-900 dark:text-red-300">₹ {body.salaryDeduction ? Math.floor(body.salaryDeduction) : 0}</p>
+                                                <p className="text-2xl font-bold text-red-900 dark:text-red-300">{loggedInUser?.organization?.currency || 'N/A'} {body.salaryDeduction ? Math.floor(body.salaryDeduction) : 0}</p>
                                             </CardContent>
                                         </Card>
                                     </div>
