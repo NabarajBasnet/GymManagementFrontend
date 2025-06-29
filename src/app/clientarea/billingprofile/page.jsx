@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircleIcon, CheckCircle2Icon, InfoIcon, MailIcon } from "lucide-react";
+import { AlertCircleIcon, CheckCircle2Icon, InfoIcon, Loader2, MailIcon } from "lucide-react";
 import {
     Alert,
     AlertDescription,
@@ -32,9 +32,8 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import Loader from "@/components/Loader/Loader";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { Separator } from "@/components/ui/separator";
 
@@ -51,13 +50,30 @@ export default function GymBillingProfileForm() {
         formState: { errors },
     } = useForm();
 
-    const onSubmit = async () => {
+    const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            setShowSuccessAlert(true);
-            setTimeout(() => setShowSuccessAlert(false), 5000);
-            toast.success("Billing profile updated successfully");
+            const response = await fetch(`http://localhost:3000/api/organization/setup-billing-profile`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({
+                    ...data,
+                    vatRegistered
+                })
+            });
+
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+
+            if (response.ok) {
+                setIsLoading(false)
+                setShowSuccessAlert(true);
+                setTimeout(() => setShowSuccessAlert(false), 5000);
+                toast.success(responseBody.message);
+            }
+
         } catch (error) {
             toast.error("Failed to update billing profile");
         } finally {
@@ -308,7 +324,7 @@ export default function GymBillingProfileForm() {
                         >
                             {isLoading ? (
                                 <>
-                                    <Loader className="mr-2 h-4 w-4" />
+                                    <Loader2 className="mr-2 h-4 w-4" />
                                     Saving...
                                 </>
                             ) : (
