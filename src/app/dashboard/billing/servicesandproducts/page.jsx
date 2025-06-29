@@ -332,100 +332,95 @@ const ServiceAndProducts = () => {
     };
 
     return (
-        <div className="w-full mx-auto bg-gray-50 min-h-screen py-6 px-4">
+        <div className="w-full mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen py-6 px-4">
             <div className="w-full">
 
-                <div className="w-full bg-white space-y-4 p-4 border rounded-md md:space-y-0 flex justify-between items-end">
-                    <div className="w-full">
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink className='font-medium text-xs' href="/">Home</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink className='font-medium text-xs'>Dashboard</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink className='font-medium text-xs'>Billing</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage className='font-medium text-xs'>Services & Products</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className='font-medium text-xs' href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className='font-medium text-xs'>Dashboard</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className='font-medium text-xs'>Billing</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className='font-medium text-xs'>Services & Products</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
-                        <div className="w-full flex items-center justify-between">
-                            <div className="w-full flex justify-start items-center">
-                                <h1 className="text-xl font-bold mt-3">Services & Products</h1>
-                            </div>
+                <div className="w-full bg-white mt-4 dark:bg-gray-800 space-y-4 p-4 border dark:border-none rounded-sm md:space-y-0 flex justify-between items-end">
+                    <div className="w-full flex items-center justify-between">
+                        <div className="w-full flex justify-start items-center">
+                            <h1 className="text-xl font-bold text-primary">Services & Products</h1>
+                        </div>
 
-                            <div className="w-full flex items-center justify-end space-x-4">
-                                {selectedItems.length === 0 ? (
-                                    <></>
-                                ) : (
-                                    <AlertDialog className='md:space-x-4'>
-                                        <AlertDialogTrigger asChild>
-                                            <Button
-                                                className='rounded-sm'
-                                                variant="destructive"
-                                                disabled={selectedItems.length === 0}
+                        <div className="w-full flex items-center justify-end space-x-4">
+                            {selectedItems.length === 0 ? (
+                                <></>
+                            ) : (
+                                <AlertDialog className='md:space-x-4'>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            className='rounded-sm'
+                                            variant="destructive"
+                                            disabled={selectedItems.length === 0}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                            Delete Selected ({selectedItems.length})
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete the assigned task
+                                                and remove data from servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className='bg-red-600 hover:bg-red-700'
+                                                onClick={() => deleteSelectedItems()}
                                             >
-                                                <Trash2 className="h-4 w-4" />
-                                                Delete Selected ({selectedItems.length})
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete the assigned task
-                                                    and remove data from servers.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction
-                                                    className='bg-red-600 hover:bg-red-700'
-                                                    onClick={() => deleteSelectedItems()}
-                                                >
-                                                    Delete
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                )}
-                                {loggedInUser?.role === 'Gym Admin' ? (
-                                    <></>
-                                ) : (
-                                    <Button
-                                        className='rounded-sm md:space-x-4'
-                                        onClick={() => {
-                                            setOpenAddItemForm(true);
-                                        }
-                                        }>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add New Item
-                                    </Button>
-                                )}
-                            </div>
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            )}
+                            {loggedInUser?.role === 'Gym Admin' ? (
+                                <></>
+                            ) : (
+                                <Button
+                                    className='rounded-sm md:space-x-4'
+                                    onClick={() => {
+                                        setOpenAddItemForm(true);
+                                    }
+                                    }>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Add New Item
+                                </Button>
+                            )}
                         </div>
                     </div>
-
-
-
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4 bg-white">
+                <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4 bg-white dark:bg-gray-800 dark:border-none">
                     <Tabs
                         defaultValue="all"
                         value={activeTab}
                         onValueChange={setActiveTab}
                         className="w-full md:w-auto"
                     >
-                        <TabsList className="grid grid-cols-3 w-full md:w-auto">
+                        <TabsList className="grid grid-cols-3 w-full md:w-auto dark:bg-gray-900">
                             <TabsTrigger value="all">All</TabsTrigger>
                             <TabsTrigger value="services">Services</TabsTrigger>
                             <TabsTrigger value="products">Products</TabsTrigger>
@@ -434,23 +429,23 @@ const ServiceAndProducts = () => {
 
                     <div className="flex items-center gap-2">
                         <div className="relative flex-1">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search items..."
-                                className="pl-8 w-full md:w-64"
+                                className="pl-8 w-full rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none md:w-64"
                             />
                         </div>
-                        <Button variant="outline" size="icon">
-                            <Filter className="h-4 w-4" />
+                        <Button variant="outline" className='dark:bg-gray-900 dark:border-none' size="icon">
+                            <Filter className="h-4 w-4 text-primary" />
                         </Button>
                     </div>
                 </div>
             </div>
 
             {/* Table Section */}
-            <div className="w-full bg-white rounded-lg border shadow">
+            <div className="w-full bg-white dark:bg-gray-800 dark:border-none rounded-lg border shadow">
                 {Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
                     <div className="w-full">
                         <div className="overflow-x-auto">
