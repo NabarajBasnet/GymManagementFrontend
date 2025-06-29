@@ -1,6 +1,6 @@
 "use client";
 
-import { FaLockOpen } from "react-icons/fa";
+import { FaLockOpen, FaMoneyBill } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -120,6 +120,12 @@ const ClientAreaHeader = ({ activeTab }) => {
       icon: <Package size={20} />,
       label: "My Orders",
       description: "My Orders",
+    },
+    {
+      id: "/clientarea/billingprofile",
+      icon: <FaMoneyBill size={18} />,
+      label: "Billing Profile",
+      description: "Organization billing info",
     },
     {
       id: "/clientarea/membershipplans",

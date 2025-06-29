@@ -1,7 +1,7 @@
 "use client";
 
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FaLockOpen } from "react-icons/fa";
+import { FaLockOpen, FaMoneyBill } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import {
   DropdownMenu,
@@ -110,6 +110,12 @@ const ClientAreaSidebar = ({ activeTab }) => {
           icon: <Package size={18} />,
           label: "Orders",
           description: "Purchase History",
+        },
+        {
+          id: "/clientarea/billingprofile",
+          icon: <FaMoneyBill size={18} />,
+          label: "Billing Profile",
+          description: "Organization billing info",
         },
       ]
     },

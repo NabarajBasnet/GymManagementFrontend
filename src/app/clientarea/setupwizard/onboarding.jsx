@@ -6,7 +6,6 @@ import SecondStep from "./secondstep";
 import ThirdStep from "./thirdstep";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { Progress } from "@/components/ui/progress";
 
 const ClientOnboardingPage = () => {
     const totalSteps = 3;
@@ -72,12 +71,12 @@ const ClientOnboardingPage = () => {
                         <div className="text-3xl">🚀</div>
                     </div>
                     <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-6 leading-tight">
-                        Welcome to Liftora
+                        Welcome to GeoFit
                     </h1>
                     <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
                         Transform your fitness business with our comprehensive management platform.
                         <br />
-                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Let's get you set up in just 3 simple steps.</span>
+                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Let's get you set up in just 2 simple steps.</span>
                     </p>
                 </div>
 
@@ -88,10 +87,10 @@ const ClientOnboardingPage = () => {
                             <div key={index} className="flex items-center">
                                 {/* Step Circle */}
                                 <div className={`relative flex items-center justify-center w-16 h-16 rounded-2xl transition-all duration-500 ${index + 1 <= currentStep
-                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/25 scale-110'
-                                        : index + 1 === currentStep + 1
-                                            ? 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600'
-                                            : 'bg-slate-100 dark:bg-slate-800'
+                                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/25 scale-110'
+                                    : index + 1 === currentStep + 1
+                                        ? 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600'
+                                        : 'bg-slate-100 dark:bg-slate-800'
                                     }`}>
                                     {index + 1 < currentStep ? (
                                         <div className="text-white text-xl">✓</div>
@@ -110,8 +109,8 @@ const ClientOnboardingPage = () => {
                                 {/* Connector Line */}
                                 {index < stepData.length - 1 && (
                                     <div className={`h-1 w-20 mx-4 rounded-full transition-all duration-500 ${index + 1 < currentStep
-                                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
-                                            : 'bg-slate-200 dark:bg-slate-700'
+                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
+                                        : 'bg-slate-200 dark:bg-slate-700'
                                         }`}></div>
                                 )}
                             </div>
@@ -124,8 +123,8 @@ const ClientOnboardingPage = () => {
                             <div key={index} className="text-center">
                                 <div className="text-2xl mb-2">{step.icon}</div>
                                 <h3 className={`font-bold text-lg mb-1 transition-colors duration-300 ${index + 1 === currentStep
-                                        ? 'text-indigo-600 dark:text-indigo-400'
-                                        : 'text-slate-600 dark:text-slate-400'
+                                    ? 'text-indigo-600 dark:text-indigo-400'
+                                    : 'text-slate-600 dark:text-slate-400'
                                     }`}>
                                     {step.title}
                                 </h3>
@@ -179,7 +178,7 @@ const ClientOnboardingPage = () => {
                                 variant="outline"
                                 className="w-full lg:w-auto px-8 py-4 font-semibold border-2 border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 rounded-xl"
                             >
-                                <span className="flex items-center gap-2">
+                                <span className="flex text-primary items-center gap-2">
                                     ← Previous Step
                                 </span>
                             </Button>
