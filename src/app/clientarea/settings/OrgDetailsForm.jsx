@@ -228,7 +228,7 @@ const OrgDetailsForm = () => {
                     <Label className="text-gray-700 dark:text-gray-300 font-medium">Logo URL</Label>
                     <Input
                         {...register("logoUrl")}
-                        className="py-6 rounded-sm dark:border-none dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        className="py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="https://acme.com/logo.png"
                     />
                     {errors.logoUrl && (

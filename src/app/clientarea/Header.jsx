@@ -92,12 +92,6 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "Manage Branch",
     },
     {
-      id: "/clientarea/mysubscriptions",
-      icon: <MdOutlineShoppingCart size={20} />,
-      label: "My Subscriptions",
-      description: "My Subscriptions",
-    },
-    {
       id: "/clientarea/pricing",
       icon: <CreditCard size={20} />,
       label: "Pricing",
@@ -427,6 +421,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                   ) : null}
                 </button>
 
+{/* Notification */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
@@ -601,7 +596,9 @@ const ClientAreaHeader = ({ activeTab }) => {
                     <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                       <CreditCard className="mr-3" size={16} />
                       <div>
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                        <div onClick={()=>{
+                          router.push('/clientarea/mysubscriptions')
+                        }} className="font-medium text-gray-900 dark:text-gray-100">
                           Billing & Usage
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">

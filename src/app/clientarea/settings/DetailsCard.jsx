@@ -202,56 +202,6 @@ const TenantDetailsCard = ({ tenantData }) => {
                     </div>
                 </div>
             </Card>
-
-            {/* Billing Information Card */}
-            {organization?.billingAddress && (
-                <Card className="p-5 rounded-xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all duration-200 bg-white dark:bg-gray-900">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 rounded-lg">
-                            <CreditCard className="w-5 h-5 text-white" />
-                        </div>
-                        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Billing</h2>
-                    </div>
-
-                    <div className="space-y-3">
-                        <div>
-                            <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Billing Address</p>
-                            <div className="text-sm text-gray-800 dark:text-gray-200 space-y-0.5">
-                                <p>{organization.billingAddress.addressLine1}</p>
-                                {organization.billingAddress.addressLine2 && (
-                                    <p>{organization.billingAddress.addressLine2}</p>
-                                )}
-                                <p>{organization.billingAddress.city}, {organization.billingAddress.state}</p>
-                                <p>{organization.billingAddress.zipCode}, {organization.billingAddress.country}</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                            <Shield className="w-4 h-4 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
-                            <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Tax ID</p>
-                                <p className="text-sm text-gray-800 dark:text-gray-200">{organization.taxId || 'Not provided'}</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                            <Mail className="w-4 h-4 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
-                            <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Invoice Email</p>
-                                <p className="text-sm text-gray-800 dark:text-gray-200">{organization.invoiceEmail}</p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                            <CreditCard className="w-4 h-4 text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
-                            <div>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-0.5">Payment Account</p>
-                                <p className="text-sm text-gray-800 dark:text-gray-200">{organization.paymentAccountId}</p>
-                            </div>
-                        </div>
-                    </div>
-                </Card>
-            )}
         </div>
     );
 };

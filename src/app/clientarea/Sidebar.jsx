@@ -94,12 +94,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
       title: "Billing",
       items: [
         {
-          id: "/clientarea/mysubscriptions",
-          icon: <MdOutlineShoppingCart size={18} />,
-          label: "Subscriptions",
-          description: "My Plans",
-        },
-        {
           id: "/clientarea/pricing",
           icon: <CreditCard size={18} />,
           label: "Pricing",

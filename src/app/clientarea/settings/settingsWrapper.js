@@ -49,7 +49,6 @@ import { Input } from "@/components/ui/input";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import OrgDetailsForm from "./OrgDetailsForm";
 import LocationAndLocaleForm from "./LocationAndLocaleForm";
-import BillingAndPaymentForm from "./BillingAndPaymentForm";
 import TenantDetailsCard from "./DetailsCard";
 import PasswordComponent from "./PasswordComponent";
 
@@ -317,13 +316,6 @@ const TenantSetting = () => {
             >
               <FaBuilding className="w-5 h-5 mr-2" />
               <span>Organization</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="billing"
-              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
-            >
-              <FaMoneyBillWave className="w-5 h-5 mr-2" />
-              <span>Billing</span>
             </TabsTrigger>
             <TabsTrigger
               value="cards"
@@ -880,22 +872,13 @@ const TenantSetting = () => {
                 <OrgDetailsForm />
               </Card>
 
-              <Card className="w-full md:w-9/12 rounded-2xl shadow-md dark:bg-gray-800">
+              <Card className="w-full md:w-10/12 lg:w-9/12 dark:border-none dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700">
                 <LocationAndLocaleForm />
               </Card>
             </TabsContent>
 
             <TabsContent value="cards">
               <TenantDetailsCard tenantData={loggedInTenant} />
-            </TabsContent>
-
-            <TabsContent
-              value="billing"
-              className="w-full flex justify-center items-center space-y-6"
-            >
-              <Card className="w-full md:w-9/12 rounded-2xl shadow-md dark:bg-gray-800">
-                <BillingAndPaymentForm />
-              </Card>
             </TabsContent>
           </Card>
         </Tabs>

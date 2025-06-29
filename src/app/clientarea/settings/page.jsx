@@ -2,7 +2,7 @@ import TenantSetting from "./settingsWrapper";
 
 export async function generateMetadata() {
   return {
-    title: 'Clientarea Settings | Liftora | Modern Gym Management'
+    title: 'Settings - FitBinary - Modern Gym Management Software'
   }
 }
 
