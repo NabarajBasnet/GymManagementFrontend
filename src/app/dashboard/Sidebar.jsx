@@ -1,9 +1,7 @@
 "use client";
 
 import { ImUsers } from "react-icons/im";
-import { TbReport } from "react-icons/tb";
 import Loader from "@/components/Loader/Loader";
-import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -20,7 +18,6 @@ import {
   FaMoneyCheckAlt,
   FaRegUser,
   FaChartLine,
-  FaTags,
   FaClipboardList,
   FaUserCog,
   FaBoxOpen,
@@ -281,6 +278,41 @@ const Sidebar = () => {
         // },
       ],
     },
+    // Facility Management
+    {
+      category: "Facility",
+      items: [
+        {
+          icon: GiLockers,
+          title: "Locker Management",
+          link: "/dashboard/lockersmanagement",
+        },
+        {
+          icon: GiBiceps,
+          title: "Personal Training",
+          link: "/dashboard/personaltraining",
+          subObj: [
+            ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin' ? [
+              {
+                icon: FaDumbbell,
+                title: "Training Packages",
+                link: "/dashboard/personaltraining/trainingpackages",
+              },
+            ] : []),
+            {
+              icon: FaDumbbell,
+              title: "Book Training",
+              link: "/dashboard/personaltraining/booktraining",
+            },
+          ],
+        },
+        {
+          icon: AiOutlineSchedule,
+          title: "Class Schedules",
+          link: "/dashboard/classschedulemanagement",
+        },
+      ],
+    },
     // Staff Operations
     {
       category: "Staff",
@@ -349,41 +381,6 @@ const Sidebar = () => {
         // },
       ],
     },
-    // Facility Management
-    {
-      category: "Facility",
-      items: [
-        {
-          icon: GiLockers,
-          title: "Locker Management",
-          link: "/dashboard/lockersmanagement",
-        },
-        {
-          icon: GiBiceps,
-          title: "Personal Training",
-          link: "/dashboard/personaltraining",
-          subObj: [
-            ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin' ? [
-              {
-                icon: FaDumbbell,
-                title: "Training Packages",
-                link: "/dashboard/personaltraining/trainingpackages",
-              },
-            ] : []),
-            {
-              icon: FaDumbbell,
-              title: "Book Training",
-              link: "/dashboard/personaltraining/booktraining",
-            },
-          ],
-        },
-        {
-          icon: AiOutlineSchedule,
-          title: "Class Schedules",
-          link: "/dashboard/classschedulemanagement",
-        },
-      ],
-    },
     // Analytics & Support
     {
       category: "Reports & Analytics",
@@ -439,13 +436,13 @@ const Sidebar = () => {
       <motion.aside
         className={`fixed left-0 transition-all duration-300 bg-white dark:bg-gray-900 top-0 h-full 
           ${sidebarMinimized ? "w-20" : "w-60"
-          } z-50 flex flex-col border-r dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
+          } z-50 flex flex-col border-r dark:border-gray-700 dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
       >
         {/* Logo and Brand */}
         {userLoading ? (
           <Loader />
         ) : (
-          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 py-5">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 py-3">
             <Link href={"/dashboard"} className="flex items-center">
               <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
                 <svg

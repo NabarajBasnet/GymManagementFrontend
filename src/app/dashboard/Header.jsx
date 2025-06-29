@@ -1,7 +1,6 @@
 "use client";
 
 import { ImUsers } from "react-icons/im";
-import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -351,6 +350,52 @@ const Header = () => {
         // },
       ],
     },
+    // Facility Management
+    {
+      category: "Facility Management",
+      items: [
+        {
+          icon: GiLockers,
+          title: "Locker Management",
+          link: "/dashboard/lockersmanagement",
+        },
+        {
+          icon: GiBiceps,
+          title: "Personal Training",
+          link: "/dashboard/personaltraining",
+          subObj: [
+            {
+              icon: FaDumbbell,
+              title: "Training Packages",
+              link: "/dashboard/personaltraining/trainingpackages",
+            },
+            {
+              icon: FaDumbbell,
+              title: "Book Training",
+              link: "/dashboard/personaltraining/booktraining",
+            },
+            // { icon: FaDumbbell, title: 'Training Logs', link: '/dashboard/personaltraining/traininglogs' },
+            // { icon: FaDumbbell, title: 'Training History', link: '/dashboard/personaltraining/traininghistory' },
+            // { icon: FaDumbbell, title: 'Training Feedback', link: '/dashboard/personaltraining/trainingfeedback' },
+            // { icon: FaDumbbell, title: 'Training Reports', link: '/dashboard/personaltraining/trainingreports' },
+            // { icon: FaDumbbell, title: 'Training Settings', link: '/dashboard/personaltraining/trainingsettings' },
+            // { icon: FaDumbbell, title: 'Training Analytics', link: '/dashboard/personaltraining/traininganalytics' },
+            // { icon: FaDumbbell, title: 'Training Calendar', link: '/dashboard/personaltraining/trainingcalendar' },
+            // { icon: FaDumbbell, title: 'Training Goals', link: '/dashboard/personaltraining/traininggoals' },
+            // { icon: FaDumbbell, title: 'Training Progress', link: '/dashboard/personaltraining/trainingprogress' },
+            // { icon: FaDumbbell, title: 'Training Tips', link: '/dashboard/personaltraining/trainingtips' },
+            // { icon: FaDumbbell, title: 'Training Resources', link: '/dashboard/personaltraining/trainingresources' },
+            // { icon: FaDumbbell, title: 'Training FAQs', link: '/dashboard/personaltraining/trainingfaqs' },
+            // { icon: FaDumbbell, title: 'Training Certificates', link: '/dashboard/personaltraining/trainingcertificates' },
+          ],
+        },
+        {
+          icon: AiOutlineSchedule,
+          title: "Class Schedules",
+          link: "/dashboard/classschedulemanagement",
+        },
+      ],
+    },
     // Staff Operations
     {
       category: "Staff Management",
@@ -419,52 +464,6 @@ const Header = () => {
         // },
       ],
     },
-    // Facility Management
-    {
-      category: "Facility Management",
-      items: [
-        {
-          icon: GiLockers,
-          title: "Locker Management",
-          link: "/dashboard/lockersmanagement",
-        },
-        {
-          icon: GiBiceps,
-          title: "Personal Training",
-          link: "/dashboard/personaltraining",
-          subObj: [
-            {
-              icon: FaDumbbell,
-              title: "Training Packages",
-              link: "/dashboard/personaltraining/trainingpackages",
-            },
-            {
-              icon: FaDumbbell,
-              title: "Book Training",
-              link: "/dashboard/personaltraining/booktraining",
-            },
-            // { icon: FaDumbbell, title: 'Training Logs', link: '/dashboard/personaltraining/traininglogs' },
-            // { icon: FaDumbbell, title: 'Training History', link: '/dashboard/personaltraining/traininghistory' },
-            // { icon: FaDumbbell, title: 'Training Feedback', link: '/dashboard/personaltraining/trainingfeedback' },
-            // { icon: FaDumbbell, title: 'Training Reports', link: '/dashboard/personaltraining/trainingreports' },
-            // { icon: FaDumbbell, title: 'Training Settings', link: '/dashboard/personaltraining/trainingsettings' },
-            // { icon: FaDumbbell, title: 'Training Analytics', link: '/dashboard/personaltraining/traininganalytics' },
-            // { icon: FaDumbbell, title: 'Training Calendar', link: '/dashboard/personaltraining/trainingcalendar' },
-            // { icon: FaDumbbell, title: 'Training Goals', link: '/dashboard/personaltraining/traininggoals' },
-            // { icon: FaDumbbell, title: 'Training Progress', link: '/dashboard/personaltraining/trainingprogress' },
-            // { icon: FaDumbbell, title: 'Training Tips', link: '/dashboard/personaltraining/trainingtips' },
-            // { icon: FaDumbbell, title: 'Training Resources', link: '/dashboard/personaltraining/trainingresources' },
-            // { icon: FaDumbbell, title: 'Training FAQs', link: '/dashboard/personaltraining/trainingfaqs' },
-            // { icon: FaDumbbell, title: 'Training Certificates', link: '/dashboard/personaltraining/trainingcertificates' },
-          ],
-        },
-        {
-          icon: AiOutlineSchedule,
-          title: "Class Schedules",
-          link: "/dashboard/classschedulemanagement",
-        },
-      ],
-    },
     // Analytics & Support
     {
       category: "Reports & Analytics",
@@ -520,7 +519,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
+      className={`fixed top-0 right-0 backdrop-blur-md dark:border-b border-gray-700 py-3 transition-all duration-500 z-40 
         ${isScrolled
           ? "bg-white shadow-md dark:bg-gray-900"
           : "bg-white dark:bg-gray-900"
