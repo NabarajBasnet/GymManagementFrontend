@@ -40,6 +40,7 @@ import { Separator } from "@/components/ui/separator";
 export default function GymBillingProfileForm() {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
+    console.log("Logged tenant: ", loggedInTenant)
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [vatRegistered, setVatRegistered] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -65,7 +66,6 @@ export default function GymBillingProfileForm() {
             });
 
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
 
             if (response.ok) {
                 setIsLoading(false)
