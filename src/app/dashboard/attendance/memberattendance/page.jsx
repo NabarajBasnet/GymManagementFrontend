@@ -1,6 +1,5 @@
 'use client';
 
-import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { MdHome } from "react-icons/md";
 import { useState, useEffect } from "react";
@@ -306,15 +305,11 @@ const MemberAttendance = () => {
             )}
 
             {/* Breadcrumb and Header */}
-            <div className='w-full p-6  border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
-                <Breadcrumb className="mb-4">
+            <div className='w-full px-4 pt-6 pb-3 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
+                <Breadcrumb className="mb-1">
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Dashboard</BreadcrumbLink>
+                            <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>

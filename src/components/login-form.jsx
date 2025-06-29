@@ -267,34 +267,6 @@ export function LoginForm({ className, ...props }) {
                     <span>Sign In</span>
                   )}
                 </Button>
-
-                <div className="relative text-center text-sm mt-4">
-                  <span className="relative z-10 bg-white/95 px-4 text-gray-500">
-                    Or continue with
-                  </span>
-                  <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div>
-
-                <div className="grid grid-cols-3 gap-4">
-                  <Button
-                    variant="outline"
-                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-                  >
-                    <FaApple className="text-xl" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-                  >
-                    <FaGoogle className="text-xl" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
-                  >
-                    <FaMeta className="text-xl" />
-                  </Button>
-                </div>
               </form>
 
               <div className="mt-6 text-center">

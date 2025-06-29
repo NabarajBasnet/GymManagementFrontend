@@ -363,13 +363,13 @@ const Sidebar = () => {
           title: "Personal Training",
           link: "/dashboard/personaltraining",
           subObj: [
-            ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'?[
-{
-              icon: FaDumbbell,
-              title: "Training Packages",
-              link: "/dashboard/personaltraining/trainingpackages",
-            },
-            ]:[]),
+            ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin' ? [
+              {
+                icon: FaDumbbell,
+                title: "Training Packages",
+                link: "/dashboard/personaltraining/trainingpackages",
+              },
+            ] : []),
             {
               icon: FaDumbbell,
               title: "Book Training",
@@ -445,7 +445,7 @@ const Sidebar = () => {
         {userLoading ? (
           <Loader />
         ) : (
-          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-2 py-5">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 py-5">
             <Link href={"/dashboard"} className="flex items-center">
               <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
                 <svg

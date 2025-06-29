@@ -248,14 +248,18 @@ const AdminDashboard = () => {
         {/* Welcome Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
           {/* Main Welcome Card - Now with max height */}
-          <Card className="lg:col-span-8 relative overflow-hidden rounded-xl shadow-lg group transition-all duration-500 hover:shadow-xl bg-white dark:bg-gray-900/95 border-0 dark:border dark:border-gray-800/50 max-h-[24rem]">
+          <Card className="lg:col-span-8 relative overflow-hidden rounded-xl shadow-md group transition-all duration-500 hover:shadow-xl bg-white dark:bg-gray-900/95 border-0 dark:border dark:border-gray-800/50 max-h-[24rem]">
             {/* Light mode background */}
             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 dark:hidden"></div>
 
-            {/* Dark mode grid background */}
-            <div className="hidden dark:block absolute inset-0 opacity-20" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%236b7280' stroke-width='1'%3E%3Cpath d='m0 60 60-60M30 0v60M0 30h60'/%3E%3C/g%3E%3C/svg%3E")`
-            }}></div>
+            {/* Modern dot grid background for dark mode */}
+            <div
+              className="hidden dark:block absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%236b7280' /%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat'
+              }}
+            ></div>
 
             {/* Floating orbs */}
             <div className="absolute top-10 right-20 w-32 h-32 bg-gradient-to-r from-blue-400/10 to-cyan-300/10 rounded-full blur-xl animate-pulse"></div>
@@ -330,14 +334,18 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Quick Stats Card - Now with max height */}
-          <Card className="lg:col-span-4 relative rounded-xl shadow-lg bg-white dark:bg-gray-900/95 group border-0 dark:border dark:border-gray-800/50 overflow-hidden max-h-[24rem]">
+          <Card className="lg:col-span-4 relative rounded-xl shadow-md bg-white dark:bg-gray-900/95 group border-0 dark:border dark:border-gray-800/50 overflow-hidden max-h-[24rem]">
             {/* Light mode background */}
             <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/50 to-indigo-50/30 dark:hidden"></div>
 
             {/* Dark mode grid background */}
-            <div className="hidden dark:block absolute inset-0 opacity-15" style={{
-              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%236b7280' stroke-width='0.5'%3E%3Cpath d='M0 0h40v40H0z'/%3E%3Cpath d='M0 20h40M20 0v40'/%3E%3C/g%3E%3C/svg%3E")`
-            }}></div>
+            <div
+              className="hidden dark:block absolute inset-0 opacity-10"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%236b7280' stroke-width='0.3'%3E%3Cpath d='M0 20h20M20 0v20'/%3E%3C/g%3E%3C/svg%3E")`,
+                backgroundRepeat: 'repeat'
+              }}
+            ></div>
 
             {/* Floating elements */}
             <div className="absolute inset-0 pointer-events-none">
@@ -376,12 +384,12 @@ const AdminDashboard = () => {
                         <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                           {newMembers?.members?.length || 0}
                         </p>
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                           <div className="flex items-center gap-1 bg-emerald-100 dark:bg-emerald-500/20 px-2 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/30">
                             <ArrowUp className="h-2.5 w-2.5 text-emerald-700 dark:text-emerald-400" />
                             <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400">+8% growth</p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-500/20 dark:to-cyan-500/20 border border-blue-200 dark:border-blue-500/30 rounded-xl shadow-lg group-hover/card:shadow-xl transition-all duration-300">
                         <FaUsers className="h-6 w-6 text-blue-700 dark:text-blue-400" />
@@ -401,12 +409,12 @@ const AdminDashboard = () => {
                         <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
                           {renewedMembers?.members?.length || 0}
                         </p>
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                           <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-500/20 px-2 py-1 rounded-md border border-amber-200 dark:border-amber-500/30">
                             <ArrowUp className="h-2.5 w-2.5 text-amber-700 dark:text-amber-400" />
                             <p className="text-[10px] font-black text-amber-700 dark:text-amber-400">+15% renewal</p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="p-3 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-500/20 dark:to-orange-500/20 border border-amber-200 dark:border-amber-500/30 rounded-xl shadow-lg group-hover/card:shadow-xl transition-all duration-300">
                         <RiUserShared2Fill className="h-6 w-6 text-amber-700 dark:text-amber-400" />
