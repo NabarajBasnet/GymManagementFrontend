@@ -10,7 +10,7 @@ import { FaMoneyBill, FaRegIdCard, FaRegCalendarAlt } from "react-icons/fa";
 import { HiOutlineMail, HiOutlineDocumentText } from "react-icons/hi";
 import { RiVipCrownLine, RiMoneyDollarCircleLine } from "react-icons/ri";
 import { BsBuilding, BsSticky } from "react-icons/bs";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ChevronRight, Save } from "lucide-react";
 import {
@@ -40,16 +40,43 @@ import { Separator } from "@/components/ui/separator";
 export default function GymBillingProfileForm() {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
-    console.log("Logged tenant: ", loggedInTenant)
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [vatRegistered, setVatRegistered] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [hasBillingDetails, setHasBillingDetails] = useState(false);
+    const [vatRegistered, setVatRegistered] = useState(false);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        reset,
+        setValue
     } = useForm();
+
+    useEffect(() => {
+        if (loggedInTenant?.organization?.billing) {
+            // Check if billing object exists (regardless of field values)
+            setHasBillingDetails(true);
+            const billingDetails = loggedInTenant?.organization?.billing;
+
+            // Set form values from billing object
+            setVatRegistered(billingDetails?.vatRegistered);
+            setValue("panNo", billingDetails?.panNo || "");
+            setValue("vatNo", billingDetails?.vatNo || "");
+            setValue("invoiceEmail", billingDetails?.invoiceEmail || "");
+            setValue("taxId", billingDetails?.taxId || "");
+            setValue("businessRegNumber", billingDetails?.businessRegNumber || "");
+            setValue("businessRegDate", billingDetails?.businessRegDate ?
+                billingDetails?.businessRegDate.split('T')[0] : "");
+            setValue("billingNotes", billingDetails?.billingNotes || "");
+        } else {
+            // No billing object exists
+            setHasBillingDetails(false);
+            // Reset form to empty values
+            reset();
+            setVatRegistered(false);
+        }
+    }, [loggedInTenant, setValue, reset]);
 
     const onSubmit = async (data) => {
         try {
@@ -68,14 +95,17 @@ export default function GymBillingProfileForm() {
             const responseBody = await response.json();
 
             if (response.ok) {
-                setIsLoading(false)
+                setIsLoading(false);
                 setShowSuccessAlert(true);
+                setHasBillingDetails(true);
                 setTimeout(() => setShowSuccessAlert(false), 5000);
                 toast.success(responseBody.message);
+            } else {
+                throw new Error(responseBody.message || "Failed to update billing profile");
             }
 
         } catch (error) {
-            toast.error("Failed to update billing profile");
+            toast.error(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -122,21 +152,12 @@ export default function GymBillingProfileForm() {
                 </div>
             </div>
 
-            {/* Success Alert */}
-            {showSuccessAlert && (
-                <Alert className="mb-6 bg-green-50 dark:bg-green-900/20 border-green-500">
-                    <CheckCircle2Icon className="h-5 w-5 text-green-600 dark:text-green-400" />
-                    <AlertTitle className="text-green-800 dark:text-green-200">Success!</AlertTitle>
-                    <AlertDescription className="text-green-700 dark:text-green-300">
-                        Your billing profile has been updated successfully. These details will appear on all customer invoices.
-                    </AlertDescription>
-                </Alert>
-            )}
-
             {/* Information Alert */}
             <Alert className="mb-6 bg-blue-50 dark:bg-blue-900/20 border-blue-500">
                 <InfoIcon className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-3" />
-                <AlertTitle className="text-blue-800 dark:text-blue-200 mt-1">Important Information</AlertTitle>
+                <AlertTitle className="text-blue-800 dark:text-blue-200 mt-1">
+                    {hasBillingDetails ? "Update Billing Information" : "Setup Billing Information"}
+                </AlertTitle>
                 <AlertDescription className="text-blue-700 mt-1 dark:text-blue-300">
                     The details you provide here will be displayed on all customer invoices and receipts.
                     Please ensure all tax information is accurate to avoid issues with billing.
@@ -146,9 +167,13 @@ export default function GymBillingProfileForm() {
             {/* Main Form Card */}
             <Card className="shadow-sm dark:bg-gray-800 dark:border-none">
                 <CardHeader>
-                    <CardTitle className="text-xl mt-1">Billing Information</CardTitle>
+                    <CardTitle className="text-xl mt-1">
+                        {hasBillingDetails ? "Update Billing Information" : "Setup Billing Information"}
+                    </CardTitle>
                     <CardDescription className='mt-1'>
-                        Update your organization's billing details for invoicing and tax purposes
+                        {hasBillingDetails
+                            ? "Update your organization's billing details for invoicing and tax purposes"
+                            : "Setup your organization's billing details for invoicing and tax purposes"}
                     </CardDescription>
                 </CardHeader>
 
@@ -314,6 +339,22 @@ export default function GymBillingProfileForm() {
                         </div>
                     </CardContent>
 
+                    <div className="px-6">
+                        {/* Success Alert */}
+                        {showSuccessAlert && (
+                            <Alert className="mb-6 px-6 bg-green-50 dark:bg-green-900/20 border-green-500">
+                                <CheckCircle2Icon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                <AlertTitle className="text-green-800 dark:text-green-200">Success!</AlertTitle>
+                                <AlertDescription className="text-green-700 dark:text-green-300">
+                                    {hasBillingDetails
+                                        ? "Your billing profile has been updated successfully."
+                                        : "Your billing profile has been created successfully."
+                                    } These details will appear on all customer invoices.
+                                </AlertDescription>
+                            </Alert>
+                        )}
+                    </div>
+
                     <Separator className="dark:bg-gray-600 mb-5" />
 
                     <CardFooter className="flex justify-end">
@@ -325,12 +366,12 @@ export default function GymBillingProfileForm() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4" />
-                                    Saving...
+                                    {hasBillingDetails ? "Updating..." : "Saving..."}
                                 </>
                             ) : (
                                 <>
                                     <Save className="mr-2 h-4 w-4" />
-                                    Save Details
+                                    {hasBillingDetails ? "Update Details" : "Record Details"}
                                 </>
                             )}
                         </Button>
