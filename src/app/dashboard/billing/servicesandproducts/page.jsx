@@ -455,7 +455,7 @@ const ServiceAndProducts = () => {
                                 <table className="text-sm w-full">
                                     <thead>
                                         <tr className="border-b bg-gray-100">
-                                            <th className="h-16 px-4 text-left font-medium">
+                                            <th className="h-16 px-4 text-left font-medium dark:text-gray-200">
                                                 {loggedInUser?.role === 'Gym Admin' ? (
                                                     <>
                                                     </>
@@ -468,7 +468,7 @@ const ServiceAndProducts = () => {
                                             </th>
 
                                             <th className="h-16 px-4 text-left font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Item ID
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -479,7 +479,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="h-16 px-4 text-left font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Name
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -490,7 +490,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Type
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -501,7 +501,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Category
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -512,7 +512,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="h-10 px-4 text-right font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Price
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -523,7 +523,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="px-4 text-right font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     TaxRate
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -534,7 +534,7 @@ const ServiceAndProducts = () => {
                                                 </div>
                                             </th>
                                             <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center">
+                                                <div className="flex items-center dark:text-gray-200">
                                                     Status
                                                     <ArrowUpDown
                                                         onClick={() => {
@@ -660,48 +660,48 @@ const ServiceAndProducts = () => {
                                         </th>
 
                                         <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Item ID
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Name
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Type
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Category
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Price
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Tax Rate
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
                                         <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
+                                            <div className="flex items-center dark:text-gray-200">
                                                 Status
                                                 <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                             </div>
                                         </th>
-                                        <th className="h-10 px-4 text-right font-medium">Actions</th>
+                                        <th className="h-10 px-4 text-right font-medium dark:text-gray-200">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -744,7 +744,7 @@ const ServiceAndProducts = () => {
                 <div className="fixed inset-0 z-[51] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
                     <form
                         onSubmit={handleSubmit(handleAddItem)}
-                        className="relative bg-white rounded-md shadow-xl w-full max-w-md md:max-w-lg p-6 space-y-4"
+                        className="relative bg-white shadow-xl w-full max-w-md md:max-w-lg p-6 space-y-4"
                     >
                         {/* Close Button */}
                         <button
@@ -786,11 +786,11 @@ const ServiceAndProducts = () => {
 
             {/* Open Add Items Form */}
             {openAddItemForm && (
-                <div className={`fixed inset-0 bg-black/50 rounded-lg backdrop-blur-sm flex items-center justify-center z-50 p-4`}>
-                    <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-lg shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
+                <div className={`fixed inset-0 bg-black/50 rounded-none backdrop-blur-sm flex items-center justify-center z-50 p-4`}>
+                    <form onSubmit={handleSubmit(handleAddItem)} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
                         {/* Header Section */}
-                        <header className='flex justify-between rounded-lg items-center p-4 border-b sticky top-0 bg-white z-10'>
-                            <h1 className='text-xl font-semibold flex items-center gap-2'>
+                        <header className='flex justify-between rounded-lg items-center p-4 border-b dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800 z-10'>
+                            <h1 className='text-xl font-semibold flex text-primary items-center gap-2'>
                                 <IoIosInformationCircle className="text-blue-500" />
                                 Add New Product
                             </h1>
@@ -805,18 +805,18 @@ const ServiceAndProducts = () => {
                         {/* Form Section */}
                         <div className="overflow-y-auto rounded-lg flex-1 p-4 md:p-6">
                             <div className="space-y-6">
-                                <p className="text-gray-600 text-sm">
+                                <p className="text-gray-600 text-sm dark:text-gray-300">
                                     Fill in the details to add a new product to inventory
                                 </p>
 
                                 {/* General Information Section */}
-                                <div className="border rounded-sm p-4 space-y-4">
-                                    <h3 className="font-medium text-lg">General Information</h3>
+                                <div className="border dark:border-gray-700 rounded-sm p-4 space-y-4">
+                                    <h3 className="font-medium text-lg text-primary">General Information</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                                         {/* Item Type */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Item Type</Label>
+                                                <Label className="font-medium flex-1 text-primary">Item Type</Label>
                                                 {/* <Button variant="ghost" onClick={() => setOpenAddMoreForm(true)} size="sm" className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
@@ -833,14 +833,14 @@ const ServiceAndProducts = () => {
                                                             field.onChange(value)
                                                         }}
                                                     >
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Select Item Type" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem value='Product'>Product</SelectItem>
-                                                                <SelectItem value='Service'>Service</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Product'>Product</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Service'>Service</SelectItem>
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
@@ -851,7 +851,7 @@ const ServiceAndProducts = () => {
                                         {/* Warehouse */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Warehouse</Label>
+                                                <Label className="font-medium flex-1 text-primary">Warehouse</Label>
                                                 {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
@@ -867,15 +867,15 @@ const ServiceAndProducts = () => {
                                                             setWareHouse(value)
                                                             field.onChange(value)
                                                         }}>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Select Warehouse" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem value='Warehouse One'>Warehouse One</SelectItem>
-                                                                <SelectItem value='Warehouse Two'>Warehouse Two</SelectItem>
-                                                                <SelectItem value='Warehouse Three'>Warehouse Three</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse One'>Warehouse One</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse Two'>Warehouse Two</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse Three'>Warehouse Three</SelectItem>
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
@@ -887,7 +887,7 @@ const ServiceAndProducts = () => {
                                         {/* Name */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium" htmlFor="itemName">
+                                                <Label className="font-medium text-primary" htmlFor="itemName">
                                                     Name <span className="text-red-500">*</span>
                                                 </Label>
                                                 <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
@@ -901,7 +901,7 @@ const ServiceAndProducts = () => {
                                                         {...field}
                                                         {...register('itemName', { required: 'Item name is required' })}
                                                         placeholder="Enter name"
-                                                        className="w-full"
+                                                        className='w-full dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'
                                                     />
                                                 )}
                                             />
@@ -910,7 +910,7 @@ const ServiceAndProducts = () => {
                                         {/* Category */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Category</Label>
+                                                <Label className="font-medium flex-1 text-primary">Category</Label>
                                                 {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
@@ -926,14 +926,14 @@ const ServiceAndProducts = () => {
                                                             setCategory(value)
                                                             field.onChange(value)
                                                         }}>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Select Category" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
                                                                 {categories.map((category, index) =>
-                                                                    <SelectItem key={index} value={category}>{category}</SelectItem>
+                                                                    <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' key={index} value={category}>{category}</SelectItem>
                                                                 )}
                                                             </SelectGroup>
                                                         </SelectContent>
@@ -945,7 +945,7 @@ const ServiceAndProducts = () => {
                                         {/* Sub Category */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Sub Category</Label>
+                                                <Label className="font-medium flex-1 text-primary">Sub Category</Label>
                                                 {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
@@ -962,14 +962,14 @@ const ServiceAndProducts = () => {
                                                             field.onChange(value)
                                                         }}
                                                         disabled={!category}>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Select Sub Category" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
                                                                 {(subCategories[category] || []).map((subCat, index) => (
-                                                                    <SelectItem key={index} value={subCat}>{subCat}</SelectItem>
+                                                                    <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' key={index} value={subCat}>{subCat}</SelectItem>
                                                                 ))}
                                                             </SelectGroup>
                                                         </SelectContent>
@@ -981,7 +981,7 @@ const ServiceAndProducts = () => {
                                         {/* SKU/Code */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium" htmlFor="itemSKU">
+                                                <Label className="font-medium text-primary" htmlFor="itemSKU">
                                                     SKU/Code
                                                 </Label>
                                                 <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
@@ -995,7 +995,7 @@ const ServiceAndProducts = () => {
                                                         id="itemSKU"
                                                         {...register('SKU')}
                                                         placeholder="Enter unique SKU"
-                                                        className="w-full"
+                                                        className='w-full dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'
                                                     />
                                                 )}
                                             />
@@ -1004,10 +1004,10 @@ const ServiceAndProducts = () => {
                                         {/* Description */}
                                         <div className="space-y-2 md:col-span-2 lg:col-span-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="itemDescription">
+                                                <Label className="font-medium flex-1 text-primary" htmlFor="itemDescription">
                                                     Description
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[32px]"></div>
                                             </div>
                                             <Controller
                                                 name="itemDescription"
@@ -1018,7 +1018,7 @@ const ServiceAndProducts = () => {
                                                         {...field}
                                                         {...register('description', { required: 'Item description is required' })}
                                                         placeholder="Enter description"
-                                                        className="flex w-full rounded-sm border focus:outline-none focus:border-blue-500 bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
+                                                        className="flex w-full rounded-sm dark:bg-gray-900 dark:text-white dark:border-none border focus:outline-none focus:border-blue-500 bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
                                                     />
                                                 )}
                                             />
@@ -1027,45 +1027,14 @@ const ServiceAndProducts = () => {
                                 </div>
 
                                 {/* Pricing Section */}
-                                <div className="border rounded-sm p-4 space-y-4">
-                                    <h3 className="font-medium text-lg">Pricing</h3>
+                                <div className="border rounded-sm p-4 dark:border-gray-700 space-y-4">
+                                    <h3 className="font-medium text-lg text-primary">Pricing</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                                        {/* Currency */}
-                                        <div className="space-y-2">
-                                            <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Currency</Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
-                                            </div>
-                                            <Controller
-                                                name="currency"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        onValueChange={(value) => {
-                                                            setCurrency(value)
-                                                            field.onChange(value)
-                                                        }}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select Currency" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Select</SelectLabel>
-                                                                {currencies.map((currency, index) =>
-                                                                    <SelectItem key={index} value={`${currency.symbol}-${currency.name}`}>{currency.code}</SelectItem>
-                                                                )}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                )}
-                                            />
-                                        </div>
 
                                         {/* Selling Price */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="sellingPrice">
+                                                <Label className="font-medium flex-1 text-primary" htmlFor="sellingPrice">
                                                     Selling Price <span className="text-red-500">*</span>
                                                 </Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
@@ -1080,7 +1049,7 @@ const ServiceAndProducts = () => {
                                                             id="sellingPrice"
                                                             {...field}
                                                             {...register('sellingPrice', { required: 'Item selling price is required' })}
-                                                            className="pl-8 w-full"
+                                                            className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
                                                             step="0.01"
@@ -1094,10 +1063,10 @@ const ServiceAndProducts = () => {
                                         {/* Cost Price */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="costPrice">
+                                                <Label className="font-medium flex-1 text-primary" htmlFor="costPrice">
                                                     Cost Price
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[32px]"></div>
                                             </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
@@ -1109,7 +1078,7 @@ const ServiceAndProducts = () => {
                                                             id="costPrice"
                                                             {...field}
                                                             {...register('costPrice')}
-                                                            className="pl-8 w-full"
+                                                            className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
                                                             step="0.01"
@@ -1123,7 +1092,7 @@ const ServiceAndProducts = () => {
                                         {/* Tax Rate */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1">Tax Rate</Label>
+                                                <Label className="font-medium flex-1 text-primary">Tax Rate</Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
                                             <Controller
@@ -1136,21 +1105,21 @@ const ServiceAndProducts = () => {
                                                             setTaxRate(value)
                                                             field.onChange(value)
                                                         }}>
-                                                        <SelectTrigger>
+                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Tax Rate" />
                                                         </SelectTrigger>
-                                                        <SelectContent>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem value='3'>3 %</SelectItem>
-                                                                <SelectItem value='5'>5 %</SelectItem>
-                                                                <SelectItem value='7'>7 %</SelectItem>
-                                                                <SelectItem value='9'>9 %</SelectItem>
-                                                                <SelectItem value='11'>11 %</SelectItem>
-                                                                <SelectItem value='13' >13 %</SelectItem>
-                                                                <SelectItem value='15'>15 %</SelectItem>
-                                                                <SelectItem value='17'>17 %</SelectItem>
-                                                                <SelectItem value='20'>20 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='3'>3 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='5'>5 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='7'>7 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='9'>9 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='11'>11 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='13' >13 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='15'>15 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='17'>17 %</SelectItem>
+                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='20'>20 %</SelectItem>
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
@@ -1161,7 +1130,7 @@ const ServiceAndProducts = () => {
                                         {/* Available Discount Percentage */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="maxDiscount">
+                                                <Label className="font-medium flex-1 text-primary" htmlFor="maxDiscount">
                                                     Max Discount Percent
                                                 </Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
@@ -1176,7 +1145,7 @@ const ServiceAndProducts = () => {
                                                             {...field}
                                                             id="maxDiscount"
                                                             {...register('maxDiscount')}
-                                                            className="pl-8 w-full"
+                                                            className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
                                                             step="1"
@@ -1191,8 +1160,8 @@ const ServiceAndProducts = () => {
                                 </div>
 
                                 {/* Status Section */}
-                                <div className="border rounded-sm p-4 space-y-4">
-                                    <h3 className="font-medium text-lg">Status</h3>
+                                <div className="border dark:border-gray-700 rounded-sm p-4 space-y-4">
+                                    <h3 className="font-medium text-lg text-primary">Status</h3>
                                     <div className="flex flex-wrap items-center gap-4 pt-2">
                                         <div className="flex items-center space-x-2">
                                             <Controller
@@ -1207,23 +1176,7 @@ const ServiceAndProducts = () => {
                                                     />
                                                 )}
                                             />
-                                            <Label htmlFor="itemActive">Active</Label>
-                                        </div>
-
-                                        <div className="flex items-center space-x-2">
-                                            <Controller
-                                                name="itemOnline"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Switch
-                                                        {...field}
-                                                        id="itemOnline"
-                                                        checked={isAvailableOnline}
-                                                        onCheckedChange={(value) => setIsAvailableOnline(value)}
-                                                    />
-                                                )}
-                                            />
-                                            <Label htmlFor="itemOnline">Available Online</Label>
+                                            <Label htmlFor="itemActive" className='text-primary'>Active</Label>
                                         </div>
                                     </div>
                                 </div>
@@ -1231,18 +1184,18 @@ const ServiceAndProducts = () => {
                         </div>
 
                         {/* Footer with actions */}
-                        <footer className="flex justify-end rounded-lg gap-3 p-4 border-t sticky bottom-0 bg-white">
+                        <footer className="flex justify-end rounded-lg gap-3 p-4 border-t sticky bottom-0 bg-white dark:bg-gray-800">
                             <Button
                                 variant="outline"
                                 type='button'
                                 onClick={() => setOpenAddItemForm(false)}
-                                className="min-w-[100px]"
+                                className="min-w-[100px] dark:bg-gray-900 dark:text-white dark:border-none"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type='submit'
-                                className="min-w-[100px] bg-blue-600 hover:bg-blue-700">
+                                className="min-w-[100px] bg-blue-600 hover:bg-blue-700 dark:text-white">
                                 {isSubmitting ? <BiLoaderAlt className="h-4 w-4 mr-2 animate-spin duration-500" /> : <Save className="mr-2 h-4 w-4" />}
                                 {isSubmitting ? 'Submitting...' : 'Save'}
                             </Button>
