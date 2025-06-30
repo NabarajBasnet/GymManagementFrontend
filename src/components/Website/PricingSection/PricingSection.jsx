@@ -174,7 +174,7 @@ const PricingSection = () => {
                                 </span>
                             </h1>
 
-                            <p className="text-lg sm:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
+                            <p className="text-md sm:text-xl text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed">
                                 Transform your fitness business with our comprehensive management platform.
                                 From boutique studios to enterprise facilities, we scale with your success.
                             </p>

@@ -347,7 +347,7 @@ const CookiesPolicy = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Email Support</p>
-                                    <p className="text-gray-400">privacy@geolift.com</p>
+                                    <p className="text-gray-400">support@fitbinary.com</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors">
@@ -356,23 +356,11 @@ const CookiesPolicy = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Website</p>
-                                    <p className="text-gray-400">www.geolift.com.np/privacy</p>
+                                    <p className="text-gray-400">www.fitbinary.com/privacy</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </motion.div>
-
-                {/* Footer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="mt-16 text-center text-gray-500 border-t border-gray-800/50 pt-8"
-                >
-                    <p>© {new Date().getFullYear()} GeoLift Technologies. All rights reserved.</p>
-                    <p className="mt-2 text-sm">Version 1.0.0 | Effective January 15, 2025</p>
                 </motion.div>
             </div>
         </div>

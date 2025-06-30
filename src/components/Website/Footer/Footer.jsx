@@ -114,14 +114,14 @@ const Footer = () => {
                             </div>
                             <div className="flex items-center text-gray-400">
                                 <Mail className="w-5 h-5 mr-3 text-cyan-400" />
-                                <a href="mailto:contact@fitloft.com" className="text-sm hover:text-cyan-400 transition-colors">
-                                    contact@geofit.com
+                                <a href="mailto:hello@fitbinary.com" className="text-sm hover:text-cyan-400 transition-colors">
+                                    hello@fitbinary.com
                                 </a>
                             </div>
                             <div className="flex items-center text-gray-400">
                                 <Phone className="w-5 h-5 mr-3 text-cyan-400" />
-                                <a href="tel:+9779800000000" className="text-sm hover:text-cyan-400 transition-colors">
-                                    +977 9800000000
+                                <a href="tel:+9779763427690" className="text-sm hover:text-cyan-400 transition-colors">
+                                    +977 9763427690
                                 </a>
                             </div>
                         </div>
@@ -228,7 +228,7 @@ const Footer = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         {/* Copyright */}
                         <div className="text-gray-500 text-sm">
-                            © {new Date().getFullYear()} GeoFit. All rights reserved.
+                            © {new Date().getFullYear()} Fitbinary. All rights reserved.
                         </div>
 
                         {/* Social Links */}

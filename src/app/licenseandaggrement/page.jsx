@@ -19,7 +19,7 @@ const LicenseAndAgreement = () => {
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-6 shadow-lg">
                         <FileText className="w-8 h-8 text-white" />
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-4">GeoLift License Agreement</h1>
+                    <h1 className="text-4xl font-bold text-white mb-4">Fitbinary License Agreement</h1>
                     <div className="px-4 py-2 bg-blue-900 border border-blue-700 rounded-lg inline-block">
                         <p className="text-blue-100 font-medium">Effective Date: 15 Jan 2025</p>
                     </div>
@@ -28,11 +28,11 @@ const LicenseAndAgreement = () => {
                 {/* Introduction */}
                 <div className="bg-gray-900 rounded-2xl shadow-xl border border-gray-800 mb-8 p-8">
                     <p className="text-gray-300 text-lg leading-relaxed">
-                        This Software-as-a-Service (SaaS) License Agreement ("Agreement") is entered into by and between <span className="font-semibold text-white">GeoLift</span>, the provider of the software ("Provider", "we", "us", or "our"), and you, the subscribing entity or individual ("Customer", "you", or "your").
+                        This Software-as-a-Service (SaaS) License Agreement ("Agreement") is entered into by and between <span className="font-semibold text-white">Fitbinary</span>, the provider of the software ("Provider", "we", "us", or "our"), and you, the subscribing entity or individual ("Customer", "you", or "your").
                     </p>
                     <div className="mt-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
                         <p className="text-gray-300">
-                            By accessing or using the <span className="font-semibold text-white">GeoLift</span> platform ("Software" or "Service"), you agree to be bound by this Agreement.
+                            By accessing or using the <span className="font-semibold text-white">Fitbinary</span> platform ("Software" or "Service"), you agree to be bound by this Agreement.
                         </p>
                     </div>
                 </div>
@@ -283,7 +283,7 @@ const LicenseAndAgreement = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Email</p>
-                                    <p className="text-gray-400">support@geolift.com</p>
+                                    <p className="text-gray-400">support@fitbinary.com</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-4">
@@ -292,16 +292,11 @@ const LicenseAndAgreement = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Website</p>
-                                    <p className="text-gray-400">www.geolift.com.np</p>
+                                    <p className="text-gray-400">www.fitbinary.com</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-12 text-center text-gray-500">
-                    <p>© 2025 GeoLift. All rights reserved.</p>
                 </div>
             </div>
         </div>

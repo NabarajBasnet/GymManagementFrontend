@@ -61,7 +61,7 @@ const ContactSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        Have questions or need assistance? We're here to help you get the most out of GeoFit.
+                        Have questions or need assistance? We're here to help you get the most out of Fitbinary.
                     </motion.p>
                 </motion.div>
 
@@ -166,8 +166,8 @@ const ContactSection = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-300">Email</p>
-                                        <a href="mailto:info@geofit.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
-                                            info@geofit.com
+                                        <a href="mailto:hello@fitbinary.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
+                                            hello@fitbinary.com
                                         </a>
                                     </div>
                                 </motion.div>
@@ -183,7 +183,7 @@ const ContactSection = () => {
                                     </div>
                                     <div>
                                         <p className="text-sm text-gray-300">Phone</p>
-                                        <a href="tel:+9779763427690" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
+                                        <a href="tel:+977 9763427690" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
                                             +977 976-3427690
                                         </a>
                                     </div>
@@ -267,8 +267,8 @@ const ContactSection = () => {
                             >
                                 <p className="text-gray-300">
                                     For urgent matters outside of business hours, please email{' '}
-                                    <a href="mailto:support@geofit.com" className="text-blue-400 font-medium hover:underline">
-                                        support@geofit.com
+                                    <a href="mailto:support@fitbinary.com" className="text-blue-400 font-medium hover:underline">
+                                        support@fitbinary.com
                                     </a>
                                 </p>
                             </motion.div>

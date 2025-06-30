@@ -20,7 +20,7 @@ const TermsOfService = () => {
             id: 'acceptance',
             title: 'Acceptance of Terms',
             icon: <FileText className="w-5 h-5" />,
-            content: 'By accessing or using GeoLift ("Service", "Platform", or "Software"), you ("User", "You", or "Customer") agree to be bound by these Terms and our Privacy Policy. If you do not agree, do not use the Service.',
+            content: 'By accessing or using Fitbinary ("Service", "Platform", or "Software"), you ("User", "You", or "Customer") agree to be bound by these Terms and our Privacy Policy. If you do not agree, do not use the Service.',
             highlight: true
         },
         {
@@ -33,7 +33,7 @@ const TermsOfService = () => {
             id: 'service',
             title: 'Description of Service',
             icon: <Shield className="w-5 h-5" />,
-            content: 'GeoLift provides a cloud-based gym management solution which includes: Member management, Attendance tracking (QR-code based), Staff and locker management, Payment tracking and billing, Multi-branch and multi-tenant support, Communication and notifications, Analytics and reporting.'
+            content: 'Fitbinary provides a cloud-based gym management solution which includes: Member management, Attendance tracking (QR-code based), Staff and locker management, Payment tracking and billing, Multi-branch and multi-tenant support, Communication and notifications, Analytics and reporting.'
         },
         {
             id: 'registration',
@@ -88,7 +88,7 @@ const TermsOfService = () => {
             id: 'liability',
             title: 'Limitation of Liability',
             icon: <Shield className="w-5 h-5" />,
-            content: 'To the fullest extent permitted by law, GeoLift is not liable for indirect, incidental, or consequential damages arising from your use or inability to use the Service.',
+            content: 'To the fullest extent permitted by law, Fitbinary is not liable for indirect, incidental, or consequential damages arising from your use or inability to use the Service.',
             warning: true
         },
         {
@@ -168,7 +168,7 @@ const TermsOfService = () => {
                         <div>
                             <h2 className="text-xl font-semibold text-white mb-2">Important Legal Notice</h2>
                             <p className="text-gray-300 leading-relaxed">
-                                These Terms of Service ("Terms") govern your access to and use of the GeoLift platform. By accessing or using our services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree with any part of these terms, you may not use our services.
+                                These Terms of Service ("Terms") govern your access to and use of the Fitbinary platform. By accessing or using our services, you agree to be bound by these Terms and our Privacy Policy. If you do not agree with any part of these terms, you may not use our services.
                             </p>
                         </div>
                     </div>
@@ -244,7 +244,7 @@ const TermsOfService = () => {
                             className="mt-1 flex-shrink-0 w-5 h-5 text-blue-600 border-gray-500 rounded focus:ring-blue-500 bg-gray-800/50"
                         />
                         <label htmlFor="accept-terms" className="text-gray-300 text-lg leading-relaxed">
-                            I acknowledge that I have read, understood, and agree to be bound by these Terms of Service. I understand that these terms constitute a legally binding agreement between me and GeoLift.
+                            I acknowledge that I have read, understood, and agree to be bound by these Terms of Service. I understand that these terms constitute a legally binding agreement between me and Fitbinary.
                         </label>
                     </div>
 
@@ -283,7 +283,7 @@ const TermsOfService = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Email Support</p>
-                                    <p className="text-gray-400">support@geolift.com</p>
+                                    <p className="text-gray-400">support@fitbinary.com</p>
                                 </div>
                             </div>
                             <div className="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-lg hover:bg-gray-800/70 transition-colors">
@@ -292,23 +292,11 @@ const TermsOfService = () => {
                                 </div>
                                 <div>
                                     <p className="font-semibold text-white">Website</p>
-                                    <p className="text-gray-400">www.geolift.com.np</p>
+                                    <p className="text-gray-400">www.fitbinary.com</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </motion.div>
-
-                {/* Footer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="mt-16 text-center text-gray-500 border-t border-gray-800/50 pt-8"
-                >
-                    <p>© {new Date().getFullYear()} GeoLift Technologies. All rights reserved.</p>
-                    <p className="mt-2 text-sm">Version 2.1.0 | Effective January 15, 2025</p>
                 </motion.div>
             </div>
         </div>

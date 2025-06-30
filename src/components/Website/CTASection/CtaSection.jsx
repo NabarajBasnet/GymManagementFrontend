@@ -28,10 +28,10 @@ const CTASection = () => {
                     className="text-center max-w-3xl mx-auto"
                 >
                     <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                        Ready to Transform Your Gym Management?
+                        Ready to Automate Your Fitness Center?
                     </h2>
                     <p className="text-xl mb-8 text-white/95">
-                        Join hundreds of successful fitness businesses that are growing with GeoFit.
+                        Join hundreds of successful fitness businesses that are growing with Fitbinary.
                         Start your 14-day free trial today.
                     </p>
 

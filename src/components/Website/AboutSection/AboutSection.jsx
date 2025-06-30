@@ -150,7 +150,7 @@ const AboutSection = () => {
                             animate={contentInView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.5 }}
                         >
-                            GeoFit was founded by a team of fitness enthusiasts and technology experts who
+                            Fitbinary was founded by a team of fitness enthusiasts and technology experts who
                             saw firsthand the challenges gym owners face with outdated management systems.
                         </motion.p>
 

@@ -185,7 +185,7 @@ const HeroSection = () => {
       </section>
 
       <FeaturesSection />
-      <TrustedBySection />
+      {/* <TrustedBySection /> */}
       <PricingSection />
       <CTASection />
       <DemoSection />

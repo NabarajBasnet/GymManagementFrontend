@@ -106,7 +106,7 @@ const PrivacyPolicy = () => {
                         <li>Export your data (upon request)</li>
                     </ul>
                     <div className="mt-4 p-4 bg-gray-800/50 border border-gray-700 rounded-lg">
-                        <p className="text-gray-300">To exercise any of these rights, contact us at <span className="text-blue-400">support@geolift.com</span>.</p>
+                        <p className="text-gray-300">To exercise any of these rights, contact us at <span className="text-blue-400">support@fitbinary.com</span>.</p>
                     </div>
                 </>
             )
@@ -143,7 +143,7 @@ const PrivacyPolicy = () => {
                             </div>
                             <div>
                                 <p className="font-semibold text-white">Email</p>
-                                <p className="text-gray-400">support@geolift.com</p>
+                                <p className="text-gray-400">support@fitbinary.com</p>
                             </div>
                         </div>
                         <div className="flex items-center space-x-4 p-4 bg-gray-800/50 rounded-lg">
@@ -152,7 +152,7 @@ const PrivacyPolicy = () => {
                             </div>
                             <div>
                                 <p className="font-semibold text-white">Website</p>
-                                <p className="text-gray-400">www.geolift.com.np</p>
+                                <p className="text-gray-400">www.fitbinary.com</p>
                             </div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@ const PrivacyPolicy = () => {
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative z-10">
                 {/* Header with Floating Animation */}
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
@@ -203,9 +203,9 @@ const PrivacyPolicy = () => {
                         Privacy Policy
                     </h1>
                     <p className="text-lg text-gray-400 max-w-3xl mx-auto mb-8">
-                        At <span className="font-semibold text-white">GeoLift</span>, we are committed to protecting your privacy and personal information.
+                        At <span className="font-semibold text-white">Fitbinary</span>, we are committed to protecting your privacy and personal information.
                     </p>
-                    
+
                     <div className="flex flex-col sm:flex-row justify-center gap-4 mt-6">
                         <div className="px-5 py-2.5 bg-blue-900/50 border border-blue-700 rounded-lg backdrop-blur-sm">
                             <p className="text-blue-100 font-medium">Effective: Jan 15, 2025</p>
@@ -224,7 +224,7 @@ const PrivacyPolicy = () => {
                     className="bg-white/5 backdrop-blur-sm rounded-2xl shadow-xl border border-white/10 mb-12 p-8"
                 >
                     <p className="text-gray-300 leading-relaxed">
-                        This Privacy Policy explains how <span className="font-semibold text-white">GeoLift</span> ("we", "our", or "us") collects, uses, stores, and protects personal information when you use our gym management software platform ("Service"). By using our Service, you agree to the collection and use of information in accordance with this policy.
+                        This Privacy Policy explains how <span className="font-semibold text-white">Fitbinary</span> ("we", "our", or "us") collects, uses, stores, and protects personal information when you use our gym management software platform ("Service"). By using our Service, you agree to the collection and use of information in accordance with this policy.
                     </p>
                 </motion.div>
 
@@ -237,7 +237,7 @@ const PrivacyPolicy = () => {
                         </h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                             {sections.map((section, index) => (
-                                <a 
+                                <a
                                     key={section.id}
                                     href={`#${section.id}`}
                                     className="text-sm text-gray-300 hover:text-white hover:bg-gray-800/50 px-3 py-2 rounded transition-colors"
@@ -277,18 +277,6 @@ const PrivacyPolicy = () => {
                         </motion.div>
                     ))}
                 </div>
-
-                {/* Footer */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ duration: 0.6 }}
-                    viewport={{ once: true }}
-                    className="mt-16 text-center text-gray-500 border-t border-gray-800/50 pt-8"
-                >
-                    <p>© {new Date().getFullYear()} GeoLift Technologies. All rights reserved.</p>
-                    <p className="mt-2 text-sm">Version 2.1.0</p>
-                </motion.div>
             </div>
         </div>
     );
