@@ -97,15 +97,16 @@ const currencies = [
     }
 ];
 
-const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquatics", "Equipment"];
+const categories = ["Memberships", "Personal_Trainings", "Lockers", "Supplements", "Aquatics", "Equipments", "Wares"];
 
 const subCategories = {
-    Membership: ["Monthly", "Quarterly", "Half-Yearly", "Yearly", "Student", "Corporate"],
-    Training: ["Normal Training", "Personal Training", "Group Classes", "Yoga", "CrossFit", "Zumba", "Online Coaching"],
-    Nutrition: ["Supplements", "Diet Plans", "Protein", "Vitamins", 'Creatines', "Consultation", "Others"],
-    Merchandise: ["T-Shirts", "Shakers", "Gym Bags", "Caps", "Wristbands", "Others"],
+    Memberships: ["Monthly", "Quarterly", "Half-Yearly", "Yearly", "Student", "Corporate"],
+    Personal_Trainings: ["Normal Training", "Personal Training", "Group Classes", "Yoga", "CrossFit", "Zumba", "Online Coaching"],
+    Lockers: ["Supplements", "Diet Plans", "Protein", "Vitamins", 'Creatines', "Consultation", "Others"],
+    Supplements: ["T-Shirts", "Shakers", "Gym Bags", "Caps", "Wristbands", "Others"],
     Aquatics: ["Swimming Lessons", "Aqua Therapy", "Pool Membership", "Hydro Fitness"],
-    Equipment: ["Treadmills", "Dumbbells", "Resistance Bands", "Mats", "Foam Rollers", "Barbells", "Plates"],
+    Equipments: ["Treadmills", "Dumbbells", "Resistance Bands", "Mats", "Foam Rollers", "Barbells", "Plates"],
+    Wares: ["Wrist Wrap", "T Shirt"],
 };
 
 const ServiceAndProducts = () => {
@@ -133,8 +134,6 @@ const ServiceAndProducts = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     // Items states
-
-    const [isAvailableOnline, setIsAvailableOnline] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [itemType, setItemType] = useState('');
     const [warehouse, setWareHouse] = useState('');
@@ -159,7 +158,7 @@ const ServiceAndProducts = () => {
     // Add and delete items
     const handleAddItem = async (data) => {
         try {
-            const { itemName, SKU, description, sellingPrice, costPrice, maxDiscount } = data;
+            const { itemName, SKU, description, sellingPrice, costPrice, maxDiscount, taxRate } = data;
             const finalData = {
                 itemName,
                 SKU,
@@ -167,7 +166,6 @@ const ServiceAndProducts = () => {
                 sellingPrice,
                 costPrice,
                 maxDiscount,
-                isAvailableOnline,
                 isActive,
                 itemType,
                 warehouse,
@@ -848,49 +846,13 @@ const ServiceAndProducts = () => {
                                             />
                                         </div>
 
-                                        {/* Warehouse */}
-                                        <div className="space-y-2">
-                                            <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1 text-primary">Warehouse</Label>
-                                                {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
-                                                    <IoAddCircle className="mr-1" />
-                                                    Add More
-                                                </Button> */}
-                                            </div>
-                                            <Controller
-                                                name="warehouse"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        onValueChange={(value) => {
-                                                            setWareHouse(value)
-                                                            field.onChange(value)
-                                                        }}>
-                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
-                                                            <SelectValue placeholder="Select Warehouse" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse One'>Warehouse One</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse Two'>Warehouse Two</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Warehouse Three'>Warehouse Three</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                )}
-                                            />
-
-                                        </div>
-
                                         {/* Name */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium text-primary" htmlFor="itemName">
-                                                    Name <span className="text-red-500">*</span>
+                                                    Item Name <span className="text-red-500">*</span>
                                                 </Label>
-                                                <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[4px]"></div>
                                             </div>
                                             <Controller
                                                 name="itemName"
@@ -965,7 +927,7 @@ const ServiceAndProducts = () => {
                                                         <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
                                                             <SelectValue placeholder="Select Sub Category" />
                                                         </SelectTrigger>
-                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
+                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none text-primary'>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
                                                                 {(subCategories[category] || []).map((subCat, index) => (
@@ -974,29 +936,6 @@ const ServiceAndProducts = () => {
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
-                                                )}
-                                            />
-                                        </div>
-
-                                        {/* SKU/Code */}
-                                        <div className="space-y-2">
-                                            <div className='flex items-center justify-between'>
-                                                <Label className="font-medium text-primary" htmlFor="itemSKU">
-                                                    SKU/Code
-                                                </Label>
-                                                <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
-                                            </div>
-                                            <Controller
-                                                name="itemSKU"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Input
-                                                        {...field}
-                                                        id="itemSKU"
-                                                        {...register('SKU')}
-                                                        placeholder="Enter unique SKU"
-                                                        className='w-full dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'
-                                                    />
                                                 )}
                                             />
                                         </div>
@@ -1029,7 +968,7 @@ const ServiceAndProducts = () => {
                                 {/* Pricing Section */}
                                 <div className="border rounded-sm p-4 dark:border-gray-700 space-y-4">
                                     <h3 className="font-medium text-lg text-primary">Pricing</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
                                         {/* Selling Price */}
                                         <div className="space-y-2">
@@ -1037,10 +976,10 @@ const ServiceAndProducts = () => {
                                                 <Label className="font-medium flex-1 text-primary" htmlFor="sellingPrice">
                                                     Selling Price <span className="text-red-500">*</span>
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[32px]"></div>
                                             </div>
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
+                                                <span className="absolute left-3 top-3 text-gray-500 dark:text-gray-300">{loggedInUser?.organization?.currency}</span>
                                                 <Controller
                                                     name="sellingPrice"
                                                     control={control}
@@ -1049,7 +988,7 @@ const ServiceAndProducts = () => {
                                                             id="sellingPrice"
                                                             {...field}
                                                             {...register('sellingPrice', { required: 'Item selling price is required' })}
-                                                            className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
+                                                            className='w-full dark:bg-gray-900 pl-12 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
                                                             step="0.01"
@@ -1069,7 +1008,7 @@ const ServiceAndProducts = () => {
                                                 <div className="h-[32px]"></div>
                                             </div>
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
+                                                <span className="absolute left-3 top-3 text-gray-500 dark:text-gray-300">{loggedInUser?.organization?.currency}</span>
                                                 <Controller
                                                     name="costPrice"
                                                     control={control}
@@ -1078,7 +1017,7 @@ const ServiceAndProducts = () => {
                                                             id="costPrice"
                                                             {...field}
                                                             {...register('costPrice')}
-                                                            className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
+                                                            className='w-full dark:bg-gray-900 pl-12 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
                                                             step="0.01"
@@ -1092,59 +1031,21 @@ const ServiceAndProducts = () => {
                                         {/* Tax Rate */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1 text-primary">Tax Rate</Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
-                                            </div>
-                                            <Controller
-                                                name="taxRate"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <Select
-                                                        {...field}
-                                                        onValueChange={(value) => {
-                                                            setTaxRate(value)
-                                                            field.onChange(value)
-                                                        }}>
-                                                        <SelectTrigger className='dark:bg-gray-900 py-6 rounded-sm text-primary dark:border-none'>
-                                                            <SelectValue placeholder="Tax Rate" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className='dark:bg-gray-900 rounded-sm dark:border-none'>
-                                                            <SelectGroup>
-                                                                <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='3'>3 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='5'>5 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='7'>7 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='9'>9 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='11'>11 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='13' >13 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='15'>15 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='17'>17 %</SelectItem>
-                                                                <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='20'>20 %</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                )}
-                                            />
-                                        </div>
-
-                                        {/* Available Discount Percentage */}
-                                        <div className="space-y-2">
-                                            <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1 text-primary" htmlFor="maxDiscount">
-                                                    Max Discount Percent
+                                                <Label className="font-medium flex-1 text-primary" htmlFor="taxRate">
+                                                    Tax Rate ( Optional )
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[32px]"></div>
                                             </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">%</span>
                                                 <Controller
-                                                    name="maxDiscount"
+                                                    name="taxRate"
                                                     control={control}
                                                     render={({ field }) => (
                                                         <Input
                                                             {...field}
-                                                            id="maxDiscount"
-                                                            {...register('maxDiscount')}
+                                                            id="taxRate"
+                                                            {...register('taxRate')}
                                                             className='w-full dark:bg-gray-900 pl-8 py-6 rounded-sm text-primary dark:border-none'
                                                             placeholder="0.00"
                                                             type="number"
@@ -1184,7 +1085,7 @@ const ServiceAndProducts = () => {
                         </div>
 
                         {/* Footer with actions */}
-                        <footer className="flex justify-end rounded-lg gap-3 p-4 border-t sticky bottom-0 bg-white dark:bg-gray-800">
+                        <footer className="flex justify-end rounded-lg gap-3 p-4 border-t dark:border-gray-700 sticky bottom-0 bg-white dark:bg-gray-800">
                             <Button
                                 variant="outline"
                                 type='button'
