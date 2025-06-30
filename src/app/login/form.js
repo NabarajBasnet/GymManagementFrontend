@@ -91,7 +91,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">GeoFit</h1>
+                <h1 className="text-2xl font-bold">Fitbinary</h1>
                 <p className="text-blue-100 text-sm">Management System</p>
               </div>
             </div>
@@ -126,7 +126,7 @@ const TenantLoginForm = ({ className, ...props }) => {
 
             {/* Bottom section */}
             <div className="pt-8 border-t border-white/10">
-              <p className="text-blue-200 text-sm mb-4">New to GeoLift?</p>
+              <p className="text-blue-200 text-sm mb-4">New to Fitbinary?</p>
               <Link
                 href="/register"
                 className="inline-flex items-center px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/20 text-white font-medium transition-all duration-300 group backdrop-blur-sm"
@@ -148,7 +148,7 @@ const TenantLoginForm = ({ className, ...props }) => {
               <Dumbbell className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">GeoLift</h1>
+              <h1 className="text-xl font-bold text-gray-900">Fitbinary</h1>
               <p className="text-gray-600 text-sm">
                 Enterprise Gym Management Platform
               </p>

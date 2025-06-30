@@ -254,7 +254,7 @@ export default function TenantSignUpPage() {
                             <div className="ml-4">
                                 <a
                                     href={'/'}
-                                    className="text-2xl font-bold cursor-pointer">GeoFit</a>
+                                    className="text-2xl font-bold cursor-pointer">Fitbinary</a>
                                 <p className="text-blue-100">Automate your gym workflow</p>
                             </div>
                         </div>

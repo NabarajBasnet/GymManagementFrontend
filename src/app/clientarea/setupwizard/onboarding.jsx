@@ -71,7 +71,7 @@ const ClientOnboardingPage = () => {
                         <div className="text-3xl">🚀</div>
                     </div>
                     <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-6 leading-tight">
-                        Welcome to GeoFit
+                        Welcome to Fitbinary
                     </h1>
                     <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
                         Transform your fitness business with our comprehensive management platform.

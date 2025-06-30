@@ -2,7 +2,7 @@ import TenantLoginForm from "./form";
 
 export const generateMetadata = () => {
   return {
-    title: "Login | GeoFit",
+    title: "Login | Fitbinary",
   };
 };
 
