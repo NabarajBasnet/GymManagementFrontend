@@ -410,11 +410,13 @@ const Header = () => {
               title: "Staff Management",
               link: "/dashboard/staffmanagement/staffs",
             },
-            {
-              icon: FcParallelTasks,
-              title: "Task Management",
-              link: "/dashboard/staffmanagement/taskmanagement",
-            },
+            ...(loggedInUser?.role === 'Gym Admin' ? [] : [
+              {
+                icon: FcParallelTasks,
+                title: "Task Management",
+                link: "/dashboard/staffmanagement/taskmanagement",
+              },
+            ])
           ],
         },
       ],
