@@ -112,7 +112,7 @@ const Navbar = () => {
                         <a href="#" className="text-2xl font-bold tracking-tight">
                             <img
                                 className='w-40'
-                                src='./images/GEOFITLOGO.png'
+                                src='./images/FitBinaryLogo.png'
                             />
                         </a>
                     </div>
