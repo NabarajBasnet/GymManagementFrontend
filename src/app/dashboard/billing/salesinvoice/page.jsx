@@ -1,5 +1,13 @@
 'use client';
 
+import { FiPrinter } from "react-icons/fi";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { LuFileSearch2 } from "react-icons/lu";
+import { FaUser } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import {
     CircleDollarSign,
@@ -27,9 +35,8 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useForm, Controller } from "react-hook-form";
 import Pagination from '@/components/ui/CustomPagination';
-import { Plus, Search, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
+import { Plus, Search, Trash2, ArrowUpDown } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -750,17 +757,17 @@ const PaymentInvoice = () => {
     };
 
     return (
-        <div className="w-full py-6 bg-gray-100 px-4  min-h-screen mx-auto">
+        <div className="w-full py-6 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+            <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
                 {/* Enhanced Breadcrumb with Icons */}
-                <div className="mb-6">
+                <div className="mb-4">
                     <Breadcrumb>
                         <BreadcrumbList className="flex items-center">
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     href="/"
-                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
                                 >
                                     <Home className="h-4 w-4 mr-2" />
                                     Home
@@ -770,7 +777,7 @@ const PaymentInvoice = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     href="/dashboard"
-                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
                                 >
                                     <LayoutDashboard className="h-4 w-4 mr-2" />
                                     <span>
@@ -782,7 +789,7 @@ const PaymentInvoice = () => {
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     href="/dashboard/billing"
-                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
                                 >
                                     <CreditCard className="h-4 w-4 mr-2" />
                                     <span>Billing</span>
@@ -790,10 +797,13 @@ const PaymentInvoice = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator className="mx-2 text-gray-300" />
                             <BreadcrumbItem>
-                                <BreadcrumbPage className="flex items-center text-sm font-medium text-primary">
+                                <BreadcrumbLink
+                                    href="/dashboard/billing"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                >
                                     <FileText className="h-4 w-4 mr-2" />
-                                    <span>Payment Invoice</span>
-                                </BreadcrumbPage>
+                                    <span>Billing</span>
+                                </BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -802,10 +812,10 @@ const PaymentInvoice = () => {
                 {/* Modern Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                     <div className="flex items-center">
-                        <FaFileInvoice className="h-6 w-6 mr-3" />
+                        <FaFileInvoice className="h-6 w-6 mr-3 text-primary" />
                         <div>
-                            <h1 className="text-2xl font-bold text-gray-800">Sales Invoices</h1>
-                            <p className="text-sm text-gray-500 mt-1">
+                            <h1 className="text-2xl font-bold text-gray-800 text-primary">Sales Invoices</h1>
+                            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
                                 Manage and track all your invoices
                             </p>
                         </div>
@@ -857,138 +867,138 @@ const PaymentInvoice = () => {
             </AlertDialog>
 
             {/* Content Area */}
-            <div className="w-full bg-white rounded-md my-4 shadow-md border border-gray-200">
+            <div className="w-full bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm my-6">
                 {/* Table Section */}
                 <div className="w-full">
                     {Array.isArray(invoices) && invoices?.length > 0 ? (
                         <div className="w-full">
                             <div className="overflow-x-auto">
                                 {isLoading ? (
-                                    <Loader />
+                                    <div className="flex justify-center items-center h-64">
+                                        <Loader className="h-8 w-8 text-primary animate-spin" />
+                                    </div>
                                 ) : (
-                                    <table className="text-sm w-full">
+                                    <table className="w-full text-sm">
                                         <thead>
-                                            <tr className="border-b bg-muted/50">
-                                                <th className="h-16 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Invoice No
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('invoiceNo');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-16 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Customer Name
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('customerName');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Due Date
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('dueDate');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Amount
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('amount');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Paid
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('paidAmount');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Amount Due
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('dueAmount');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Status
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('status');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                {loggedInUser?.role !== 'Gym Admin' && (
-                                                    <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
-                                                )}
+                                            <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+                                                {[
+                                                    { id: 'invoiceNo', label: 'Invoice No' },
+                                                    { id: 'customerName', label: 'Customer' },
+                                                    { id: 'dueDate', label: 'Due Date' },
+                                                    { id: 'amount', label: 'Amount', align: 'right' },
+                                                    { id: 'paidAmount', label: 'Paid', align: 'right' },
+                                                    { id: 'dueAmount', label: 'Due', align: 'right' },
+                                                    { id: 'status', label: 'Status' },
+                                                    ...(loggedInUser?.role !== 'Gym Admin' ? [{ id: 'actions', label: 'Actions', align: 'right' }] : [])
+                                                ].map((column) => (
+                                                    <th
+                                                        key={column.id}
+                                                        className={`h-12 px-4 ${column.align === 'right' ? 'text-right' : 'text-left'} font-medium text-gray-500 dark:text-gray-400`}
+                                                    >
+                                                        <div className="flex items-center justify-start gap-1">
+                                                            {column.label}
+                                                            {column.id !== 'actions' && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setSortBy(column.id);
+                                                                        setSortOrderDesc(!sortOrderDesc);
+                                                                    }}
+                                                                    className="ml-1 p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                                                >
+                                                                    <ArrowUpDown className="h-3.5 w-3.5" />
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </th>
+                                                ))}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {invoices?.map((invoice) => (
-                                                <tr key={invoice._id} className="border-b text-sm hover:bg-muted/50">
-                                                    <td className="p-3 align-middle font-medium">{invoice?.invoiceNo || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">{invoice?.customer?.fullName || 'N/A'}</td>
-                                                    <td className="p-3 align-middle text-center">{new Date(invoice?.dueDate).toISOString().split('T')[0] || 'N/A'}</td>
-                                                    <td className="p-3 align-middle text-center"> {invoice?.organization?.currency} {invoice?.amount || 0}</td>
-                                                    <td className="p-3 align-middle text-center">{invoice?.organization?.currency} {invoice?.paidAmount || 0}</td>
-                                                    <td className="p-3 align-middle text-center">{invoice?.organization?.currency} {invoice?.dueAmount || 0}</td>
-                                                    <td className="p-3 align-middle text-start">{getInvoiceStatusBadge(invoice?.status)}</td>
+                                                <tr
+                                                    key={invoice._id}
+                                                    className="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
+                                                >
+                                                    <td className="p-4 align-middle font-medium text-gray-900 dark:text-gray-100">
+                                                        {invoice?.invoiceNo || 'N/A'}
+                                                    </td>
+                                                    <td className="p-4 align-middle text-gray-700 dark:text-gray-300">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex-shrink-0 h-8 w-8 rounded-full bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
+                                                                <FaUser className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                                            </div>
+                                                            <span>{invoice?.customer?.fullName || 'N/A'}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4 align-middle text-gray-600 dark:text-gray-400">
+                                                        {invoice?.dueDate ? new Date(invoice.dueDate).toISOString().split('T')[0] : 'N/A'}
+                                                    </td>
+                                                    <td className="p-4 align-middle text-start font-medium text-gray-900 dark:text-gray-100">
+                                                        {invoice?.organization?.currency} {invoice?.amount?.toLocaleString() || '0'}
+                                                    </td>
+                                                    <td className="p-4 align-middle text-start text-green-600 dark:text-green-400">
+                                                        {invoice?.organization?.currency} {invoice?.paidAmount?.toLocaleString() || '0'}
+                                                    </td>
+                                                    <td className="p-4 align-middle text-start text-red-600 dark:text-red-400">
+                                                        {invoice?.organization?.currency} {invoice?.dueAmount?.toLocaleString() || '0'}
+                                                    </td>
+                                                    <td className="p-4 align-middle">
+                                                        {getInvoiceStatusBadge(invoice?.status)}
+                                                    </td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
-                                                        <td className="flex items-center p-4 align-middle justify-end">
-                                                            <PiPrinterBold
-                                                                onClick={() => getSingleSalesInvoice(invoice._id)}
-                                                                className="h-4 w-4 cursor-pointer hover:text-blue-600"
-                                                            />
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        className="hover:bg-transparent hover:text-red-600 text-gray-800"
-                                                                    >
-                                                                        <Trash2 className="h-4 w-4" />
-                                                                    </Button>
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            This action cannot be undone. This will permanently delete this receipt.
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => deleteSalesInvoice(invoice._id)}>Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
+                                                        <td className="p-4 align-middle text-center">
+                                                            <div className="flex justify-center gap-2">
+
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={() => getSingleSalesInvoice(invoice._id)}
+                                                                            className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                                                                        >
+                                                                            <FiPrinter className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>Print Invoice</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+
+                                                                <AlertDialog>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <AlertDialogTrigger asChild>
+                                                                                <Button
+                                                                                    variant="ghost"
+                                                                                    size="icon"
+                                                                                    className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                                                                                >
+                                                                                    <Trash2 className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </AlertDialogTrigger>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent>Delete Invoice</TooltipContent>
+                                                                    </Tooltip>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This will permanently delete invoice #{invoice.invoiceNo}. This action cannot be undone.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => deleteSalesInvoice(invoice._id)}
+                                                                                className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500"
+                                                                            >
+                                                                                Delete Invoice
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
                                                         </td>
                                                     )}
                                                 </tr>
@@ -999,131 +1009,50 @@ const PaymentInvoice = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto min-h-screen flex">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b bg-muted/50">
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Bill No
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('billNo');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Bill Date
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('billDate');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Method
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('paymentMethod');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Discount
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('totalGivenDiscountAmount');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Discount %
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('totalDiscountPercentage');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Grand Total
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('grandTotal');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex text-sm font-semibold items-center">
-                                                Fiscal Year
-                                                <ArrowUpDown
-                                                    onClick={() => {
-                                                        setSortBy('fiscalYear');
-                                                        setSortOrderDesc(!sortOrderDesc);
-                                                    }}
-                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        {loggedInUser?.role !== 'Gym Admin' && (
-                                            <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
-                                        )}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colSpan={loggedInUser?.role === 'Gym Admin' ? 9 : 10} className="text-center py-6 text-sm text-muted-foreground">
-                                            <h3 className="text-lg font-medium text-gray-700 mb-1">No payment invoices yet</h3>
-                                            <p className="text-gray-500 mb-4 text-xs font-semibold w-full text-center align-center">Create your first payment receipt to get started</p>
-                                            <Button
-                                                onClick={() => setOpenInvoiceForm(true)}
-                                                className="px-6">
-                                                <Plus className="h-4 w-4 mr-2" />
-                                                New Invoice
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                    <div className="flex items-center justify-between border-t px-4 py-4">
-                        <div className="text-sm text-muted-foreground">
-                            Showing <strong>{invoices?.length}</strong> of <strong>{invoices?.length}</strong> receipts
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <div className="flex justify-center py-4">
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                    classNames={{
-                                        item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                                        active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
-                                        dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                                    }}
-                                />
+                        <div className="w-full flex flex-col items-center justify-center py-16 px-4">
+                            <div className="max-w-md text-center">
+                                <LuFileSearch2 className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    No invoices found
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                                    {searchQuery
+                                        ? "No invoices match your search criteria"
+                                        : "Get started by creating a new invoice"}
+                                </p>
+                                <Button
+                                    onClick={() => setOpenInvoiceForm(true)}
+                                    className="px-6"
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Create Invoice
+                                </Button>
                             </div>
                         </div>
-                    </div>
+                    )}
+
+                    {/* Pagination */}
+                    {invoices?.length > 0 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 dark:border-gray-800 px-6 py-4">
+                            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-0">
+                                Showing <span className="font-medium text-gray-700 dark:text-gray-300">{invoices.length}</span> invoices
+                            </div>
+                            <Pagination
+                                total={totalPages || 1}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                                classNames={{
+                                    root: "gap-1",
+                                    item: "h-9 w-9 border border-gray-300 dark:border-gray-700 bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
+                                    active: "bg-primary text-white hover:bg-primary/90 dark:hover:bg-primary/90 border-primary",
+                                    dots: "text-gray-400 dark:text-gray-500"
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
