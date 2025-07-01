@@ -431,23 +431,23 @@ const Header = () => {
           link: "/dashboard/paymenthistory",
         },
         {
+          icon: AiFillProduct,
+          title: "Inventory",
+          link: "/dashboard/inventory",
+        },
+        {
           icon: MdAttachMoney,
           title: "Billing",
           link: "/dashboard/billing",
           subObj: [
             {
-              icon: AiFillProduct,
-              title: "Services & Products",
-              link: "/dashboard/billing/servicesandproducts",
-            },
-            {
               icon: IoReceiptSharp,
-              title: "Payment Receipt",
+              title: "Receipts",
               link: "/dashboard/billing/paymentreceipts",
             },
             {
               icon: FaMoneyBillAlt,
-              title: "Sales Invoice",
+              title: "Invoices",
               link: "/dashboard/billing/salesinvoice",
             },
             // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
