@@ -663,19 +663,10 @@ const PaymentInvoice = () => {
     }, [searchQuery]);
 
     // Get Single Receipt Details
-    const getSingleSalesInvoice = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/${id}`);
-            const responseBody = await response.json();
-
-            if (response.ok && response.status === 200) {
-                toast.success(responseBody.message || '');
-                setInvoiceData(responseBody);
-                printInvoice(responseBody);
-            };
-        } catch (error) {
-            console.log("Error: ", error)
-        };
+    const getSingleSalesInvoice = async (invoice) => {
+        console.log(invoice)
+        setInvoiceData(invoice);
+        printInvoice(invoice);
     };
 
     const deleteSalesInvoice = async (id) => {
@@ -951,7 +942,7 @@ const PaymentInvoice = () => {
                                                                         <Button
                                                                             variant="ghost"
                                                                             size="icon"
-                                                                            onClick={() => getSingleSalesInvoice(invoice._id)}
+                                                                            onClick={() => getSingleSalesInvoice(invoice)}
                                                                             className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                                                                         >
                                                                             <FiPrinter className="h-4 w-4" />
