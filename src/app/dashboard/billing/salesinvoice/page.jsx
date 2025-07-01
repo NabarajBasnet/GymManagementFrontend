@@ -830,18 +830,15 @@ const PaymentInvoice = () => {
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder=" "
-                                className="pl-10 pr-4 py-6 h-12 rounded-lg border-gray-200 focus-visible:ring-primary peer"
+                                placeholder="Search here..."
+                                className="pl-10 pr-4 py-6 h-12 bg-white dark:bg-gray-900 dark:border-none rounded-sm focus-visible:ring-primary"
                             />
-                            <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-10 peer-focus:left-10 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">
-                                Search invoices...
-                            </label>
                         </div>
 
                         {/* Premium Button with Transition */}
                         <Button
                             onClick={() => setOpenInvoiceForm(true)}
-                            className="h-12 px-6 rounded-lg bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
+                            className="h-12 px-6 rounded-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
                         >
                             <Plus className="h-5 w-5 mr-2" />
                             <span className="font-semibold">New Invoice</span>
