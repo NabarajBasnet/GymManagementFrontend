@@ -8,7 +8,12 @@ import {
     Clock,
     CheckCircle2,
     AlertCircle,
+    Home,
+    LayoutDashboard,
+    CreditCard,
+    FileText,
 } from "lucide-react";
+import { FaFileInvoice } from "react-icons/fa6";
 import { PiPrinterBold } from "react-icons/pi";
 import { useRef, useEffect, useState } from 'react';
 import {
@@ -747,59 +752,89 @@ const PaymentInvoice = () => {
     return (
         <div className="w-full py-6 bg-gray-100 px-4  min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="bg-white p-4 rounded-md border shadow-sm">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Home
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Dashboard
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/billing" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Billing
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="text-sm font-medium text-primary">
-                                Payment Invoice
-                            </BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+            <div className="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+                {/* Enhanced Breadcrumb with Icons */}
+                <div className="mb-6">
+                    <Breadcrumb>
+                        <BreadcrumbList className="flex items-center">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/"
+                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                >
+                                    <Home className="h-4 w-4 mr-2" />
+                                    Home
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/dashboard"
+                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                >
+                                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/dashboard/billing"
+                                    className="flex items-center text-sm font-medium text-gray-500 hover:text-primary transition-colors"
+                                >
+                                    <CreditCard className="h-4 w-4 mr-2" />
+                                    <span>Billing</span>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage className="flex items-center text-sm font-medium text-primary">
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    <span>Payment Invoice</span>
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
 
-                {/* Header Section */}
-                <div className="flex flex-col md:flex-row mt-2 bg-white rounded-md justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-xl font-bold text-gray-800">Sales Invoice</h1>
+                {/* Modern Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div className="flex items-center">
+                        <FaFileInvoice className="h-6 w-6 mr-3" />
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-800">Sales Invoices</h1>
+                            <p className="text-sm text-gray-500 mt-1">
+                                Manage and track all your invoices
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3">
-                        {/* Search Bar */}
-                        <div className="relative flex-1 min-w-[200px]">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3 items-end">
+                        {/* Enhanced Search with Floating Label */}
+                        <div className="relative flex-1 min-w-[280px]">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-4 w-4 text-gray-400" />
+                            </div>
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search invoices..."
-                                className="pl-10 pr-4 py-2 h-10 rounded-md border-gray-300 focus-visible:ring-primary"
+                                placeholder=" "
+                                className="pl-10 pr-4 py-6 h-12 rounded-lg border-gray-200 focus-visible:ring-primary peer"
                             />
+                            <label className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-10 peer-focus:left-10 peer-focus:text-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">
+                                Search invoices...
+                            </label>
                         </div>
 
-                        {/* New Receipt Button */}
+                        {/* Premium Button with Transition */}
                         <Button
                             onClick={() => setOpenInvoiceForm(true)}
-                            className="h-10 px-4 rounded-md bg-primary hover:bg-primary/90">
-                            <Plus className="h-4 w-4 mr-2" />
-                            New Invoice
+                            className="h-12 px-6 rounded-lg bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
+                        >
+                            <Plus className="h-5 w-5 mr-2" />
+                            <span className="font-semibold">New Invoice</span>
                         </Button>
                     </div>
                 </div>
