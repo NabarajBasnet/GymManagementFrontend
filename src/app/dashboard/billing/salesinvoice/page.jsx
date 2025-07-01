@@ -65,9 +65,6 @@ const PaymentInvoice = () => {
 
     const queryclient = useQueryClient();
 
-    // Form states
-    const [openInvoiceForm, setOpenInvoiceForm] = useState(false);
-
     // Invoice Form Data
     const [itemDetails, setItemDetails] = useState([{
         selectedItem: {},
@@ -77,40 +74,12 @@ const PaymentInvoice = () => {
         total: 0,
     }]);
 
-    // Handle Add Item Line Fn
-    const handleAddItemLine = () => {
-        const prevItem = [...itemDetails];
-        prevItem.push({
-            selectedItem: {},
-            quantity: 1,
-            price: 0,
-            discount: 0,
-            total: 0,
-        });
-        setItemDetails(prevItem);
-
-        // Add a new dropdown state for the new item
-        setActiveDropdownIndex(-1);
-    };
-
     // Data states
     const [paymentMethod, setPaymentMethod] = useState('');
     const [memberId, setMemberId] = useState('');
     const [staffId, setStaffId] = useState('');
     const [assignedStaffName, setAssignedStaffName] = useState('');
     const [assignedMemberName, setAssignedMemberName] = useState('');
-
-    // Member search states
-    const [memberSearchQuery, setMemberSearchQuery] = useState('');
-    const [memberName, setMemberName] = useState('');
-    const [renderMemberDropdown, setRenderMemberDropdown] = useState(false);
-    const memberSearchRef = useRef(null);
-
-    // Staff search states
-    const [staffSearchQuery, setStaffSearchQuery] = useState('');
-    const [staffName, setStaffName] = useState('');
-    const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
-    const staffSearchRef = useRef(null);
 
     // Other states
     const [invoiceData, setInvoiceData] = useState(null);
@@ -128,105 +97,6 @@ const PaymentInvoice = () => {
     // Sorting states
     const [sortBy, setSortBy] = useState('');
     const [sortOrderDesc, setSortOrderDesc] = useState(true);
-
-    // Get all members
-    const getAllMembers = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/members`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch members");
-        }
-    };
-
-    const { data: membersData, isLoading: membersLoading } = useQuery({
-        queryKey: ['members'],
-        queryFn: getAllMembers
-    });
-
-    const { members } = membersData || {};
-
-    // Get all staffs
-    const getAllStaffs = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch staffs");
-        }
-    };
-
-    const { data: staffsData, isLoading: staffsLoading } = useQuery({
-        queryKey: ['staffs'],
-        queryFn: getAllStaffs
-    });
-
-    const { staffs } = staffsData || {};
-
-    // Get all services and tasks
-    const getAllItems = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch members");
-        }
-    };
-
-    const { data: itemsData, isLoading: itemLoading } = useQuery({
-        queryKey: ['items'],
-        queryFn: getAllItems
-    });
-
-    const { serviceAndProducts } = itemsData || {};
-
-    // Handle Remove Item Line
-    const handleRemoveItemLine = (index) => {
-        if (itemDetails.length > 1) {
-            const updatedItems = [...itemDetails];
-            updatedItems.splice(index, 1);
-            setItemDetails(updatedItems);
-        } else {
-            toast.error("At least one item is required");
-        };
-    };
-
-    // Item search states
-    const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
-    const [itemSearchQueries, setItemSearchQueries] = useState(Array(itemDetails.length).fill(''));
-
-    // Handle click outside for all dropdowns
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (memberSearchRef.current && !memberSearchRef.current.contains(event.target)) {
-                setRenderMemberDropdown(false);
-            }
-            if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
-                setRenderStaffDropdown(false);
-            }
-            if (itemSearchRef.current && !itemSearchRef.current.contains(event.target)) {
-                setActiveDropdownIndex(-1);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [memberSearchRef, staffSearchRef, itemSearchRef]);
-
-    const handleMemberSearchFocus = () => {
-        setRenderMemberDropdown(true);
-    };
-
-    const handleStaffSearchFocus = () => {
-        setRenderStaffDropdown(true);
-    };
 
     // Print Invoice
     const printInvoice = (invoiceData) => {
@@ -777,77 +647,13 @@ const PaymentInvoice = () => {
         printWindow.document.close();
     };
 
-    // Invoice Data
-    const [subTotal, setSubTotal] = useState(0);
-    const [discountAmount, setDiscountAmount] = useState(0);
-    const [discountPercentage, setDiscountPercentage] = useState(0);
-    const [calculatedTotal, setCalculatedTotal] = useState(0);
-
-    const postInvoice = async (data) => {
-
-        const { billDate, additionalNotes } = data;
-        const finalData = {
-            staffId,
-            memberId,
-            billDate,
-            itemDetails,
-            paymentMethod,
-            discountAmount,
-            discountPercentage,
-            subTotal,
-            calculatedTotal,
-            additionalNotes
-        };
-
-        try {
-
-            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(finalData),
-            });
-
-            const responseBody = await response.json();
-
-            if (response.ok && response.status === 200) {
-                toast.success(responseBody.message);
-                setOpenInvoiceForm(false);
-                reset();
-                setStaffName('');
-                setStaffId('');
-                setMemberName('');
-                setMemberId('');
-                setItemDetails([{
-                    selectedItem: {},
-                    quantity: 0,
-                    price: 0,
-                    discount: 0,
-                    total: 0,
-                }]);
-                setPaymentMethod('');
-                setDiscountAmount(0);
-                setDiscountPercentage(0);
-                setCalculatedTotal(0);
-                setSubTotal(0);
-                queryclient.invalidateQueries(['salesinvoice']);
-            } else {
-                toast.error(responseBody.message);
-            };
-
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error(error.message);
-        };
-    };
-
     // Get all services and products from server
     const getAllInvoices = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/invoice/v2?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
+            console.log('Res body: ', responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -859,7 +665,7 @@ const PaymentInvoice = () => {
         queryKey: ['salesinvoice', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
     });
 
-    const { salesinvoice, totalPages } = data || {};
+    const { invoices, totalPages } = data || {};
 
     // Debounce
     useEffect(() => {
@@ -901,82 +707,6 @@ const PaymentInvoice = () => {
             console.log("Error: ", error)
         };
     };
-
-    // Handle Item Selection
-    const handleItemSelection = (item, index) => {
-        const updatedItemDetails = [...itemDetails];
-        updatedItemDetails[index] = {
-            ...updatedItemDetails[index],
-            selectedItem: item,
-            price: parseFloat(item.sellingPrice) || 0,
-            total: (parseFloat(item.sellingPrice) || 0) * updatedItemDetails[index].quantity - updatedItemDetails[index].discount
-        };
-
-        setItemDetails(updatedItemDetails);
-
-        // Update the item search query for the specific index
-        const updatedQueries = [...itemSearchQueries];
-        updatedQueries[index] = item.itemName;
-        setItemSearchQueries(updatedQueries);
-
-        // Close the dropdown
-        setActiveDropdownIndex(-1);
-    };
-
-    // Handle quantity change
-    const handleQuantityChange = (e, index) => {
-        const quantity = parseInt(e.target.value) || 0;
-        const updatedItems = [...itemDetails];
-        const price = parseFloat(updatedItems[index].selectedItem?.sellingPrice) || 0;
-        const discount = parseFloat(updatedItems[index].discount) || 0;
-
-        updatedItems[index] = {
-            ...updatedItems[index],
-            quantity: quantity,
-            total: (quantity * price) - discount
-        };
-
-        setItemDetails(updatedItems);
-    };
-
-    // Handle discount change
-    const handleDiscountChange = (e, index) => {
-        const discount = parseFloat(e.target.value) || 0;
-        const updatedItems = [...itemDetails];
-        const quantity = updatedItems[index].quantity || 0;
-        const price = parseFloat(updatedItems[index].selectedItem?.sellingPrice) || 0;
-
-        updatedItems[index] = {
-            ...updatedItems[index],
-            discount: discount,
-            total: (quantity * price) - discount
-        };
-
-        setItemDetails(updatedItems);
-    };
-
-    // Handle item search
-    const handleItemSearch = (e, index) => {
-        const query = e.target.value;
-        const updatedQueries = [...itemSearchQueries];
-        updatedQueries[index] = query;
-        setItemSearchQueries(updatedQueries);
-    };
-
-    // Calculate totals
-    useEffect(() => {
-        const totalBeforeDiscount = itemDetails.reduce((sum, item) => {
-            const price = parseFloat(item.selectedItem?.sellingPrice) || 0;
-            const quantity = item.quantity || 0;
-            return sum + price * quantity;
-        }, 0);
-
-        const discountByPercent = (totalBeforeDiscount * discountPercentage) / 100;
-        const totalDiscount = discountAmount + discountByPercent;
-
-        setSubTotal(Number(totalBeforeDiscount.toFixed(2)));
-        setCalculatedTotal(Number((totalBeforeDiscount - totalDiscount).toFixed(2)));
-    }, [itemDetails, discountAmount, discountPercentage]);
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4  min-h-screen mx-auto">
@@ -1059,7 +789,7 @@ const PaymentInvoice = () => {
             <div className="w-full bg-white rounded-md my-4 shadow-md border border-gray-200">
                 {/* Table Section */}
                 <div className="w-full">
-                    {Array.isArray(salesinvoice) && salesinvoice.length > 0 ? (
+                    {Array.isArray(invoices) && invoices?.length > 0 ? (
                         <div className="w-full">
                             <div className="overflow-x-auto">
                                 {isLoading ? (
@@ -1151,7 +881,7 @@ const PaymentInvoice = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {salesinvoice.map((invoice) => (
+                                            {invoices?.map((invoice) => (
                                                 <tr key={invoice._id} className="border-b text-sm hover:bg-muted/50">
                                                     <td className="p-3 align-middle font-medium">{invoice.billNo}</td>
                                                     <td className="p-3 align-middle">{new Date(invoice.billDate).toISOString().split('T')[0]}</td>
@@ -1325,437 +1055,6 @@ const PaymentInvoice = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Form Section */}
-            {openInvoiceForm && (
-                <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form onSubmit={handleSubmit(postInvoice)} className="bg-white w-11/12 md:w-9/12 max-w-8xl h-[95vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
-                        {/* Header */}
-                        <div className="w-full flex justify-between py-3 bg-gray-50 px-6 items-center border-b border-gray-100">
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Sales Invoice</h1>
-                                <p className="text-sm text-gray-500 mt-1">Generate and print payment invoices</p>
-                            </div>
-                            <button
-                                onClick={() => setOpenInvoiceForm(false)}
-                                className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
-                                aria-label="Close form"
-                            >
-                                <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
-                            </button>
-                        </div>
-
-                        {/* Body */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {/* Step 1: Customer & Basic Info */}
-                            <div className="mb-4">
-                                <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Basic Information</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                                    {/* Bill Issued By */}
-                                    <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
-                                        <div ref={staffSearchRef} className="relative">
-                                            <Controller
-                                                name="staffName"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <div className="relative">
-                                                        <Input
-                                                            {...field}
-                                                            autoComplete="off"
-                                                            value={staffName || staffSearchQuery}
-                                                            onChange={(e) => {
-                                                                setStaffSearchQuery(e.target.value);
-                                                                field.onChange(e);
-                                                                setStaffName('');
-                                                            }}
-                                                            onFocus={handleStaffSearchFocus}
-                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                            placeholder="Search staff..."
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                            <FiSearch className="h-5 w-5" />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            />
-                                            {errors.staffName && (
-                                                <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                    {errors.staffName.message}
-                                                </p>
-                                            )}
-
-                                            {renderStaffDropdown && (
-                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                    {staffs?.length > 0 ? (
-                                                        staffs
-                                                            .filter((staff) => {
-                                                                return staff.fullName
-                                                                    .toLowerCase()
-                                                                    .includes(staffSearchQuery.toLowerCase());
-                                                            })
-                                                            .map((staff) => (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setStaffName(staff.fullName);
-                                                                        setStaffSearchQuery(staff.fullName);
-                                                                        setStaffId(staff._id);
-                                                                        setRenderStaffDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                    key={staff._id}
-                                                                >
-                                                                    {staff.fullName}
-                                                                </div>
-                                                            ))
-                                                    ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Issued To */}
-                                    <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium text-gray-700">Issued To</Label>
-                                        <div ref={memberSearchRef} className="relative">
-                                            <Controller
-                                                name="memberName"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <div className="relative">
-                                                        <Input
-                                                            {...field}
-                                                            autoComplete="off"
-                                                            value={memberName || memberSearchQuery}
-                                                            onChange={(e) => {
-                                                                setMemberSearchQuery(e.target.value);
-                                                                field.onChange(e);
-                                                                setMemberName('');
-                                                            }}
-                                                            onFocus={handleMemberSearchFocus}
-                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                            placeholder="Search members..."
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                            <FiSearch className="h-5 w-5" />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            />
-                                            {errors.memberName && (
-                                                <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                    {errors.memberName.message}
-                                                </p>
-                                            )}
-
-                                            {renderMemberDropdown && (
-                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                    {members?.length > 0 ? (
-                                                        members
-                                                            .filter((member) => {
-                                                                return member.fullName
-                                                                    .toLowerCase()
-                                                                    .includes(memberSearchQuery.toLowerCase());
-                                                            })
-                                                            .map((member) => (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setMemberName(member.fullName);
-                                                                        setMemberSearchQuery(member.fullName);
-                                                                        setMemberId(member._id);
-                                                                        setRenderMemberDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                    key={member._id}
-                                                                >
-                                                                    {member.fullName}
-                                                                </div>
-                                                            ))
-                                                    ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">{membersLoading ? 'Loading...' : 'No members found'}</div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Bill Date */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-1.5 my-2">
-                                        <Label className="text-sm font-medium text-gray-700">Bill Date</Label>
-                                        <Input
-                                            type="date"
-                                            {...register('billDate', { required: 'Bill date is required' })}
-                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                        {errors.billDate && (
-                                            <p className="text-xs font-semibold text-red-600">{`${errors.billDate.message}`}</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Item Selection Form */}
-                            <div className='bg-white border rounded-lg'>
-                                <table className="w-full rounded-lg">
-                                    <thead>
-                                        <tr className="bg-gray-100">
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[30%]">Select Item</th>
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Quantity</th>
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Price</th>
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Discount</th>
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Total</th>
-                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[10%]">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody ref={itemSearchRef}>
-                                        {itemDetails.map((item, index) => (
-                                            <tr key={index} className="hover:bg-gray-50">
-                                                {/* Select Item */}
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <div className="relative">
-                                                        <div className="relative">
-                                                            <Input
-                                                                autoComplete="off"
-                                                                value={itemSearchQueries[index] || ''}
-                                                                onChange={(e) => handleItemSearch(e, index)}
-                                                                onFocus={() => setActiveDropdownIndex(index)}
-                                                                className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
-                                                                placeholder="Search items..."
-                                                            />
-                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                                <FiSearch className="h-4 w-4" />
-                                                            </div>
-                                                        </div>
-
-                                                        {activeDropdownIndex === index && (
-                                                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                                {itemLoading ? (
-                                                                    <div className="flex justify-center items-center py-4">
-                                                                        <BiLoaderAlt className="animate-spin h-5 w-5 text-blue-500" />
-                                                                    </div>
-                                                                ) : serviceAndProducts?.length > 0 ? (
-                                                                    serviceAndProducts
-                                                                        .filter((prod) => {
-                                                                            return prod.itemName
-                                                                                .toLowerCase()
-                                                                                .includes((itemSearchQueries[index] || '').toLowerCase());
-                                                                        })
-                                                                        .map((prod) => (
-                                                                            <div
-                                                                                onClick={() => handleItemSelection(prod, index)}
-                                                                                className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                                key={prod.itemId}
-                                                                            >
-                                                                                {prod.itemName} ({prod.currency?.split('-')[0] || '$'} {prod.sellingPrice})
-                                                                            </div>
-                                                                        ))
-                                                                ) : (
-                                                                    <div className="px-4 py-2 text-sm text-gray-500">No items found</div>
-                                                                )}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                {/* Quantity */}
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <Input
-                                                        type="number"
-                                                        min="0"
-                                                        value={item.quantity}
-                                                        onChange={(e) => handleQuantityChange(e, index)}
-                                                        placeholder="0"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                    />
-                                                </td>
-                                                {/* Selling Price of an item */}
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <Input
-                                                        type="text"
-                                                        value={item.selectedItem?.sellingPrice || '0.00'}
-                                                        readOnly
-                                                        placeholder="0.00"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 bg-gray-50"
-                                                    />
-                                                </td>
-                                                {/* Discount */}
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <Input
-                                                        type="text"
-                                                        min="0"
-                                                        value={item.discount || ''}
-                                                        onChange={(e) => handleDiscountChange(e, index)}
-                                                        placeholder="0.00"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                    />
-                                                </td>
-                                                {/* Total Price */}
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <Input
-                                                        type="text"
-                                                        value={item.total.toFixed(2) || '0.00'}
-                                                        readOnly
-                                                        placeholder="0.00"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 bg-gray-50"
-                                                    />
-                                                </td>
-                                                <td className="p-1 md:p-2 align-middle">
-                                                    <Button
-                                                        type='button'
-                                                        variant="ghost"
-                                                        onClick={() => handleRemoveItemLine(index)}
-                                                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
-                                                    >
-                                                        <IoIosRemoveCircleOutline className="text-red-600 h-5 w-5" />
-                                                        <span className="text-red-600 text-sm font-semibold">remove</span>
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                                <div className="p-2">
-                                    <Button
-                                        onClick={handleAddItemLine}
-                                        type='button'
-                                        variant="ghost"
-                                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
-                                    >
-                                        <IoMdAddCircleOutline className="h-5 w-5" />
-                                        <span className="text-sm font-semibold">Add item line</span>
-                                    </Button>
-                                </div>
-                            </div>
-
-                            {/* Step 3: Payment Details */}
-                            <div className=" mt-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {/* Payment Method Column */}
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
-                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
-                                            <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                                <SelectValue placeholder="Select payment method" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Payment Methods</SelectLabel>
-                                                    <SelectItem value="Cash">Cash</SelectItem>
-                                                    <SelectItem value="Card">Card</SelectItem>
-                                                    <SelectItem value="E Banking">E Banking</SelectItem>
-                                                    <SelectItem value="Cheque">Cheque</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    {/* Amount Summary Column */}
-                                    {/* Total Discount By Amount */}
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Total Discount Amount</Label>
-                                        <Input
-                                            type="number"
-                                            value={discountAmount}
-                                            onChange={(e) => setDiscountAmount(Number(e.target.value))}
-                                            placeholder="0.00"
-                                            className="..."
-                                        />
-                                    </div>
-
-                                    {/* Total Discount By Percentage */}
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Total Discount Percentage</Label>
-                                        <Input
-                                            type="number"
-                                            value={discountPercentage}
-                                            onChange={(e) => setDiscountPercentage(Number(e.target.value))}
-                                            placeholder="0.00"
-                                            className="..."
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Render final calculations */}
-                            <div className="w-full bg-indigo-500 rounded-lg p-4 my-4">
-                                <div className="grid grid-cols-2 gap-4">
-                                    {/* Left side - empty or could add icon/illustration */}
-                                    <div className="flex items-center justify-start">
-                                        <div className="text-gray-400">
-                                            <PiPrinterBold className="text-white w-16 h-16" />
-                                        </div>
-                                    </div>
-
-                                    {/* Right side - summary */}
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between items-center border-b border-white pb-1">
-                                            <span className="text-white text-sm font-medium">Sub Total:</span>
-                                            <span className="text-white text-sm font-semibold">RS {subTotal}</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center text-white border-b border-white pb-1">
-                                            <span className="text-white text-sm font-medium">Discount:</span>
-                                            <span className="text-white text-sm font-semibold">-RS {(Number(discountAmount) + (subTotal * discountPercentage / 100)).toFixed(2)}</span>
-                                        </div>
-
-                                        <div className="flex justify-between items-center pt-1">
-                                            <span className="text-gray-100 text-sm font-bold text-xl">Total:</span>
-                                            <span className="text-gray-100 text-sm font-bold text-xl">RS {calculatedTotal}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Additiona notes and border */}
-                            <div className='w-full border-t border-gray-300 mb-6 mt-10'></div>
-                            <div className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
-                                    <textarea
-                                        {...register('additionalNotes')}
-                                        rows={2}
-                                        className="w-full p-2.5 text-sm rounded-md border focus:outline-none border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        placeholder="Any additional notes or comments..."
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Footer */}
-                            <div className="w-full flex justify-end bg-gray-50 gap-3 p-6 border-t border-gray-100">
-                                <Button
-                                    type="button"
-                                    onClick={() => setOpenInvoiceForm(false)}
-                                    variant="outline"
-                                    className="h-10 px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    className="h-10 px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? (
-                                        <div className="flex items-center gap-2">
-                                            <BiLoaderAlt className="animate-spin h-4 w-4" />
-                                            Processing...
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center gap-2">
-                                            <Save className="h-4 w-4" />
-                                            Save Receipt
-                                        </div>
-                                    )}
-                                </Button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            )}
         </div>
     );
 };
