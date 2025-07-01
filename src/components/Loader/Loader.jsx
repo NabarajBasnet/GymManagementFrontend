@@ -1,81 +1,41 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { FiDatabase, FiServer, FiCpu, FiWifi } from "react-icons/fi";
+import { IoSettingsSharp } from "react-icons/io5";
+
 
 const Loader = () => {
-    const [progress, setProgress] = useState(0);
-    const [activeNode, setActiveNode] = useState(0);
-    const [dataPackets, setDataPackets] = useState([]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setProgress(prev => (prev >= 100 ? 0 : prev + 1));
-            setActiveNode(prev => (prev + 1) % 4);
-
-            // Add random data packets
-            if (Math.random() > 0.7) {
-                setDataPackets(prev => [
-                    ...prev.slice(-5),
-                    {
-                        id: Date.now(),
-                        x: Math.random() * 80 + 10,
-                        speed: Math.random() * 2 + 1
-                    }
-                ]);
-            }
-        }, 50);
-
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        // Update packet positions
-        const movePackets = setInterval(() => {
-            setDataPackets(prev =>
-                prev.map(p => ({ ...p, x: p.x + p.speed })))
-        }, 50);
-
-        return () => clearInterval(movePackets);
-    }, []);
-
     return (
-        <div className="w-full min-h-screen flex flex-col items-center justify-center dark:bg-gray-900 bg-white p-4">
-            {/* Progress info */}
-            <div className="mt-16 w-full max-w-md">
-                <div className="flex justify-between text-xs dark:text-gray-300 text-gray-600 mb-1">
-                    <span>Extracting data...</span>
-                    <span>{progress}%</span>
+        <div className="w-full min-h-screen flex items-center justify-center dark:bg-gray-900 bg-white">
+            {/* Gear Animation Container - made slightly larger */}
+            <div className="relative w-40 h-40">
+                {/* Center gear - Blue - made larger */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <div className="w-16 h-16 animate-spin text-blue-500" style={{ animationDuration: '2s' }}>
+                        <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
+                    </div>
                 </div>
-                <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 border border-gray-200 dark:border-gray-700">
-                    <div
-                        className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 h-2 rounded-full transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                    ></div>
+
+                {/* Top gear - Red - made larger */}
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                    <div className="w-12 h-12 animate-spin text-red-500" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}>
+                        <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
+                    </div>
                 </div>
-                <div className="mt-4 text-center text-gray-600 dark:text-gray-300 text-sm">
-                    {progress < 30 && 'Connecting to database...'}
-                    {progress >= 30 && progress < 60 && 'Decrypting data packets...'}
-                    {progress >= 60 && progress < 90 && 'Verifying data integrity...'}
-                    {progress >= 90 && 'Finalizing transfer...'}
+
+                {/* Right gear - Green - made larger */}
+                <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
+                    <div className="w-14 h-14 animate-spin text-green-500" style={{ animationDuration: '2.5s' }}>
+                        <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
+                    </div>
+                </div>
+
+                {/* Left gear - Yellow - made larger */}
+                <div className="absolute top-1/2 left-0 transform -translate-y-1/2">
+                    <div className="w-12 h-12 animate-spin text-yellow-500" style={{ animationDuration: '1.8s', animationDirection: 'reverse' }}>
+                        <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
+                    </div>
                 </div>
             </div>
-
-            {/* Spinner */}
-            <div className="mt-12">
-                <AiOutlineLoading3Quarters className="text-3xl animate-spin text-blue-600 dark:text-blue-400" />
-            </div>
-
-            {/* CSS for binary rain */}
-            <style jsx>{`
-                @keyframes fall {
-                    0% { transform: translateY(-20px); opacity: 0; }
-                    10% { opacity: 1; }
-                    90% { opacity: 1; }
-                    100% { transform: translateY(100px); opacity: 0; }
-                }
-            `}</style>
         </div>
     );
 };
