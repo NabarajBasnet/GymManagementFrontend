@@ -2,7 +2,6 @@
 
 import { FaLockOpen, FaMoneyBill } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
 import {
   DropdownMenu,
@@ -52,6 +51,7 @@ import {
   TrendingUp,
   Award,
   ShoppingCart,
+  Package, Moon, Sun, CheckCircle, AlertTriangle, UserPlus
 } from "lucide-react";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
@@ -421,65 +421,86 @@ const ClientAreaHeader = ({ activeTab }) => {
                   ) : null}
                 </button>
 
-{/* Notification */}
+                {/* Notification */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button
-                      className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+                      className="relative p-3 rounded-2xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
                     >
                       <Bell className="w-4 h-4" />
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                        {10}
+                      <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                        {3}
                       </span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="center">
-                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="end">
+                    <DropdownMenuLabel className="flex justify-between items-center">
+                      <span>Notifications</span>
+                      <button className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                        Mark all as read
+                      </button>
+                    </DropdownMenuLabel>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Unread notifications */}
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        Profile
-                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                        <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                          <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">New message received</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
+                        </div>
+                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Billing
-                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Settings
-                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        Keyboard shortcuts
-                        <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+
+                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                        <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-full">
+                          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Task completed</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">"Update dashboard" was marked as done</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">1 hour ago</p>
+                        </div>
+                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
+
                     <DropdownMenuSeparator />
+
+                    {/* Read notifications */}
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>Team</DropdownMenuItem>
-                      <DropdownMenuSub>
-                        <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-                        <DropdownMenuPortal>
-                          <DropdownMenuSubContent>
-                            <DropdownMenuItem>Email</DropdownMenuItem>
-                            <DropdownMenuItem>Message</DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>More...</DropdownMenuItem>
-                          </DropdownMenuSubContent>
-                        </DropdownMenuPortal>
-                      </DropdownMenuSub>
-                      <DropdownMenuItem>
-                        New Team
-                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                        <div className="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full">
+                          <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">Warning notification</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Your storage is almost full</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Yesterday</p>
+                        </div>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                        <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full">
+                          <UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">New connection</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">Sarah Smith accepted your invitation</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 days ago</p>
+                        </div>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
+
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                    <DropdownMenuItem>Support</DropdownMenuItem>
-                    <DropdownMenuItem disabled>API</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      Log out
-                      <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+
+                    <DropdownMenuItem className="justify-center text-indigo-600 dark:text-indigo-400 hover:underline">
+                      View all notifications
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -508,181 +529,181 @@ const ClientAreaHeader = ({ activeTab }) => {
                 </div>
               </button>
 
-          <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center space-x-3 p-2 hover:bg-transparent rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-800/80 transition-all duration-200 group">
-          {loggedInTenant && (
-            <>
-              <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white shadow-lg">
-                {loggedInTenant?.fullName
-                  ?.split(" ")
-                  .map((word) => word[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
-                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
-              </div>
-              <div className="hidden lg:block text-left">
-                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
-                  {loggedInTenant?.fullName}
-                </div>
-                <div className="flex items-center space-x-2">
-                  <span
-                    className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full ${loggedInTenant?.status === "active"
-                      ? "bg-green-100 text-green-800"
-                      : loggedInTenant?.status === "inactive"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-yellow-100 text-yellow-800"
-                      }`}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center space-x-3 p-2 hover:bg-transparent rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-800/80 transition-all duration-200 group">
+                    {loggedInTenant && (
+                      <>
+                        <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white shadow-lg">
+                          {loggedInTenant?.fullName
+                            ?.split(" ")
+                            .map((word) => word[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
+                          <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
+                        </div>
+                        <div className="hidden lg:block text-left">
+                          <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
+                            {loggedInTenant?.fullName}
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span
+                              className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full ${loggedInTenant?.status === "active"
+                                ? "bg-green-100 text-green-800"
+                                : loggedInTenant?.status === "inactive"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-yellow-100 text-yellow-800"
+                                }`}
+                            >
+                              <span className="capitalize">
+                                Account: {loggedInTenant?.status || "unknown"}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-72 dark:bg-gray-900 dark:border-gray-700" align="end">
+                  <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
+                        {loggedInTenant?.fullName
+                          ?.split(" ")
+                          .map((word) => word[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-800 dark:text-gray-200">
+                          {loggedInTenant?.fullName}
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
+                          <span
+                            className={`font-medium px-2 py-0.5 rounded-full ${loggedInTenant?.freeTrailStatus === "Active"
+                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100"
+                              : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+                              }`}
+                          >
+                            {loggedInTenant?.freeTrailStatus === "Active"
+                              ? `Free Trial • ${loggedInTenant?.freeTrailStatus}`
+                              : `Subscription • ${loggedInTenant?.subscriptionStatus}`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </DropdownMenuLabel>
+
+                  <div className="py-2">
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => router.push("/clientarea/accountsetting")}
+                    >
+                      <User className="mr-3" size={16} />
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          Account Details
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          View and manage account details
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => router.push("/clientarea/mysubscriptions")}
+                    >
+                      <CreditCard className="mr-3" size={16} />
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          Billing & Usage
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          View invoices and usage
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => router.push("/clientarea/myorders")}
+                    >
+                      <Package className="mr-3" size={16} />
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          My Orders
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          View my orders
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => router.push("/clientarea/settings")}
+                    >
+                      <Settings className="mr-3" size={16} />
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          Settings
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Configure and preferences
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 hover:from-indigo-100 dark:hover:from-indigo-800/30 hover:to-purple-100 dark:hover:to-purple-800/30"
+                      onClick={() => router.push("/clientarea/upgrade")}
+                    >
+                      <Crown className="mr-3 text-yellow-600" size={16} />
+                      <div>
+                        <div className="font-medium text-indigo-700 dark:text-indigo-400">
+                          Upgrade to Premium
+                        </div>
+                        <div className="text-xs text-indigo-600 dark:text-indigo-500">
+                          Unlock advanced features
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      onClick={() => router.push("/clientarea/support")}
+                    >
+                      <HelpCircle className="mr-3" size={16} />
+                      <div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          Help & Support
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Get assistance
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+                  </div>
+
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="cursor-pointer px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                    onClick={logOutTenant}
                   >
-                    <span className="capitalize">
-                      Account: {loggedInTenant?.status || "unknown"}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </>
-          )}
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-72 dark:bg-gray-900 dark:border-gray-700" align="end">
-        <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
-              {loggedInTenant?.fullName
-                ?.split(" ")
-                .map((word) => word[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()}
-            </div>
-            <div>
-              <div className="font-semibold text-gray-800 dark:text-gray-200">
-                {loggedInTenant?.fullName}
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
-                <span
-                  className={`font-medium px-2 py-0.5 rounded-full ${loggedInTenant?.freeTrailStatus === "Active"
-                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100"
-                    : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
-                    }`}
-                >
-                  {loggedInTenant?.freeTrailStatus === "Active"
-                    ? `Free Trial • ${loggedInTenant?.freeTrailStatus}`
-                    : `Subscription • ${loggedInTenant?.subscriptionStatus}`}
-                </span>
-              </div>
-            </div>
-          </div>
-        </DropdownMenuLabel>
-
-        <div className="py-2">
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-            onClick={() => router.push("/clientarea/accountsetting")}
-          >
-            <User className="mr-3" size={16} />
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">
-                Account Details
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                View and manage account details
-              </div>
-            </div>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-            onClick={() => router.push("/clientarea/mysubscriptions")}
-          >
-            <CreditCard className="mr-3" size={16} />
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">
-                Billing & Usage
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                View invoices and usage
-              </div>
-            </div>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-            onClick={() => router.push("/clientarea/myorders")}
-          >
-            <Package className="mr-3" size={16} />
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">
-                My Orders
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                View my orders
-              </div>
-            </div>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-            onClick={() => router.push("/clientarea/settings")}
-          >
-            <Settings className="mr-3" size={16} />
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">
-                Settings
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                Configure and preferences
-              </div>
-            </div>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 hover:from-indigo-100 dark:hover:from-indigo-800/30 hover:to-purple-100 dark:hover:to-purple-800/30"
-            onClick={() => router.push("/clientarea/upgrade")}
-          >
-            <Crown className="mr-3 text-yellow-600" size={16} />
-            <div>
-              <div className="font-medium text-indigo-700 dark:text-indigo-400">
-                Upgrade to Premium
-              </div>
-              <div className="text-xs text-indigo-600 dark:text-indigo-500">
-                Unlock advanced features
-              </div>
-            </div>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem 
-            className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-            onClick={() => router.push("/clientarea/support")}
-          >
-            <HelpCircle className="mr-3" size={16} />
-            <div>
-              <div className="font-medium text-gray-900 dark:text-gray-100">
-                Help & Support
-              </div>
-              <div className="text-xs text-gray-500 dark:text-gray-400">
-                Get assistance
-              </div>
-            </div>
-          </DropdownMenuItem>
-        </div>
-
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
-          onClick={logOutTenant}
-        >
-          <LogOut className="mr-3" size={16} />
-          <div>
-            <div className="font-medium">Sign Out</div>
-            <div className="text-xs text-red-500 dark:text-red-400">
-              End your session securely
-            </div>
-          </div>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+                    <LogOut className="mr-3" size={16} />
+                    <div>
+                      <div className="font-medium">Sign Out</div>
+                      <div className="text-xs text-red-500 dark:text-red-400">
+                        End your session securely
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>

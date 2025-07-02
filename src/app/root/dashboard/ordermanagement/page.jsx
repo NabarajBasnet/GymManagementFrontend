@@ -97,6 +97,7 @@ const OrderManagement = () => {
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
+      soonerToast.error(error.message);
       console.log(error);
     }
   };
@@ -231,10 +232,7 @@ const OrderManagement = () => {
 
       const responseBody = await response.json();
       if (response.ok) {
-        toast.success(responseBody.message);
-        soonerToast(responseBody.message, {
-          description: "Payment details updated successfully",
-        });
+        soonerToast.success(error.message);
         queryClient.invalidateQueries({ queryKey: ["orders"] });
         reset();
         setPaymentMethod("");
@@ -242,13 +240,11 @@ const OrderManagement = () => {
         setOrderStatus("");
         setIsPaymentDetailsFormOpen(false);
       } else {
-        toast.error(responseBody.error);
-        soonerToast(responseBody.error, {
-          description: "Error updating payment details",
-        });
+        soonerToast.error(responseBody.error);
       }
     } catch (error) {
       console.log("Error: ", error);
+      soonerToast.error(error.message);
     }
   };
 
@@ -523,7 +519,7 @@ const OrderManagement = () => {
                               {/* Approve Button */}
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button 
+                                  <Button
                                     variant="ghost"
                                     size="icon"
                                     className="h-9 w-9 rounded-lg hover:bg-green-50/50 dark:hover:bg-green-900/10 transition-all 
@@ -533,18 +529,18 @@ const OrderManagement = () => {
                                     <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
                                   </Button>
                                 </AlertDialogTrigger>
-                                
+
                                 <AlertDialogContent className="max-w-md border-0 bg-white dark:bg-gray-900 rounded-xl shadow-2xl dark:shadow-gray-950/50 p-6 overflow-hidden">
                                   {/* Gradient accent bar */}
                                   <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-green-400 to-emerald-500" />
-                                  
+
                                   <div className="flex flex-col space-y-5">
                                     <div className="flex items-start gap-4">
                                       {/* Modern icon container */}
                                       <div className="flex-shrink-0 p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 backdrop-blur-sm">
                                         <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
                                       </div>
-                                      
+
                                       <div className="space-y-2">
                                         <AlertDialogHeader>
                                           <AlertDialogTitle className="text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
@@ -554,7 +550,7 @@ const OrderManagement = () => {
                                             This will grant the tenant access to:
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
-                                        
+
                                         {/* Modern feature list */}
                                         <ul className="space-y-3">
                                           <li className="flex items-start gap-2">
@@ -584,7 +580,7 @@ const OrderManagement = () => {
                                         </ul>
                                       </div>
                                     </div>
-                                    
+
                                     <AlertDialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-4">
                                       <AlertDialogCancel className="px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                                         Cancel
