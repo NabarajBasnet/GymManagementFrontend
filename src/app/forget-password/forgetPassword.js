@@ -6,7 +6,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -23,15 +23,43 @@ import { toast } from "sonner";
 const ForgotPassword = () => {
   const [email, setEmail] = useState();
   const [forgetPasswordOTP, setForgetPasswordOTP] = useState("");
-  console.log("OTP: ", forgetPasswordOTP);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState("");
+  const [timer, setTimer] = useState(60);
+  const [isResendDisabled, setIsResendDisabled] = useState(false);
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
+
+  // timer countdown
+  useEffect(() => {
+    if (!isSubmitted || timer <= 0) {
+      setIsResendDisabled(false);
+      return;
+    }
+
+    const startTime = Date.now();
+    const endTime = startTime + timer * 1000;
+
+    const updateTimer = () => {
+      const now = Date.now();
+      const timeLeft = Math.max(0, Math.ceil((endTime - now) / 1000));
+
+      setTimer(timeLeft);
+
+      if (timeLeft > 0) {
+        requestAnimationFrame(updateTimer);
+      } else {
+        setIsResendDisabled(false);
+      }
+    };
+
+    const frameId = requestAnimationFrame(updateTimer);
+    return () => cancelAnimationFrame(frameId);
+  }, [isSubmitted, timer]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,6 +91,8 @@ const ForgotPassword = () => {
         toast.success(responseBody.message);
         setIsSubmitted(true);
         setIsLoading(false);
+        setTimer(60); // Reset timer on successful submit
+        setIsResendDisabled(true); // Disable resend button when timer starts
       } else {
         setIsLoading(false);
         toast.error(responseBody.message);
@@ -75,10 +105,36 @@ const ForgotPassword = () => {
     }
   };
 
+  const handleResendOTP = async () => {
+    setIsResendDisabled(true);
+    setTimer(60);
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/tenant/forget-password-pin?email=${email}`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      const responseBody = await response.json();
+      if (response.ok) {
+        toast.success("OTP resent successfully");
+      } else {
+        toast.error(responseBody.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   const handleBackToLogin = () => {
+    setForgetPasswordOTP("");
     setIsSubmitted(false);
     setEmail("");
     setError("");
+    setTimer(60); // Reset timer
+    setIsResendDisabled(false); // Enable resend button
   };
 
   const verifyForgetPasswordPIN = async () => {
@@ -90,6 +146,9 @@ const ForgotPassword = () => {
       const responseBody = await response.json();
       console.log(responseBody);
       if (response.ok) {
+        setVerifying(false);
+      } else {
+        toast.error(responseBody.message);
         setVerifying(false);
       }
     } catch (error) {
@@ -144,6 +203,24 @@ const ForgotPassword = () => {
               >
                 {verifying ? "Verifying..." : "Verify OTP"}
               </Button>
+            </div>
+
+            {/* Resend OTP Section with Timer */}
+            <div className="mt-4 text-center">
+              <p className="text-sm text-gray-600">
+                Didn't receive the code?{" "}
+                <button
+                  onClick={handleResendOTP}
+                  disabled={isResendDisabled}
+                  className={`font-medium ${
+                    isResendDisabled
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-blue-600 hover:text-blue-700"
+                  }`}
+                >
+                  {isResendDisabled ? `Resend in ${timer}s` : "Resend OTP"}
+                </button>
+              </p>
             </div>
 
             {/* Navigation & Info */}
