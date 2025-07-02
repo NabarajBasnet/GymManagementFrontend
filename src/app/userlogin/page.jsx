@@ -1,3 +1,9 @@
+export async function generateMetadata() {
+  return {
+    title: "Userlogin | Fitbinary"
+  }
+}
+
 import { LoginForm } from "@/components/login-form";
 
 export default function Page() {
