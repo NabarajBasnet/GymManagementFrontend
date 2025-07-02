@@ -902,18 +902,6 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-left">
-                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
-                                                        <span>Organization</span>
-                                                        <ArrowUpDown
-                                                            onClick={() => {
-                                                                setSortBy('organization.name');
-                                                                setSortOrderDesc(!sortOrderDesc);
-                                                            }}
-                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
-                                                        />
-                                                    </div>
-                                                </th>
                                                 <th className="px-6 py-4 text-center">
                                                     <div className="flex items-center justify-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Status</span>
@@ -1002,11 +990,6 @@ const PaymentReceipts = () => {
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </td>
-                                                    <td className="px-6 py-4">
-                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                            {receipt.organization?.name || 'N/A'}
-                                                        </span>
                                                     </td>
                                                     <td className="px-6 py-4 text-center">
                                                         <span
