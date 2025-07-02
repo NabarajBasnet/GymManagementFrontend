@@ -808,9 +808,9 @@ const Header = () => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 md:space-x-4">
+      <div className="flex items-center space-x- md:space-x-1">
         {/* Date/Time for desktop */}
-        <div className="hidden items-center md:flex space-x-4">
+        <div className="hidden items-center md:flex space-x-0">
           <div className="flex items-center rounded-md px-3 py-2">
             <Calendar size={16} className="text-blue-600 mr-2" />
             <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
@@ -828,10 +828,10 @@ const Header = () => {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="relative p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+              className="relative p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+              <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
                 {10}
               </span>
             </button>
@@ -890,7 +890,7 @@ const Header = () => {
         {/* Theme changer */}
         <button
           onClick={toggleTheme}
-          className="relative p-2.5 rounded-xl bg-transparent dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
+          className="relative p-2 rounded-full bg-transparent dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
           aria-label="Toggle theme"
         >
           <div className="relative w-5 h-5">
@@ -954,7 +954,7 @@ const Header = () => {
                               value={`${loggedInUser?.firstName} ${loggedInUser?.lastName}`}
                               id="name"
                               defaultValue="John Doe"
-                              className="max-w-xs"
+                              className="max-w-xs py-6 rounded-sm dark:bg-gray-900 dark:border-none bg-gray-100"
                             />
                           </div>
                           <div className="flex items-center justify-between">
@@ -964,7 +964,7 @@ const Header = () => {
                               id="email"
                               type="email"
                               defaultValue="john@example.com"
-                              className="max-w-xs"
+                              className="max-w-xs py-6 rounded-sm dark:bg-gray-900 dark:border-none bg-gray-100"
                             />
                           </div>
                         </div>
@@ -1145,10 +1145,6 @@ const Header = () => {
                 <span>{loading ? "Processing..." : "Log out"}</span>
                 <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
               </DropdownMenuItem>
-            </div>
-
-            <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 text-xs text-gray-500 dark:text-gray-400">
-              v{process.env.APP_VERSION} • {new Date().getFullYear()}
             </div>
           </DropdownMenuContent>
         </DropdownMenu>

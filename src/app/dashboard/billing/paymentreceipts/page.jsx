@@ -1,5 +1,27 @@
 'use client';
 
+import { FiPrinter } from "react-icons/fi";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { LuFileSearch2 } from "react-icons/lu";
+import { FaUser } from "react-icons/fa";
+import { Badge } from "@/components/ui/badge";
+import {
+    CircleDollarSign,
+    RotateCcw,
+    XCircle,
+    Clock,
+    CheckCircle2,
+    AlertCircle,
+    Home,
+    LayoutDashboard,
+    CreditCard,
+    FileText,
+} from "lucide-react";
+import { FaFileInvoice } from "react-icons/fa6";
 import { PiPrinterBold } from "react-icons/pi";
 import { FiSearch } from "react-icons/fi";
 import { useRef, useEffect, useState } from 'react';
@@ -623,7 +645,7 @@ const PaymentReceipts = () => {
         queryKey: ['paymentreceipts', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
     });
 
-    const { paymentreceipts, totalPages } = data || {};
+    const { receipts, totalPages } = data || {};
 
     // Debounce
     useEffect(() => {
@@ -665,61 +687,92 @@ const PaymentReceipts = () => {
     }
 
     return (
-        <div className="w-full py-6 bg-gray-100 min-h-screen px-4 mx-auto">
+        <div className="w-full py-7 bg-gray-100 dark:bg-gray-900 min-h-screen px-4 mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="bg-white p-4 rounded-md">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Home
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Dashboard
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/billing" className="text-sm font-medium text-gray-600 hover:text-primary">
-                                Billing
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className="text-gray-400" />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="text-sm font-medium text-primary">
-                                Payment Receipts
-                            </BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+            <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
+                {/* Enhanced Breadcrumb with Icons */}
+                <div className="mb-4">
+                    <Breadcrumb>
+                        <BreadcrumbList className="flex items-center">
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                >
+                                    <Home className="h-4 w-4 mr-2" />
+                                    Home
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/dashboard"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                >
+                                    <LayoutDashboard className="h-4 w-4 mr-2" />
+                                    <span>
+                                        Dashboard
+                                    </span>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/dashboard/billing"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                >
+                                    <CreditCard className="h-4 w-4 mr-2" />
+                                    <span>Billing</span>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href="/dashboard/billing/receipts"
+                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                >
+                                    <FileText className="h-4 w-4 mr-2" />
+                                    <span>Receipts</span>
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
 
-                {/* Header Section */}
-                <div className="flex flex-col mt-2 md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-800">Payment Receipts</h1>
+                {/* Modern Header Section */}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                    <div className="flex items-center">
+                        <FaFileInvoice className="h-6 w-6 mr-3 text-primary" />
+                        <div>
+                            <h1 className="text-2xl font-bold text-gray-800 text-primary">Payment Receipts</h1>
+                            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
+                                Manage and track all your receipts
+                            </p>
+                        </div>
                     </div>
 
-                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3">
-                        {/* Search Bar */}
-                        <div className="relative flex-1 min-w-[200px]">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3 items-end">
+                        {/* Enhanced Search with Floating Label */}
+                        <div className="relative flex-1 min-w-[280px]">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <Search className="h-4 w-4 text-gray-400" />
+                            </div>
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search receipts..."
-                                className="pl-10 pr-4 py-2 h-10 rounded-md border-gray-300 focus-visible:ring-primary"
+                                placeholder="Search here..."
+                                className="pl-10 pr-4 py-6 h-12 bg-white dark:bg-gray-900 dark:border-none rounded-sm focus-visible:ring-primary"
                             />
                         </div>
 
-                        {/* New Receipt Button */}
+                        {/* Premium Button with Transition */}
                         <Button
-                            onClick={() => setOpenReceiptForm(true)}
-                            className="h-10 px-4 rounded-md bg-primary hover:bg-primary/90">
-                            <Plus className="h-4 w-4 mr-2" />
-                            New Receipt
+                            onClick={() => setOpenInvoiceForm(true)}
+                            disabled
+                            className="h-12 px-6 rounded-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
+                        >
+                            <Plus className="h-5 w-5 mr-2" />
+                            <span className="font-semibold">New Receipt</span>
                         </Button>
                     </div>
                 </div>
@@ -742,10 +795,10 @@ const PaymentReceipts = () => {
             </AlertDialog>
 
             {/* Content Area */}
-            <div className="w-full my-4 bg-white rounded-md shadow-md border border-gray-200">
+            <div className="w-full my-4 bg-white dark:bg-gray-900 rounded-md shadow-md border border-gray-200 dark:border-none">
                 {/* Table Section */}
                 <div className="w-full">
-                    {Array.isArray(paymentreceipts) && paymentreceipts.length > 0 ? (
+                    {Array.isArray(receipts) && receipts?.length > 0 ? (
                         <div className="w-full">
                             <div className="overflow-x-auto">
                                 {isLoading ? (
@@ -847,7 +900,7 @@ const PaymentReceipts = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {paymentreceipts.map((receipt) => (
+                                            {receipts?.map((receipt) => (
                                                 <tr key={receipt._id} className="border-b text-sm hover:bg-muted/50">
                                                     <td className="p-3 align-middle font-medium">{receipt.paymentReceiptNo}</td>
                                                     <td className="p-3 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
@@ -907,82 +960,61 @@ const PaymentReceipts = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto min-h-screen flex">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b text-sm bg-muted/50">
-                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Receipt No</th>
-                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Payment Date</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Method</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Received</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Due</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Total</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Member</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Staff</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Status</th>
-                                        {loggedInUser?.role !== 'Gym Admin' && (
-                                            <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
-                                        )}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colSpan={loggedInUser?.role === 'Gym Admin' ? 9 : 10} className="text-center py-6 text-sm text-muted-foreground">
-                                            <h3 className="text-lg font-medium text-gray-700 mb-1">No payment receipts yet</h3>
-                                            <p className="text-gray-500 mb-4 text-xs font-semibold w-full text-center align-center">Create your first payment receipt to get started</p>
-                                            <Button
-                                                onClick={() => setOpenReceiptForm(true)}
-                                                className="px-6">
-                                                <Plus className="h-4 w-4 mr-2" />
-                                                Create Receipt
-                                            </Button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                    <div className="flex items-center justify-between border-t px-4 py-4">
-                        <div className="text-sm text-muted-foreground">
-                            Showing <strong>{paymentreceipts?.length}</strong> of <strong>{paymentreceipts?.length}</strong> receipts
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <div className="flex justify-center py-4">
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                    classNames={{
-                                        item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                                        active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
-                                        dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                                    }}
-                                />
+                        <div className="w-full flex flex-col items-center justify-center py-16 px-4">
+                            <div className="max-w-md text-center">
+                                <LuFileSearch2 className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                    No payment receipts found
+                                </h3>
+                                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                                    {searchQuery
+                                        ? "No invoices match your search criteria"
+                                        : "Get started by creating a new invoice"}
+                                </p>
                             </div>
                         </div>
-                    </div>
+                    )}
+                    {/* Pagination */}
+                    {receipts?.length > 0 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 dark:border-gray-800 px-6 py-4">
+                            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-0">
+                                Showing <span className="font-medium text-gray-700 dark:text-gray-300">{receipts?.length || 0}</span> invoices
+                            </div>
+                            <Pagination
+                                total={totalPages || 1}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                                classNames={{
+                                    root: "gap-1",
+                                    item: "h-9 w-9 border border-gray-300 dark:border-gray-700 bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
+                                    active: "bg-primary text-white hover:bg-primary/90 dark:hover:bg-primary/90 border-primary",
+                                    dots: "text-gray-400 dark:text-gray-500"
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Form Section */}
             {openReceiptForm && (
                 <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form onSubmit={handleSubmit(postReceipt)} className="bg-white w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
+                    <form onSubmit={handleSubmit(postReceipt)} className="bg-white dark:bg-gray-800 w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
                         {/* Header */}
                         <div className="w-full flex justify-between p-6 items-center border-b border-gray-100">
                             <div>
-                                <h1 className="text-2xl font-bold text-gray-900">Create New Receipt</h1>
-                                <p className="text-sm text-gray-500 mt-1">Generate and print payment receipts</p>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-300">Create New Receipt</h1>
+                                <p className="text-sm text-gray-500 mt-1 dark:text-gray-300">Generate and print payment receipts</p>
                             </div>
                             <button
                                 onClick={() => setOpenReceiptForm(false)}
                                 className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
                                 aria-label="Close form"
                             >
-                                <X className="w-5 h-5 text-gray-500 hover:text-gray-700" />
+                                <X className="w-5 h-5 text-gray-500 dark:text-gray-300 hover:text-gray-700" />
                             </button>
                         </div>
 

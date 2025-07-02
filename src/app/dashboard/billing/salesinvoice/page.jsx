@@ -1,5 +1,8 @@
 'use client';
 
+import { Checkbox } from "@/components/ui/checkbox";
+import { LuSend } from "react-icons/lu";
+import { IoEyeOutline } from "react-icons/io5";
 import { FiPrinter } from "react-icons/fi";
 import {
     Tooltip,
@@ -664,7 +667,6 @@ const PaymentInvoice = () => {
 
     // Get Single Receipt Details
     const getSingleSalesInvoice = async (invoice) => {
-        console.log(invoice)
         setInvoiceData(invoice);
         printInvoice(invoice);
     };
@@ -748,7 +750,7 @@ const PaymentInvoice = () => {
     };
 
     return (
-        <div className="w-full py-6 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
+        <div className="w-full py-7 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
             <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
                 {/* Enhanced Breadcrumb with Icons */}
@@ -789,11 +791,11 @@ const PaymentInvoice = () => {
                             <BreadcrumbSeparator className="mx-2 text-gray-300" />
                             <BreadcrumbItem>
                                 <BreadcrumbLink
-                                    href="/dashboard/billing"
+                                    href="/dashboard/billing/invoice"
                                     className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
                                 >
                                     <FileText className="h-4 w-4 mr-2" />
-                                    <span>Billing</span>
+                                    <span>Invoice</span>
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
@@ -829,6 +831,7 @@ const PaymentInvoice = () => {
                         {/* Premium Button with Transition */}
                         <Button
                             onClick={() => setOpenInvoiceForm(true)}
+                            disabled
                             className="h-12 px-6 rounded-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
                         >
                             <Plus className="h-5 w-5 mr-2" />
@@ -869,6 +872,10 @@ const PaymentInvoice = () => {
                                     <table className="w-full text-sm">
                                         <thead>
                                             <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+                                                {/* Added checkbox column header */}
+                                                <th className="h-12 px-4 text-left font-medium text-gray-500 dark:text-gray-400 w-12">
+                                                    <Checkbox className="h-4 w-4 mt-2" />
+                                                </th>
                                                 {[
                                                     { id: 'invoiceNo', label: 'Invoice No' },
                                                     { id: 'customerName', label: 'Customer' },
@@ -907,6 +914,10 @@ const PaymentInvoice = () => {
                                                     key={invoice._id}
                                                     className="border-b border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
                                                 >
+                                                    {/* Added checkbox column cell */}
+                                                    <td className="p-4 align-middle">
+                                                        <Checkbox className="h-4 w-4" />
+                                                    </td>
                                                     <td className="p-4 align-middle font-medium text-gray-900 dark:text-gray-100">
                                                         {invoice?.invoiceNo || 'N/A'}
                                                     </td>
@@ -936,6 +947,21 @@ const PaymentInvoice = () => {
                                                     {loggedInUser?.role !== 'Gym Admin' && (
                                                         <td className="p-4 align-middle text-center">
                                                             <div className="flex justify-center gap-2">
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={() => getSingleSalesInvoice(invoice)}
+                                                                            className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                                                                        >
+                                                                            <IoEyeOutline className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>View Invoice</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
 
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
@@ -986,6 +1012,40 @@ const PaymentInvoice = () => {
                                                                         </AlertDialogFooter>
                                                                     </AlertDialogContent>
                                                                 </AlertDialog>
+
+                                                                <AlertDialog>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <AlertDialogTrigger asChild>
+                                                                                <Button
+                                                                                    variant="ghost"
+                                                                                    size="icon"
+                                                                                    className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                                                                                >
+                                                                                    <LuSend className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </AlertDialogTrigger>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent>Send Invoice</TooltipContent>
+                                                                    </Tooltip>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Confirm Invoice Send</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This will permanently delete invoice #{invoice.invoiceNo}. This action cannot be undone.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => deleteSalesInvoice(invoice._id)}
+                                                                                className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500"
+                                                                            >
+                                                                                Delete Invoice
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
                                                             </div>
                                                         </td>
                                                     )}
@@ -1008,13 +1068,6 @@ const PaymentInvoice = () => {
                                         ? "No invoices match your search criteria"
                                         : "Get started by creating a new invoice"}
                                 </p>
-                                <Button
-                                    onClick={() => setOpenInvoiceForm(true)}
-                                    className="px-6"
-                                >
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Create Invoice
-                                </Button>
                             </div>
                         </div>
                     )}
