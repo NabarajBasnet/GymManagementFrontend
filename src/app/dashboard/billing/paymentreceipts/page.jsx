@@ -632,8 +632,9 @@ const PaymentReceipts = () => {
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
+            console.log('Response body: ', responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -645,7 +646,7 @@ const PaymentReceipts = () => {
         queryKey: ['paymentreceipts', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
     });
 
-    const { receipts, totalPages } = data || {};
+    const { receipts, totalPages, totalReceipts } = data || {};
 
     // Debounce
     useEffect(() => {
@@ -795,161 +796,272 @@ const PaymentReceipts = () => {
             </AlertDialog>
 
             {/* Content Area */}
-            <div className="w-full my-4 bg-white dark:bg-gray-900 rounded-md shadow-md border border-gray-200 dark:border-none">
+            <div className="w-full my-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 {/* Table Section */}
                 <div className="w-full">
                     {Array.isArray(receipts) && receipts?.length > 0 ? (
                         <div className="w-full">
-                            <div className="overflow-x-auto">
+                            {/* Table Header with gradient */}
+                            <div className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Payment Receipts</h2>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                    Total: {totalReceipts || 0} receipts
+                                </p>
+                            </div>
+
+                            <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
                                 {isLoading ? (
-                                    <Loader />
+                                    <div className="flex items-center justify-center py-16">
+                                        <Loader />
+                                    </div>
                                 ) : (
-                                    <table className="text-sm w-full">
-                                        <thead>
-                                            <tr className="border-b bg-muted/50">
-                                                <th className="h-16 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Receipt No
+                                    <table className="w-full text-sm">
+                                        <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                            <tr>
+                                                <th className="px-6 py-4 text-left">
+                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Receipt No</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentReceiptNo');
+                                                                setSortBy('receiptNo');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-16 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Payment Date
+                                                <th className="px-6 py-4 text-left">
+                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Created Date</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentDate');
+                                                                setSortBy('createdAt');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Method
+                                                <th className="px-6 py-4 text-left">
+                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Membership Plan</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentMethod');
+                                                                setSortBy('itemId.planName');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Received
+                                                <th className="px-6 py-4 text-right">
+                                                    <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Received</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
                                                                 setSortBy('receivedAmount');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Due
+                                                <th className="px-6 py-4 text-right">
+                                                    <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Due</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
                                                                 setSortBy('dueAmount');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-10 px-4 text-right font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Total
+                                                <th className="px-6 py-4 text-right">
+                                                    <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Total</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
                                                                 setSortBy('totalAmount');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Member
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Staff
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Status
+                                                <th className="px-6 py-4 text-left">
+                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Member</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentStatus');
+                                                                setSortBy('customer.fullName');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
-                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
+                                                    </div>
+                                                </th>
+                                                <th className="px-6 py-4 text-left">
+                                                    <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Organization</span>
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('organization.name');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
+                                                    </div>
+                                                </th>
+                                                <th className="px-6 py-4 text-center">
+                                                    <div className="flex items-center justify-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                                                        <span>Status</span>
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('dueAmount');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                                                        />
                                                     </div>
                                                 </th>
                                                 {loggedInUser?.role !== 'Gym Admin' && (
-                                                    <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
+                                                    <th className="px-6 py-4 text-right">
+                                                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</span>
+                                                    </th>
                                                 )}
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            {receipts?.map((receipt) => (
-                                                <tr key={receipt._id} className="border-b text-sm hover:bg-muted/50">
-                                                    <td className="p-3 align-middle font-medium">{receipt.paymentReceiptNo}</td>
-                                                    <td className="p-3 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
-                                                    <td className="p-3 align-middle text-start">{receipt.paymentMethod}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.receivedAmount}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.dueAmount}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.totalAmount}</td>
-                                                    <td className="p-3 align-middle">{receipt.member?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">{receipt.staff?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">
+                                        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+                                            {receipts?.map((receipt, index) => (
+                                                <tr key={receipt._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="flex items-center">
+                                                            <div className="flex-shrink-0 h-8 w-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
+                                                                <span className="text-xs font-medium text-blue-800 dark:text-blue-200">
+                                                                    #{index + 1}
+                                                                </span>
+                                                            </div>
+                                                            <div className="text-sm font-semibold text-gray-900 dark:text-white">
+                                                                {receipt.receiptNo}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        <div className="text-sm text-gray-900 dark:text-white font-medium">
+                                                            {new Date(receipt.createdAt).toLocaleDateString('en-US', {
+                                                                year: 'numeric',
+                                                                month: 'short',
+                                                                day: 'numeric'
+                                                            })}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                            {new Date(receipt.createdAt).toLocaleTimeString('en-US', {
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                            })}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                                                            {receipt.itemId?.planName || receipt.membership?.[0] || 'N/A'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                        <div className="text-sm font-semibold text-green-600 dark:text-green-400">
+                                                            {receipt.organization?.currency} {receipt.receivedAmount?.toLocaleString()}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                        <div className={`text-sm font-semibold ${receipt.dueAmount > 0
+                                                            ? 'text-red-600 dark:text-red-400'
+                                                            : 'text-gray-500 dark:text-gray-400'
+                                                            }`}>
+                                                            {receipt.organization?.currency} {receipt.dueAmount?.toLocaleString()}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                        <div className="text-sm font-bold text-gray-900 dark:text-white">
+                                                            {receipt.organization?.currency} {(receipt.receivedAmount + receipt.dueAmount)?.toLocaleString()}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center">
+                                                            <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
+                                                                <span className="text-sm font-medium text-white">
+                                                                    {receipt.customer?.fullName?.charAt(0) || 'N'}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                                    {receipt.customer?.fullName || 'N/A'}
+                                                                </div>
+                                                                <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                                    {receipt.customer?.contactNo || 'No contact'}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                            {receipt.organization?.name || 'N/A'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
                                                         <span
-                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${receipt.paymentStatus === 'Paid'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : receipt.paymentStatus === 'Pending'
-                                                                    ? 'bg-red-100 text-red-800'
-                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                            className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${receipt.dueAmount === 0
+                                                                ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                                : 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200'
                                                                 }`}
                                                         >
-                                                            {receipt.paymentStatus}
+                                                            <div className={`w-2 h-2 rounded-full mr-2 ${receipt.dueAmount === 0 ? 'bg-green-500' : 'bg-amber-500'
+                                                                }`}></div>
+                                                            {receipt.dueAmount === 0 ? 'Paid' : 'Partial'}
                                                         </span>
                                                     </td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
-                                                        <td className="flex items-center p-4 align-middle justify-end">
-                                                            <PiPrinterBold
-                                                                onClick={() => getSingleReceiptDetails(receipt._id)}
-                                                                className="h-4 w-4 cursor-pointer hover:text-blue-600"
-                                                            />
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        className="hover:bg-transparent hover:text-red-600 text-gray-800"
-                                                                    >
-                                                                        <Trash2 className="h-4 w-4" />
-                                                                    </Button>
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            This action cannot be undone. This will permanently delete this receipt.
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => deleteReceipt(receipt._id)}>Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                            <div className="flex items-center justify-end space-x-2">
+                                                                <button
+                                                                    onClick={() => getSingleReceiptDetails(receipt._id)}
+                                                                    className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-600 transition-all duration-200"
+                                                                    title="Print Receipt"
+                                                                >
+                                                                    <PiPrinterBold className="h-4 w-4" />
+                                                                </button>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        <button
+                                                                            className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-red-50 hover:text-red-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-gray-600 transition-all duration-200"
+                                                                            title="Delete Receipt"
+                                                                        >
+                                                                            <Trash2 className="h-4 w-4" />
+                                                                        </button>
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent className="sm:max-w-md">
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                                                Delete Receipt
+                                                                            </AlertDialogTitle>
+                                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                                                                                Are you sure you want to delete this receipt? This action cannot be undone and will permanently remove the receipt from your records.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter className="gap-2">
+                                                                            <AlertDialogCancel className="border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
+                                                                                Cancel
+                                                                            </AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => deleteReceipt(receipt._id)}
+                                                                                className="bg-red-600 hover:bg-red-700 text-white"
+                                                                            >
+                                                                                Delete Receipt
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
                                                         </td>
                                                     )}
                                                 </tr>
@@ -960,40 +1072,64 @@ const PaymentReceipts = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="w-full flex flex-col items-center justify-center py-16 px-4">
+                        <div className="w-full flex flex-col items-center justify-center py-20 px-4">
                             <div className="max-w-md text-center">
-                                <LuFileSearch2 className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                                <div className="mx-auto h-24 w-24 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+                                    <LuFileSearch2 className="h-12 w-12 text-gray-400 dark:text-gray-500" />
+                                </div>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
                                     No payment receipts found
                                 </h3>
-                                <p className="text-gray-500 dark:text-gray-400 mb-6">
+                                <p className="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
                                     {searchQuery
-                                        ? "No invoices match your search criteria"
-                                        : "Get started by creating a new invoice"}
+                                        ? "We couldn't find any receipts matching your search criteria. Try adjusting your search terms."
+                                        : "No receipts have been created yet. Receipts will appear here once payments are processed."}
                                 </p>
+                                {searchQuery && (
+                                    <button className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                                        Clear Search
+                                    </button>
+                                )}
                             </div>
                         </div>
                     )}
-                    {/* Pagination */}
+
+                    {/* Enhanced Pagination */}
                     {receipts?.length > 0 && (
-                        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-200 dark:border-gray-800 px-6 py-4">
-                            <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 sm:mb-0">
-                                Showing <span className="font-medium text-gray-700 dark:text-gray-300">{receipts?.length || 0}</span> invoices
+                        <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+                            <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                                <div className="flex items-center space-x-2">
+                                    <div className="text-sm text-gray-600 dark:text-gray-400">
+                                        Showing
+                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                            {((currentPage - 1) * 10) + 1}
+                                        </span>
+                                        to
+                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                            {Math.min(currentPage * 10, totalReceipts || 0)}
+                                        </span>
+                                        of
+                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                            {totalReceipts || 0}
+                                        </span>
+                                        receipts
+                                    </div>
+                                </div>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                    classNames={{
+                                        root: "flex items-center space-x-1",
+                                        item: "h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200 text-sm font-medium",
+                                        active: "bg-blue-600 text-white hover:bg-blue-700 dark:hover:bg-blue-700 border-blue-600 shadow-sm",
+                                        dots: "text-gray-400 dark:text-gray-500 px-2"
+                                    }}
+                                />
                             </div>
-                            <Pagination
-                                total={totalPages || 1}
-                                page={currentPage || 1}
-                                onChange={setCurrentPage}
-                                withEdges={true}
-                                siblings={1}
-                                boundaries={1}
-                                classNames={{
-                                    root: "gap-1",
-                                    item: "h-9 w-9 border border-gray-300 dark:border-gray-700 bg-transparent text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800",
-                                    active: "bg-primary text-white hover:bg-primary/90 dark:hover:bg-primary/90 border-primary",
-                                    dots: "text-gray-400 dark:text-gray-500"
-                                }}
-                            />
                         </div>
                     )}
                 </div>
