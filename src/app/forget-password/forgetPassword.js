@@ -5,7 +5,6 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -17,11 +16,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Mail, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  Mail,
+  CheckCircle,
+  AlertCircle,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { toast } from "sonner";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState("");
   const [forgetPasswordOTP, setForgetPasswordOTP] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,12 +35,22 @@ const ForgotPassword = () => {
   const [error, setError] = useState("");
   const [timer, setTimer] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
 
   const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // timer countdown
+  const validatePassword = (password) => {
+    return password.length >= 8;
+  };
+
+  // Timer countdown
   useEffect(() => {
     if (!isSubmitted || timer <= 0) {
       setIsResendDisabled(false);
@@ -86,22 +102,18 @@ const ForgotPassword = () => {
       );
 
       const responseBody = await response.json();
-      console.log(responseBody);
       if (response.ok) {
         toast.success(responseBody.message);
         setIsSubmitted(true);
-        setIsLoading(false);
-        setTimer(60); // Reset timer on successful submit
-        setIsResendDisabled(true); // Disable resend button when timer starts
+        setTimer(responseBody.time || 60);
+        setIsResendDisabled(true);
       } else {
-        setIsLoading(false);
         toast.error(responseBody.message);
       }
-      console.log(responseBody);
     } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setIsLoading(false);
-      toast.error(error.message);
-      console.log("Error: ", error);
     }
   };
 
@@ -124,44 +136,213 @@ const ForgotPassword = () => {
         toast.error(responseBody.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   const handleBackToLogin = () => {
     setForgetPasswordOTP("");
     setIsSubmitted(false);
+    setIsVerified(false);
     setEmail("");
     setError("");
-    setTimer(60); // Reset timer
-    setIsResendDisabled(false); // Enable resend button
+    setTimer(60);
+    setIsResendDisabled(false);
   };
 
   const verifyForgetPasswordPIN = async () => {
+    if (forgetPasswordOTP.length !== 6) {
+      toast.error("Please enter a 6-digit OTP");
+      return;
+    }
+
     setVerifying(true);
     try {
       const response = await fetch(
         `http://localhost:3000/api/tenant/verify-forget-password-pin?OTP=${forgetPasswordOTP}`
       );
       const responseBody = await response.json();
-      console.log(responseBody);
+
       if (response.ok) {
-        setVerifying(false);
+        toast.success("OTP verified successfully");
+        setIsVerified(true);
       } else {
         toast.error(responseBody.message);
-        setVerifying(false);
       }
     } catch (error) {
-      console.log("Error: ", error);
-      toast.error(error.message);
+      toast.error("An error occurred. Please try again.");
+    } finally {
       setVerifying(false);
     }
   };
 
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    setPasswordError("");
+
+    if (!password || !confirmPassword) {
+      setPasswordError("Both password fields are required");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      setPasswordError("Password must be at least 8 characters long");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/tenant/reset-password`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            otp: forgetPasswordOTP,
+            newPassword: password,
+          }),
+        }
+      );
+
+      const responseBody = await response.json();
+      if (response.ok) {
+        toast.success(responseBody.message);
+        window.location.href = responseBody.redirect;
+      } else {
+        toast.error(responseBody.message);
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isVerified) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4">
+        <Card className="w-full max-w-md shadow-lg border-0 rounded-3xl bg-white overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 w-full"></div>
+          <CardContent className="p-8">
+            <div className="mb-8 text-center">
+              <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle className="w-8 h-8 text-blue-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                Reset Your Password
+              </h2>
+              <p className="text-gray-600 text-sm">
+                Create a new password for your account
+              </p>
+            </div>
+
+            <form onSubmit={handlePasswordReset} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-gray-700">
+                  New Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter new password"
+                    className="py-6 pl-4 pr-12 bg-white border-gray-300 rounded-lg text-black focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-gray-700">
+                  Confirm Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    placeholder="Confirm new password"
+                    className="py-6 pl-4 pr-12 bg-white border-gray-300 rounded-lg text-black focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {passwordError && (
+                <p className="text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
+                  {passwordError}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 shadow hover:shadow-md disabled:opacity-50"
+              >
+                {isLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Resetting password...
+                  </div>
+                ) : (
+                  "Reset Password"
+                )}
+              </Button>
+
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleBackToLogin}
+                  className="text-sm text-gray-600 hover:text-gray-800 transition-colors duration-200 font-medium flex items-center justify-center mx-auto"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1" />
+                  Back to login
+                </button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isSubmitted) {
     return (
       <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4">
-        <Card className="w-full max-w-md shadow-sm border-0 rounded-3xl bg-white">
+        <Card className="w-full max-w-md shadow-lg border-0 rounded-3xl bg-white overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 w-full"></div>
           <CardContent className="p-8 text-center">
             <div className="mb-6">
               <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
@@ -171,13 +352,12 @@ const ForgotPassword = () => {
                 Check your email
               </h2>
               <p className="text-gray-600 text-sm leading-relaxed">
-                We've sent a password reset link to
+                We've sent a verification code to
                 <br />
                 <span className="font-medium text-gray-800">{email}</span>
               </p>
             </div>
 
-            {/* Centered and Customized OTP Entry Section */}
             <div className="flex flex-col items-center space-y-4 mt-6">
               <InputOTP
                 maxLength={6}
@@ -197,15 +377,15 @@ const ForgotPassword = () => {
               </InputOTP>
 
               <Button
-                onClick={() => verifyForgetPasswordPIN()}
+                onClick={verifyForgetPasswordPIN}
                 variant="default"
-                className="w-full max-w-md h-11 font-medium bg-blue-500 hover:bg-blue-600 text-white"
+                className="w-full max-w-md h-11 font-medium bg-blue-600 hover:bg-blue-700 text-white"
+                disabled={verifying || forgetPasswordOTP.length !== 6}
               >
                 {verifying ? "Verifying..." : "Verify OTP"}
               </Button>
             </div>
 
-            {/* Resend OTP Section with Timer */}
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
                 Didn't receive the code?{" "}
@@ -223,7 +403,6 @@ const ForgotPassword = () => {
               </p>
             </div>
 
-            {/* Navigation & Info */}
             <div className="mt-6 space-y-3">
               <Button
                 onClick={handleBackToLogin}
@@ -233,11 +412,6 @@ const ForgotPassword = () => {
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back to login
               </Button>
-
-              <p className="text-xs text-gray-500 px-2">
-                Didn't receive the email? Check your spam folder or try again in
-                a few minutes.
-              </p>
             </div>
           </CardContent>
         </Card>
@@ -247,7 +421,8 @@ const ForgotPassword = () => {
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4">
-      <Card className="w-full max-w-md shadow-sm border-0 rounded-3xl bg-white">
+      <Card className="w-full max-w-md shadow-lg border-0 rounded-3xl bg-white overflow-hidden">
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 w-full"></div>
         <CardHeader className="pb-6 pt-8 px-8">
           <div className="mb-4">
             <div className="mx-auto w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center mb-4">
@@ -258,18 +433,14 @@ const ForgotPassword = () => {
             Reset your password
           </CardTitle>
           <CardDescription className="text-center text-gray-600 leading-relaxed">
-            Enter your email address and we'll send you a secure link to reset
-            your password.
+            Enter your email address to receive a verification code
           </CardDescription>
         </CardHeader>
 
         <CardContent className="px-8 pb-8">
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label
-                htmlFor="email"
-                className="text-sm font-medium text-gray-700"
-              >
+              <Label htmlFor="email" className="text-gray-700">
                 Email address
               </Label>
               <div className="relative">
@@ -280,7 +451,7 @@ const ForgotPassword = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
                   placeholder="Enter your email address"
-                  className={`py-6 pl-4 pr-4 bg-white border-2 rounded-md text-black transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 ${
+                  className={`py-6 pl-4 pr-4 bg-white border-2 rounded-lg text-black transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 ${
                     error
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-200 focus:border-blue-500"
@@ -293,23 +464,24 @@ const ForgotPassword = () => {
               </div>
               {error && (
                 <p className="text-sm text-red-600 flex items-center gap-1">
+                  <AlertCircle className="w-4 h-4" />
                   {error}
                 </p>
               )}
             </div>
 
             <Button
-              onClick={handleSubmit}
+              type="submit"
               disabled={isLoading}
-              className="w-full py-6 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md transition-all duration-200 shadow hover:shadow-md disabled:opacity-50"
+              className="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 shadow hover:shadow-md disabled:opacity-50"
             >
               {isLoading ? (
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Sending link...
+                  Sending OTP...
                 </div>
               ) : (
-                "Send OTP"
+                "Send Verification Code"
               )}
             </Button>
 
@@ -322,7 +494,7 @@ const ForgotPassword = () => {
                 ← Back to login
               </button>
             </div>
-          </div>
+          </form>
         </CardContent>
       </Card>
     </div>
