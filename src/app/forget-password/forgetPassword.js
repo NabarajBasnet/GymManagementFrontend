@@ -22,8 +22,11 @@ import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState();
+  const [forgetPasswordOTP, setForgetPasswordOTP] = useState("");
+  console.log("OTP: ", forgetPasswordOTP);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState("");
 
   const validateEmail = (email) => {
@@ -48,13 +51,14 @@ const ForgotPassword = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/tenant/forget-password?email=${email}`,
+        `http://localhost:3000/api/tenant/forget-password-pin?email=${email}`,
         {
           method: "PATCH",
         }
       );
 
       const responseBody = await response.json();
+      console.log(responseBody);
       if (response.ok) {
         toast.success(responseBody.message);
         setIsSubmitted(true);
@@ -75,6 +79,24 @@ const ForgotPassword = () => {
     setIsSubmitted(false);
     setEmail("");
     setError("");
+  };
+
+  const verifyForgetPasswordPIN = async () => {
+    setVerifying(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/tenant/verify-forget-password-pin?OTP=${forgetPasswordOTP}`
+      );
+      const responseBody = await response.json();
+      console.log(responseBody);
+      if (response.ok) {
+        setVerifying(false);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+      setVerifying(false);
+    }
   };
 
   if (isSubmitted) {
@@ -98,7 +120,12 @@ const ForgotPassword = () => {
 
             {/* Centered and Customized OTP Entry Section */}
             <div className="flex flex-col items-center space-y-4 mt-6">
-              <InputOTP maxLength={6} className="justify-center text-black">
+              <InputOTP
+                maxLength={6}
+                value={forgetPasswordOTP}
+                onChange={setForgetPasswordOTP}
+                className="justify-center text-black"
+              >
                 <InputOTPGroup className="gap-2">
                   {[...Array(6)].map((_, index) => (
                     <InputOTPSlot
@@ -111,10 +138,11 @@ const ForgotPassword = () => {
               </InputOTP>
 
               <Button
+                onClick={() => verifyForgetPasswordPIN()}
                 variant="default"
                 className="w-full max-w-md h-11 font-medium bg-blue-500 hover:bg-blue-600 text-white"
               >
-                Verify OTP
+                {verifying ? "Verifying..." : "Verify OTP"}
               </Button>
             </div>
 
@@ -139,6 +167,7 @@ const ForgotPassword = () => {
       </div>
     );
   }
+
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200 px-4">
       <Card className="w-full max-w-md shadow-sm border-0 rounded-3xl bg-white">
@@ -174,7 +203,7 @@ const ForgotPassword = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
                   placeholder="Enter your email address"
-                  className={`py-6 pl-4 pr-4 bg-white border-2 rounded-md transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 ${
+                  className={`py-6 pl-4 pr-4 bg-white border-2 rounded-md text-black transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 ${
                     error
                       ? "border-red-300 focus:border-red-500"
                       : "border-gray-200 focus:border-blue-500"
