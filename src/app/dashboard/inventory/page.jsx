@@ -344,11 +344,7 @@ const ServiceAndProducts = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink className='font-medium text-xs'>Billing</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className='font-medium text-xs'>Services & Products</BreadcrumbPage>
+                            <BreadcrumbLink className='font-medium text-xs'>Inventory</BreadcrumbLink>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -356,7 +352,7 @@ const ServiceAndProducts = () => {
                 <div className="w-full bg-white mt-4 dark:bg-gray-800 space-y-4 p-4 border dark:border-none rounded-sm md:space-y-0 flex justify-between items-end">
                     <div className="w-full flex items-center justify-between">
                         <div className="w-full flex justify-start items-center">
-                            <h1 className="text-xl font-bold text-primary">Services & Products</h1>
+                            <h1 className="text-xl font-bold text-primary">Inventory</h1>
                         </div>
 
                         <div className="w-full flex items-center justify-end space-x-4">

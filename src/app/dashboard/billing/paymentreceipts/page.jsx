@@ -803,7 +803,7 @@ const PaymentReceipts = () => {
                                     <table className="w-full text-sm">
                                         <thead className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                             <tr>
-                                                <th className="px-6 py-4 text-left">
+                                                <th className="px-4 py-4 text-left">
                                                     <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Receipt No</span>
                                                         <ArrowUpDown
@@ -815,7 +815,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-left">
+                                                <th className="px-4 py-4 text-left">
                                                     <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Created Date</span>
                                                         <ArrowUpDown
@@ -827,7 +827,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-left">
+                                                <th className="px-4 py-4 text-left">
                                                     <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Membership Plan</span>
                                                         <ArrowUpDown
@@ -839,7 +839,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-right">
+                                                <th className="px-4 py-4 text-right">
                                                     <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Received</span>
                                                         <ArrowUpDown
@@ -851,7 +851,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-right">
+                                                <th className="px-4 py-4 text-right">
                                                     <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Due</span>
                                                         <ArrowUpDown
@@ -863,7 +863,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-right">
+                                                <th className="px-4 py-4 text-right">
                                                     <div className="flex items-center justify-end space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Total</span>
                                                         <ArrowUpDown
@@ -875,7 +875,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-left">
+                                                <th className="px-4 py-4 text-left">
                                                     <div className="flex items-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Member</span>
                                                         <ArrowUpDown
@@ -887,7 +887,7 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                <th className="px-6 py-4 text-center">
+                                                <th className="px-4 py-4 text-center">
                                                     <div className="flex items-center justify-center space-x-2 text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                                         <span>Status</span>
                                                         <ArrowUpDown
@@ -900,7 +900,7 @@ const PaymentReceipts = () => {
                                                     </div>
                                                 </th>
                                                 {loggedInUser?.role !== 'Gym Admin' && (
-                                                    <th className="px-6 py-4 text-right">
+                                                    <th className="px-4 py-4 text-right">
                                                         <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</span>
                                                     </th>
                                                 )}
@@ -909,7 +909,7 @@ const PaymentReceipts = () => {
                                         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                                             {receipts?.map((receipt, index) => (
                                                 <tr key={receipt._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-150">
-                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                    <td className="px-4 py-2 whitespace-nowrap">
                                                         <div className="flex items-center">
                                                             <div className="flex-shrink-0 h-8 w-8 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mr-3">
                                                                 <span className="text-xs font-medium text-blue-800 dark:text-blue-200">
@@ -921,7 +921,7 @@ const PaymentReceipts = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                    <td className="px-4 py-2 whitespace-nowrap">
                                                         <div className="text-sm text-gray-900 dark:text-white font-medium">
                                                             {new Date(receipt.createdAt).toLocaleDateString('en-US', {
                                                                 year: 'numeric',
@@ -936,17 +936,17 @@ const PaymentReceipts = () => {
                                                             })}
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4">
+                                                    <td className="px-4 py-2">
                                                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
                                                             {receipt.itemId?.planName || receipt.membership?.[0] || 'N/A'}
                                                         </span>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                    <td className="px-4 py-2 whitespace-nowrap text-right">
                                                         <div className="text-sm font-semibold text-green-600 dark:text-green-400">
                                                             {receipt.organization?.currency} {receipt.receivedAmount?.toLocaleString()}
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                    <td className="px-4 py-2 whitespace-nowrap text-right">
                                                         <div className={`text-sm font-semibold ${receipt.dueAmount > 0
                                                             ? 'text-red-600 dark:text-red-400'
                                                             : 'text-gray-500 dark:text-gray-400'
@@ -954,12 +954,12 @@ const PaymentReceipts = () => {
                                                             {receipt.organization?.currency} {receipt.dueAmount?.toLocaleString()}
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                    <td className="px-4 py-4 whitespace-nowrap text-right">
                                                         <div className="text-sm font-bold text-gray-900 dark:text-white">
                                                             {receipt.organization?.currency} {(receipt.receivedAmount + receipt.dueAmount)?.toLocaleString()}
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4">
+                                                    <td className="px-4 py-2">
                                                         <div className="flex items-center">
                                                             <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-3">
                                                                 <span className="text-sm font-medium text-white">
@@ -976,7 +976,7 @@ const PaymentReceipts = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-6 py-4 text-center">
+                                                    <td className="px-4 py-2 text-center">
                                                         <span
                                                             className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${receipt.dueAmount === 0
                                                                 ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
@@ -989,7 +989,7 @@ const PaymentReceipts = () => {
                                                         </span>
                                                     </td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
-                                                        <td className="px-6 py-4 whitespace-nowrap text-right">
+                                                        <td className="px-4 py-2 whitespace-nowrap text-right">
                                                             <div className="flex items-center justify-end space-x-2">
                                                                 <button
                                                                     onClick={() => getSingleReceiptDetails(receipt._id)}
