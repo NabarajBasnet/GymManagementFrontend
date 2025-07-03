@@ -433,12 +433,12 @@ const Header = () => {
         },
         {
           icon: AiFillProduct,
-          title: "Inventory",
+          title: "Inventory Management",
           link: "/dashboard/inventory",
         },
         {
           icon: MdAttachMoney,
-          title: "Billing",
+          title: "Bill Management",
           link: "/dashboard/billing",
           subObj: [
             {
