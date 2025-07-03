@@ -992,20 +992,29 @@ const PaymentInvoice = () => {
                                                                                 </Button>
                                                                             </AlertDialogTrigger>
                                                                         </TooltipTrigger>
-                                                                        <TooltipContent>Delete Invoice</TooltipContent>
+                                                                        <TooltipContent className="text-sm">Delete Invoice</TooltipContent>
                                                                     </Tooltip>
-                                                                    <AlertDialogContent>
+
+                                                                    <AlertDialogContent className="bg-white dark:bg-[#1f1f1f] border border-red-200 dark:border-red-400 shadow-xl rounded-2xl">
                                                                         <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                This will permanently delete invoice #{invoice.invoiceNo}. This action cannot be undone.
+                                                                            <AlertDialogTitle className="text-red-600 dark:text-red-400 text-lg font-semibold">
+                                                                                Confirm Deletion
+                                                                            </AlertDialogTitle>
+                                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+                                                                                This will permanently delete invoice{" "}
+                                                                                <span className="font-medium text-black dark:text-white">
+                                                                                    #{invoice.invoiceNo}
+                                                                                </span>. This action cannot be undone.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                                                                        <AlertDialogFooter className="mt-6">
+                                                                            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                                                Cancel
+                                                                            </AlertDialogCancel>
                                                                             <AlertDialogAction
                                                                                 onClick={() => deleteSalesInvoice(invoice._id)}
-                                                                                className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500"
+                                                                                className="bg-red-600 hover:bg-red-700 text-white dark:bg-red-500 dark:hover:bg-red-600 focus-visible:ring-red-500"
                                                                             >
                                                                                 Delete Invoice
                                                                             </AlertDialogAction>

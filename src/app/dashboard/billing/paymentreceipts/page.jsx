@@ -634,7 +634,6 @@ const PaymentReceipts = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
-            console.log('Response body: ', responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -1016,28 +1015,35 @@ const PaymentReceipts = () => {
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger asChild>
                                                                         <button
-                                                                            className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-red-50 hover:text-red-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-gray-600 transition-all duration-200"
+                                                                            className="inline-flex items-center justify-center p-2 bg-red-100 text-red-600 border border-red-300 rounded-lg hover:bg-red-200 hover:text-red-700 transition-all duration-200
+                 dark:bg-red-950 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-900"
                                                                             title="Delete Receipt"
                                                                         >
                                                                             <Trash2 className="h-4 w-4" />
                                                                         </button>
                                                                     </AlertDialogTrigger>
-                                                                    <AlertDialogContent className="sm:max-w-md">
+
+                                                                    <AlertDialogContent className="sm:max-w-md bg-white dark:bg-[#1a1a1a] border border-red-200 dark:border-red-700 shadow-lg rounded-xl">
                                                                         <AlertDialogHeader>
-                                                                            <AlertDialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                                            <AlertDialogTitle className="text-xl font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                                                                                <Trash2 className="h-5 w-5" />
                                                                                 Delete Receipt
                                                                             </AlertDialogTitle>
-                                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
-                                                                                Are you sure you want to delete this receipt? This action cannot be undone and will permanently remove the receipt from your records.
+                                                                            <AlertDialogDescription className="text-gray-700 dark:text-gray-400 mt-2 text-sm">
+                                                                                This action will permanently remove the receipt from your records. <br />
+                                                                                Are you absolutely sure you want to proceed?
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
-                                                                        <AlertDialogFooter className="gap-2">
-                                                                            <AlertDialogCancel className="border-gray-300 hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
+
+                                                                        <AlertDialogFooter className="flex justify-end gap-2 mt-4">
+                                                                            <AlertDialogCancel
+                                                                                className="px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                                                                            >
                                                                                 Cancel
                                                                             </AlertDialogCancel>
                                                                             <AlertDialogAction
                                                                                 onClick={() => deleteReceipt(receipt._id)}
-                                                                                className="bg-red-600 hover:bg-red-700 text-white"
+                                                                                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition-all"
                                                                             >
                                                                                 Delete Receipt
                                                                             </AlertDialogAction>
