@@ -1,5 +1,16 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Checkbox } from "@/components/ui/checkbox";
 import { LuSend } from "react-icons/lu";
 import { IoEyeOutline } from "react-icons/io5";
@@ -25,19 +36,7 @@ import {
     FileText,
 } from "lucide-react";
 import { FaFileInvoice } from "react-icons/fa6";
-import { PiPrinterBold } from "react-icons/pi";
 import { useRef, useEffect, useState } from 'react';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import Pagination from '@/components/ui/CustomPagination';
 import { Plus, Search, Trash2, ArrowUpDown } from 'lucide-react';
 
@@ -80,7 +79,8 @@ const PaymentInvoice = () => {
     const [invoiceData, setInvoiceData] = useState(null);
     const [printInvoiceAlert, setPrintInvoiceAlert] = useState(false);
     const [resendingInvoice, setResendingInvoice] = useState(false);
-    console.log(resendingInvoice)
+    const [viewInvoiceAlert, setViewInvoiceAlert] = useState();
+    console.log(viewInvoiceAlert)
 
     // Pagination states
     let limit = 15;
@@ -772,7 +772,6 @@ const PaymentInvoice = () => {
         }
     };
 
-
     return (
         <div className="w-full py-7 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
 
@@ -979,7 +978,7 @@ const PaymentInvoice = () => {
                                                                         <Button
                                                                             variant="ghost"
                                                                             size="icon"
-                                                                            onClick={() => getSingleSalesInvoice(invoice)}
+                                                                            onClick={() => setViewInvoiceAlert([true, invoice])}
                                                                             className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                                                                         >
                                                                             <IoEyeOutline className="h-4 w-4" />
@@ -1142,6 +1141,129 @@ const PaymentInvoice = () => {
                     )}
                 </div>
             </div>
+
+            {/* Render View Invoice Alert */}
+            <AlertDialog open={viewInvoiceAlert[0]}>
+                <AlertDialogContent className="max-w-5xl dark:bg-gray-700">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-2xl text-primary">Invoice Details</AlertDialogTitle>
+                    </AlertDialogHeader>
+
+                    {viewInvoiceAlert[1] && (
+                        <div className="space-y-6">
+                            {/* Invoice Header */}
+                            <div className="flex justify-between items-start">
+                                <div>
+                                    <h2 className="text-xl font-bold text-primary">{viewInvoiceAlert[1].organization?.name || 'Acme Fitness'}</h2>
+                                    <p className="text-primary">{viewInvoiceAlert[1].organizationBranch?.orgBranchName || 'Main Branch'}</p>
+                                    <p className="text-primary">{viewInvoiceAlert[1].organizationBranch?.orgBranchAddress || 'Kathmandu'}</p>
+                                    <p className="text-primary">Phone: {viewInvoiceAlert[1].organizationBranch?.orgBranchPhone || '9742263831'}</p>
+                                </div>
+                                <div className="text-right">
+                                    <h3 className="text-lg font-semibold text-primary">Invoice #{viewInvoiceAlert[1].invoiceNo}</h3>
+                                    <p className="text-primary">Date: {new Date(viewInvoiceAlert[1].createdAt).toLocaleDateString()}</p>
+                                    <p className="text-primary">Status: <span className={`px-2 py-1 rounded ${viewInvoiceAlert[1].status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                                        {viewInvoiceAlert[1].status}
+                                    </span></p>
+                                </div>
+                            </div>
+
+                            {/* Customer Info */}
+                            <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                                <div>
+                                    <h4 className="font-semibold text-primary">Customer Information</h4>
+                                    <p className="text-primary">{viewInvoiceAlert[1].customer?.fullName}</p>
+                                    <p className="text-primary">{viewInvoiceAlert[1].customer?.contactNo}</p>
+                                    <p className="text-primary">{viewInvoiceAlert[1].customer?.email}</p>
+                                </div>
+                                <div>
+                                    <h4 className="font-semibold text-primary">Membership Details</h4>
+                                    <p className="text-primary">Type: {viewInvoiceAlert[1].customer?.membershipType}</p>
+                                    <p className="text-primary">Duration: {viewInvoiceAlert[1].customer?.membershipDuration}</p>
+                                    <p className="text-primary">Expires: {new Date(viewInvoiceAlert[1].customer?.membershipExpireDate).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+
+                            {/* Items Table */}
+                            <div className="border dark:border-none rounded-lg overflow-hidden">
+                                <table className="min-w-full divide-y divide-gray-200">
+                                    <thead className="bg-gray-50 dark:bg-gray-900">
+                                        <tr>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase text-primary">Item</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase text-primary">Price</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase text-primary">Qty</th>
+                                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase text-primary">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200">
+                                        {viewInvoiceAlert[1].items?.map((item, index) => (
+                                            <tr key={index}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-primary">
+                                                    {item.name || 'Membership Fee'}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-primary">
+                                                    NPR {item.price}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-primary">
+                                                    {item.quantity}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-primary">
+                                                    NPR {item.price * item.quantity}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* Summary */}
+                            <div className="ml-auto w-64 space-y-2">
+                                <div className="flex justify-between">
+                                    <span className="text-primary">Subtotal:</span>
+                                    <span className="text-primary">NPR {viewInvoiceAlert[1].amount}</span>
+                                </div>
+                                {viewInvoiceAlert[1].discount > 0 && (
+                                    <div className="flex justify-between text-green-600">
+                                        <span className="text-primary">Discount:</span>
+                                        <span className="text-primary">- NPR {viewInvoiceAlert[1].discount}</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between font-bold border-t pt-2">
+                                    <span className="text-primary">Grand Total:</span>
+                                    <span className="text-primary">NPR {viewInvoiceAlert[1].grandTotal}</span>
+                                </div>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                    <span className="text-primary">Payment Method:</span>
+                                    <span className="text-primary">{viewInvoiceAlert[1].paymentMethod}</span>
+                                </div>
+                                <div className="flex justify-between text-sm text-gray-500">
+                                    <span className="text-primary">Paid Amount:</span>
+                                    <span className="text-primary">NPR {viewInvoiceAlert[1].paidAmount}</span>
+                                </div>
+                                {viewInvoiceAlert[1].dueAmount > 0 && (
+                                    <div className="flex justify-between text-sm text-red-500">
+                                        <span className="text-primary">Due Amount:</span>
+                                        <span className="text-primary">NPR {viewInvoiceAlert[1].dueAmount}</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Notes */}
+                            {viewInvoiceAlert[1].note && (
+                                <div className="p-4 bg-gray-50 rounded-lg">
+                                    <h4 className="font-semibold text-primary">Notes</h4>
+                                    <p className="text-primary">{viewInvoiceAlert[1].note}</p>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setViewInvoiceAlert([false, null])} className='dark:border-none dark:bg-gray-800 text-primary'>Close</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => window.print()}>Print Invoice</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };
