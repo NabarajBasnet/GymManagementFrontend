@@ -1,21 +1,7 @@
 'use client';
 
-import { FiPrinter } from "react-icons/fi";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { LuFileSearch2 } from "react-icons/lu";
-import { FaUser } from "react-icons/fa";
-import { Badge } from "@/components/ui/badge";
 import {
-    CircleDollarSign,
-    RotateCcw,
-    XCircle,
-    Clock,
-    CheckCircle2,
-    AlertCircle,
     Home,
     LayoutDashboard,
     CreditCard,
@@ -62,8 +48,8 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import toast from "react-hot-toast";
+} from "@/components/ui/select";
+import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -113,7 +99,7 @@ const PaymentReceipts = () => {
     const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
 
     // Pagination states
-    let limit = 15;
+    let limit = 10;
     const [currentPage, setCurrentPage] = useState(1);
 
     // Search Query
@@ -671,7 +657,7 @@ const PaymentReceipts = () => {
 
     const deleteReceipt = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/receipt/V2/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
@@ -1084,43 +1070,41 @@ const PaymentReceipts = () => {
                     )}
 
                     {/* Enhanced Pagination */}
-                    {receipts?.length > 0 && (
-                        <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4">
-                            <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-                                <div className="flex items-center space-x-2">
-                                    <div className="text-sm text-gray-600 dark:text-gray-400">
-                                        Showing
-                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
-                                            {((currentPage - 1) * 10) + 1}
-                                        </span>
-                                        to
-                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
-                                            {Math.min(currentPage * 10, totalReceipts || 0)}
-                                        </span>
-                                        of
-                                        <span className="font-semibold text-gray-900 dark:text-white mx-1">
-                                            {totalReceipts || 0}
-                                        </span>
-                                        receipts
-                                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+                            <div className="flex items-center space-x-2">
+                                <div className="text-sm text-gray-600 dark:text-gray-400">
+                                    Showing
+                                    <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                        {((currentPage - 1) * 10) + 1}
+                                    </span>
+                                    to
+                                    <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                        {Math.min(currentPage * 10, totalReceipts || 0)}
+                                    </span>
+                                    of
+                                    <span className="font-semibold text-gray-900 dark:text-white mx-1">
+                                        {totalReceipts || 0}
+                                    </span>
+                                    receipts
                                 </div>
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                    classNames={{
-                                        root: "flex items-center space-x-1",
-                                        item: "h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200 text-sm font-medium",
-                                        active: "bg-blue-600 text-white hover:bg-blue-700 dark:hover:bg-blue-700 border-blue-600 shadow-sm",
-                                        dots: "text-gray-400 dark:text-gray-500 px-2"
-                                    }}
-                                />
                             </div>
+                            <Pagination
+                                total={totalPages || 1}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                                classNames={{
+                                    root: "flex items-center space-x-1",
+                                    item: "h-10 w-10 flex items-center justify-center border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 rounded-lg transition-colors duration-200 text-sm font-medium",
+                                    active: "bg-blue-600 text-white hover:bg-blue-700 dark:hover:bg-blue-700 border-blue-600 shadow-sm",
+                                    dots: "text-gray-400 dark:text-gray-500 px-2"
+                                }}
+                            />
                         </div>
-                    )}
+                    </div>
                 </div>
             </div>
 
