@@ -63,7 +63,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -673,7 +673,7 @@ const PaymentInvoice = () => {
 
     const deleteSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/invoice/V2/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
