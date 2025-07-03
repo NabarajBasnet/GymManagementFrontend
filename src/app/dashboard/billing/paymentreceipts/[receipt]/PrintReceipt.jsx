@@ -154,7 +154,7 @@ const ReceiptDetails = ({ receiptId }) => {
                             size="sm"
                             onClick={() => reactToPrintFn()}
                             aria-label="Print this page"
-                            className="flex-1 md:flex-none"
+                            className="flex-1 md:flex-none dark:bg-gray-800 dark:border-none text-primary px-4"
                         >
                             <MdOutlineLocalPrintshop className="mr-2 h-4 w-4" />
                             <span className="sr-only md:not-sr-only">Print</span>
@@ -165,7 +165,7 @@ const ReceiptDetails = ({ receiptId }) => {
                             onClick={generatePDF}
                             disabled={isGeneratingPDF}
                             aria-label="Download as PDF"
-                            className="flex-1 md:flex-none"
+                            className="flex-1 md:flex-none dark:bg-gray-800 dark:border-none text-primary px-4"
                         >
                             <MdDownload className="mr-2 h-4 w-4" />
                             {isGeneratingPDF ? 'Generating...' : <span className="sr-only md:not-sr-only">PDF</span>}
@@ -173,13 +173,13 @@ const ReceiptDetails = ({ receiptId }) => {
                     </div>
                 </div>
 
-                <h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+                <h1 className="text-2xl md:text-3xl text-primary font-bold tracking-tight">
                     Receipt Details
                 </h1>
             </header>
 
-            <div className="bg-background rounded-lg shadow-sm border">
-                <div ref={contentRef} className="p-6 md:p-8 max-w-3xl mx-auto bg-white dark:bg-gray-800 print:shadow-none print:border-0">
+            <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border dark:border-none">
+                <div ref={contentRef} className="p-6 md:p-8 max-w-3xl rounded-md mx-auto bg-white dark:bg-gray-800 print:shadow-none print:border-0">
                     {/* Header */}
                     <div className="text-center mb-6 md:mb-8">
                         <div className="flex justify-center mb-3 md:mb-4">
@@ -195,12 +195,12 @@ const ReceiptDetails = ({ receiptId }) => {
                     {/* Receipt Info */}
                     <div className="flex flex-col md:flex-row justify-between mb-6 md:mb-8 gap-4">
                         <div className="space-y-1">
-                            <p className="font-semibold text-sm md:text-base">Receipt No: <span className="font-normal">{receipt.receiptNo}</span></p>
-                            <p className="font-semibold text-sm md:text-base">Date: <span className="font-normal">{formatDate(receipt.createdAt)}</span></p>
+                            <p className="font-semibold text-sm md:text-base text-primary">Receipt No: <span className="font-normal">{receipt.receiptNo}</span></p>
+                            <p className="font-semibold text-sm md:text-base text-primary">Date: <span className="font-normal">{formatDate(receipt.createdAt)}</span></p>
                         </div>
                         <div className="space-y-1 text-left md:text-right">
-                            <p className="font-semibold text-sm md:text-base">Amount: <span className="font-normal">Rs. {receipt.receivedAmount?.toLocaleString()}</span></p>
-                            <p className="font-semibold text-sm md:text-base">Payment Status: <span className="font-normal text-green-600 dark:text-green-400">Paid</span></p>
+                            <p className="font-semibold text-sm md:text-base text-primary">Amount: <span className="font-normal">Rs. {receipt.receivedAmount?.toLocaleString()}</span></p>
+                            <p className="font-semibold text-sm md:text-base text-primary">Payment Status: <span className="font-normal text-green-600 dark:text-green-400">Paid</span></p>
                         </div>
                     </div>
 
@@ -225,34 +225,34 @@ const ReceiptDetails = ({ receiptId }) => {
                             <table className="min-w-full border-collapse">
                                 <thead>
                                     <tr className="border-b-2 border-gray-200 dark:border-gray-600">
-                                        <th className="text-left py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base">Description</th>
-                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base">Quantity</th>
-                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base">Rate (Rs.)</th>
-                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base">Amount (Rs.)</th>
+                                        <th className="text-left py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Description</th>
+                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Quantity</th>
+                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Rate (Rs.)</th>
+                                        <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Amount (Rs.)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {receipt.itemId && (
                                         <tr className="border-b border-gray-100 dark:border-gray-700">
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base">{receipt.itemId.planName}</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">1</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">{receipt.itemId.price?.toLocaleString()}</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">{receipt.itemId.price?.toLocaleString()}</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base text-primary">{receipt.itemId.planName}</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">1</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{receipt.itemId.price?.toLocaleString()}</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{receipt.itemId.price?.toLocaleString()}</td>
                                         </tr>
                                     )}
                                     {receipt.receivedAmount > receipt.itemId?.price && (
-                                        <tr className="border-b border-gray-100 dark:border-gray-700">
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base">Admission Fee</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">1</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">{(receipt.receivedAmount - receipt.itemId?.price)?.toLocaleString()}</td>
-                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base">{(receipt.receivedAmount - receipt.itemId?.price)?.toLocaleString()}</td>
+                                        <tr className="border-b border-gray-100 dark:border-gray-700 text-primary">
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base text-primary">Admission Fee</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">1</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{(receipt.receivedAmount - receipt.itemId?.price)?.toLocaleString()}</td>
+                                            <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{(receipt.receivedAmount - receipt.itemId?.price)?.toLocaleString()}</td>
                                         </tr>
                                     )}
                                 </tbody>
                                 <tfoot>
                                     <tr className="border-t-2 border-gray-200 dark:border-gray-600">
-                                        <td colSpan="3" className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base">Total Amount:</td>
-                                        <td className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base">Rs. {receipt.receivedAmount?.toLocaleString()}</td>
+                                        <td colSpan="3" className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base text-primary">Total Amount:</td>
+                                        <td className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base text-primary">Rs. {receipt.receivedAmount?.toLocaleString()}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -262,13 +262,13 @@ const ReceiptDetails = ({ receiptId }) => {
                     {/* Additional Information */}
                     <div className="mb-6 md:mb-8">
                         <div className="mb-3 md:mb-4">
-                            <p className="font-semibold text-sm md:text-base">Remarks:</p>
-                            <p className="text-sm md:text-base">Paid in full. {receipt.itemId?.duration && `Valid for ${receipt.itemId.duration} days.`}</p>
+                            <p className="font-semibold text-sm md:text-base text-primary">Remarks:</p>
+                            <p className="text-sm md:text-base text-primary">Paid in full. {receipt.itemId?.duration && `Valid for ${receipt.itemId.duration} days.`}</p>
                         </div>
                         {receipt.itemId?.timeRestriction && (
                             <div className="mb-3 md:mb-4">
-                                <p className="font-semibold text-sm md:text-base">Access Hours:</p>
-                                <p className="text-sm md:text-base">{receipt.itemId.timeRestriction.startTime} - {receipt.itemId.timeRestriction.endTime}</p>
+                                <p className="font-semibold text-sm md:text-base text-primary">Access Hours:</p>
+                                <p className="text-sm md:text-base text-primary">{receipt.itemId.timeRestriction.startTime} - {receipt.itemId.timeRestriction.endTime}</p>
                             </div>
                         )}
                     </div>
@@ -276,12 +276,12 @@ const ReceiptDetails = ({ receiptId }) => {
                     {/* Signatures */}
                     <div className="flex flex-col md:flex-row justify-between mt-8 md:mt-12 pt-4 border-t border-gray-200 dark:border-gray-600 gap-4 md:gap-0">
                         <div className="text-center">
-                            <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block">Customer Signature</p>
-                            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Date: _________________</p>
+                            <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block text-primary">Customer Signature</p>
+                            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 text-primary">Date: _________________</p>
                         </div>
                         <div className="text-center">
-                            <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block">Authorized Signature</p>
-                            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">Date: _________________</p>
+                            <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block text-primary">Authorized Signature</p>
+                            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 text-primary">Date: _________________</p>
                         </div>
                     </div>
 
