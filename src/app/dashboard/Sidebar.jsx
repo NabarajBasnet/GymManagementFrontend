@@ -397,28 +397,11 @@ const Sidebar = () => {
         //   title: "Feedback Management",
         //   link: "/dashboard/feedbacks",
         // },
-        // {
-        //   icon: FaBoxOpen,
-        //   title: "Logs",
-        //   link: "/dashboard/logs",
-        //   subObj: [
-        //     {
-        //       icon: FaBoxOpen,
-        //       title: "Audit Logs",
-        //       link: "/dashboard/logs/auditlogs",
-        //     },
-        //     {
-        //       icon: FaBoxOpen,
-        //       title: "Auth Logs",
-        //       link: "/dashboard/logs/authlogs",
-        //     },
-        //     {
-        //       icon: FaBoxOpen,
-        //       title: "Error Logs",
-        //       link: "/dashboard/logs/errorlogs",
-        //     },
-        //   ],
-        // },
+        {
+          icon: FaBoxOpen,
+          title: "Logs",
+          link: "/dashboard/logs",
+        },
         // {
         //   icon: IoChatbubbleEllipsesSharp,
         //   title: "Ai Assistant",
