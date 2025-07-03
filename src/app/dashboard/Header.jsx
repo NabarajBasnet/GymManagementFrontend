@@ -476,11 +476,11 @@ const Header = () => {
         //   title: "Feedback Management",
         //   link: "/dashboard/feedbacks",
         // },
-        {
-          icon: HiClipboardList,
-          title: "Logs",
-          link: "/dashboard/logs",
-        },
+        // {
+        //   icon: HiClipboardList,
+        //   title: "Logs",
+        //   link: "/dashboard/logs",
+        // },
         // {
         //   icon: IoChatbubbleEllipsesSharp,
         //   title: "Ai Assistant",

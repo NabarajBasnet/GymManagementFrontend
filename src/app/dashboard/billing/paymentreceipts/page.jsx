@@ -85,8 +85,6 @@ const PaymentReceipts = () => {
     // Member search states
     const [memberSearchQuery, setMemberSearchQuery] = useState('');
     const [memberName, setMemberName] = useState('');
-    const [renderMemberDropdown, setRenderMemberDropdown] = useState(false);
-    const memberSearchRef = useRef(null);
 
     // Staff search states
     const [staffSearchQuery, setStaffSearchQuery] = useState('');
@@ -109,68 +107,6 @@ const PaymentReceipts = () => {
     // Sorting states
     const [sortBy, setSortBy] = useState('');
     const [sortOrderDesc, setSortOrderDesc] = useState(true);
-
-    // Get all members
-    const getAllMembers = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/members`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch members");
-        }
-    };
-
-    const { data: membersData, isLoading: membersLoading } = useQuery({
-        queryKey: ['members'],
-        queryFn: getAllMembers
-    });
-
-    const { members } = membersData || {};
-
-    // Get all staffs
-    const getAllStaffs = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch staffs");
-        }
-    };
-
-    const { data: staffsData, isLoading: staffsLoading } = useQuery({
-        queryKey: ['staffs'],
-        queryFn: getAllStaffs
-    });
-
-    const { staffs } = staffsData || {};
-
-    // Handle click outside for all dropdowns
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (memberSearchRef.current && !memberSearchRef.current.contains(event.target)) {
-                setRenderMemberDropdown(false);
-            }
-            if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
-                setRenderStaffDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [memberSearchRef, staffSearchRef]);
-
-    const handleMemberSearchFocus = () => {
-        setRenderMemberDropdown(true);
-    };
-
-    const handleStaffSearchFocus = () => {
-        setRenderStaffDropdown(true);
-    };
 
     const printReceipt = (receiptData) => {
         // Create a new window
@@ -531,89 +467,6 @@ const PaymentReceipts = () => {
         printWindow.document.close();
     };
 
-    const postReceipt = async (data) => {
-        try {
-            const {
-                paymentReceiptNo,
-                paymentDate,
-                referenceNo,
-                receivedAmount,
-                discountAmount,
-                dueAmount,
-                totalAmount,
-                notes
-            } = data;
-
-            const finalData = {
-                paymentReceiptNo,
-                paymentDate,
-                memberId,
-                staffId,
-                paymentMethod,
-                paymentStatus,
-                referenceNo,
-                receivedAmount,
-                discountAmount,
-                dueAmount,
-                totalAmount,
-                notes
-            };
-
-            if (!memberId) {
-                toast.error('Please select customer name');
-                return
-            }
-
-            if (!staffId) {
-                toast.error('Please select staff name');
-                return
-            };
-
-            if (!paymentMethod) {
-                toast.error('Please select payment method');
-                return
-            };
-
-            if (!paymentStatus) {
-                toast.error('Please select payment status');
-                return
-            };
-
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(finalData),
-            });
-
-            const responseBody = await response.json();
-
-            if (response.ok && response.status === 200) {
-                queryclient.invalidateQueries(['paymentreceipts']);
-                setReceiptData(responseBody.receipt);
-                toast.success(responseBody.message);
-                reset();
-                setOpenReceiptForm(false);
-                setMemberId('');
-                setStaffId('');
-                setMemberName('');
-                setStaffName('');
-                setStaffSearchQuery('');
-                setMemberSearchQuery('');
-                setAssignedStaffName(responseBody.assignedStaffName);
-                setAssignedMemberName(responseBody.assignedMemberName);
-                setPrintReceiptAlert(true);
-            } else {
-                toast.error(responseBody.message);
-            };
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error('Internal Server Error!');
-            toast.error(error.message);
-        };
-    };
-
     // Get all services and products from server
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
@@ -899,11 +752,9 @@ const PaymentReceipts = () => {
                                                         />
                                                     </div>
                                                 </th>
-                                                {loggedInUser?.role !== 'Gym Admin' && (
-                                                    <th className="px-4 py-4 text-right">
-                                                        <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</span>
-                                                    </th>
-                                                )}
+                                                <th className="px-4 py-4 text-right">
+                                                    <span className="text-xs font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</span>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -988,21 +839,20 @@ const PaymentReceipts = () => {
                                                             {receipt.dueAmount === 0 ? 'Paid' : 'Partial'}
                                                         </span>
                                                     </td>
-                                                    {loggedInUser?.role !== 'Gym Admin' && (
-                                                        <td className="px-4 py-2 whitespace-nowrap text-right">
-                                                            <div className="flex items-center justify-end space-x-2">
-                                                                <button
-                                                                    onClick={() => getSingleReceiptDetails(receipt._id)}
-                                                                    className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-600 transition-all duration-200"
-                                                                    title="Print Receipt"
-                                                                >
-                                                                    <PiPrinterBold className="h-4 w-4" />
-                                                                </button>
+                                                    <td className="px-4 py-2 whitespace-nowrap text-right">
+                                                        <div className="flex items-center justify-end space-x-2">
+                                                            <button
+                                                                onClick={() => getSingleReceiptDetails(receipt._id)}
+                                                                className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-600 transition-all duration-200"
+                                                                title="Print Receipt"
+                                                            >
+                                                                <PiPrinterBold className="h-4 w-4" />
+                                                            </button>
+                                                            {loggedInUser?.role !== 'Gym Admin' ? (
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger asChild>
                                                                         <button
-                                                                            className="inline-flex items-center justify-center p-2 bg-red-100 text-red-600 border border-red-300 rounded-lg hover:bg-red-200 hover:text-red-700 transition-all duration-200
-                 dark:bg-red-950 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-900"
+                                                                            className="inline-flex items-center justify-center p-2 bg-red-100 text-red-600 border border-red-300 rounded-lg hover:bg-red-200 hover:text-red-700 transition-all duration-200 dark:bg-red-950 dark:text-red-400 dark:border-red-700 dark:hover:bg-red-900"
                                                                             title="Delete Receipt"
                                                                         >
                                                                             <Trash2 className="h-4 w-4" />
@@ -1036,9 +886,13 @@ const PaymentReceipts = () => {
                                                                         </AlertDialogFooter>
                                                                     </AlertDialogContent>
                                                                 </AlertDialog>
-                                                            </div>
-                                                        </td>
-                                                    )}
+                                                            ) : (
+                                                                <>
+                                                                </>
+                                                            )}
+
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -1107,337 +961,6 @@ const PaymentReceipts = () => {
                     </div>
                 </div>
             </div>
-
-            {/* Form Section */}
-            {openReceiptForm && (
-                <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form onSubmit={handleSubmit(postReceipt)} className="bg-white dark:bg-gray-800 w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
-                        {/* Header */}
-                        <div className="w-full flex justify-between p-6 items-center border-b border-gray-100">
-                            <div>
-                                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-300">Create New Receipt</h1>
-                                <p className="text-sm text-gray-500 mt-1 dark:text-gray-300">Generate and print payment receipts</p>
-                            </div>
-                            <button
-                                onClick={() => setOpenReceiptForm(false)}
-                                className="p-2 rounded-full hover:bg-gray-50 transition-colors duration-200"
-                                aria-label="Close form"
-                            >
-                                <X className="w-5 h-5 text-gray-500 dark:text-gray-300 hover:text-gray-700" />
-                            </button>
-                        </div>
-
-                        {/* Body */}
-                        <div className="flex-1 overflow-y-auto p-6">
-                            {/* Step 1: Customer & Basic Info */}
-                            <div className="mb-8">
-                                <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Basic Information</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
-                                        <Input
-                                            type="text"
-                                            {...register('paymentReceiptNo', { required: 'Receipt no is required' })}
-                                            placeholder="Receipt No"
-                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                        {errors.paymentReceiptNo && (
-                                            <p className="text-xs font-semibold text-red-600">{`${errors.paymentReceiptNo.message}`}</p>
-                                        )}
-                                    </div>
-
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
-                                        <Input
-                                            type="date"
-                                            {...register('paymentDate', { required: 'Receipt no is required' })}
-                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                        {errors.paymentDate && (
-                                            <p className="text-xs font-semibold text-red-600">{`${errors.paymentDate.message}`}</p>
-                                        )}
-                                    </div>
-
-                                    {/* Member dropdown */}
-                                    <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium text-gray-700">Search Member</Label>
-                                        <div ref={memberSearchRef} className="relative">
-                                            <Controller
-                                                name="memberName"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <div className="relative">
-                                                        <Input
-                                                            {...field}
-                                                            autoComplete="off"
-                                                            value={memberName || memberSearchQuery}
-                                                            onChange={(e) => {
-                                                                setMemberSearchQuery(e.target.value);
-                                                                field.onChange(e);
-                                                                setMemberName('');
-                                                            }}
-                                                            onFocus={handleMemberSearchFocus}
-                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                            placeholder="Search members..."
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                            <FiSearch className="h-5 w-5" />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            />
-                                            {errors.memberName && (
-                                                <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                    {errors.memberName.message}
-                                                </p>
-                                            )}
-
-                                            {renderMemberDropdown && (
-                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                    {members?.length > 0 ? (
-                                                        members
-                                                            .filter((member) => {
-                                                                return member.fullName
-                                                                    .toLowerCase()
-                                                                    .includes(memberSearchQuery.toLowerCase());
-                                                            })
-                                                            .map((member) => (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setMemberName(member.fullName);
-                                                                        setMemberSearchQuery(member.fullName);
-                                                                        setMemberId(member._id);
-                                                                        setRenderMemberDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                    key={member._id}
-                                                                >
-                                                                    {member.fullName}
-                                                                </div>
-                                                            ))
-                                                    ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Staff Dropdown */}
-                                    <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
-                                        <div ref={staffSearchRef} className="relative">
-                                            <Controller
-                                                name="staffName"
-                                                control={control}
-                                                render={({ field }) => (
-                                                    <div className="relative">
-                                                        <Input
-                                                            {...field}
-                                                            autoComplete="off"
-                                                            value={staffName || staffSearchQuery}
-                                                            onChange={(e) => {
-                                                                setStaffSearchQuery(e.target.value);
-                                                                field.onChange(e);
-                                                                setStaffName('');
-                                                            }}
-                                                            onFocus={handleStaffSearchFocus}
-                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                            placeholder="Search staff..."
-                                                        />
-                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                            <FiSearch className="h-5 w-5" />
-                                                        </div>
-                                                    </div>
-                                                )}
-                                            />
-                                            {errors.staffName && (
-                                                <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                    {errors.staffName.message}
-                                                </p>
-                                            )}
-
-                                            {renderStaffDropdown && (
-                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                    {staffs?.length > 0 ? (
-                                                        staffs
-                                                            .filter((staff) => {
-                                                                return staff.fullName
-                                                                    .toLowerCase()
-                                                                    .includes(staffSearchQuery.toLowerCase());
-                                                            })
-                                                            .map((staff) => (
-                                                                <div
-                                                                    onClick={() => {
-                                                                        setStaffName(staff.fullName);
-                                                                        setStaffSearchQuery(staff.fullName);
-                                                                        setStaffId(staff._id);
-                                                                        setRenderStaffDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                    key={staff._id}
-                                                                >
-                                                                    {staff.fullName}
-                                                                </div>
-                                                            ))
-                                                    ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">No staff found</div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Step 3: Payment Details */}
-                            <div className="border-t border-gray-200 py-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {/* Payment Method Column */}
-                                    <div className="space-y-4">
-                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Payment Method</h2>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
-                                            <Select onValueChange={(value) => setPaymentMethod(value)}>
-                                                <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                                    <SelectValue placeholder="Select payment method" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Payment Methods</SelectLabel>
-                                                        <SelectItem value="Cash">Cash</SelectItem>
-                                                        <SelectItem value="Credit Card">Credit Card</SelectItem>
-                                                        <SelectItem value="Debit Card">Debit Card</SelectItem>
-                                                        <SelectItem value="E Banking">E Banking</SelectItem>
-                                                        <SelectItem value="Cheque">Cheque</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Payment Status</Label>
-                                            <Select onValueChange={(value) => setPaymentStatus(value)}>
-                                                <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                                    <SelectValue placeholder="Select payment method" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Payment Methods</SelectLabel>
-                                                        <SelectItem value="Paid">Paid</SelectItem>
-                                                        <SelectItem value="Partially Paid">Partially Paid</SelectItem>
-                                                        <SelectItem value="Pending">Pending</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Reference No.</Label>
-                                            <Input
-                                                type="text"
-                                                {...register('referenceNo')}
-                                                placeholder="Payment reference number"
-                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Amount Summary Column */}
-                                    <div className="space-y-4">
-                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Amount Summary</h2>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Received Amount</Label>
-                                            <Input
-                                                type="number"
-                                                {...register('receivedAmount', { required: 'receivedAmount is required' })}
-                                                placeholder="0.00"
-                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Discount Amount</Label>
-                                            <Input
-                                                type="number"
-                                                {...register('discountAmount')}
-                                                placeholder="0.00"
-                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Due Amount</Label>
-                                            <Input
-                                                type="number"
-                                                {...register('dueAmount')}
-                                                placeholder="0.00"
-                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Notes Column */}
-                                    <div className="space-y-4">
-                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Total Amount & Notes</h2>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Total Amount</Label>
-                                            <Input
-                                                {...register('totalAmount', { required: 'Total amount is required' })}
-                                                type="number"
-                                                placeholder="0.00"
-                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
-                                            <textarea
-                                                {...register('notes')}
-                                                rows={1}
-                                                className="w-full p-2.5 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                placeholder="Any additional notes or comments..."
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Footer */}
-                        <div className="w-full flex justify-end gap-3 p-6 border-t border-gray-100">
-                            <Button
-                                type="button"
-                                onClick={() => setOpenReceiptForm(false)}
-                                variant="outline"
-                                className="h-10 px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                className="h-10 px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <div className="flex items-center gap-2">
-                                        <BiLoaderAlt className="animate-spin h-4 w-4" />
-                                        Processing...
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2">
-                                        <Save className="h-4 w-4" />
-                                        Save Receipt
-                                    </div>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
-            )}
         </div>
     );
 };
