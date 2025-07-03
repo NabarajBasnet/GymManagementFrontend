@@ -65,7 +65,7 @@ const PaymentReceipts = () => {
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&receiptSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -235,7 +235,7 @@ const PaymentReceipts = () => {
                                                         <span>Created Date</span>
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('createdAt');
+                                                                setSortBy('dueDate');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="h-4 w-4 cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"

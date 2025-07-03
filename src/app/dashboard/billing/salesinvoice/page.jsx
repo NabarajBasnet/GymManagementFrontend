@@ -67,6 +67,7 @@ import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import ResendingInvoiceToMember from "@/components/Resending/ResendingInvoiceToMember";
 
 const PaymentInvoice = () => {
 
@@ -78,6 +79,8 @@ const PaymentInvoice = () => {
     // Other states
     const [invoiceData, setInvoiceData] = useState(null);
     const [printInvoiceAlert, setPrintInvoiceAlert] = useState(false);
+    const [resendingInvoice, setResendingInvoice] = useState(false);
+    console.log(resendingInvoice)
 
     // Pagination states
     let limit = 15;
@@ -644,7 +647,7 @@ const PaymentInvoice = () => {
     const getAllInvoices = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/invoice/v2?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/invoice/v2?page=${page}&limit=${limit}&invoiceSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -669,6 +672,26 @@ const PaymentInvoice = () => {
     const getSingleSalesInvoice = async (invoice) => {
         setInvoiceData(invoice);
         printInvoice(invoice);
+    };
+
+    // Resend invoice to members email
+    const resendInvoiceToMember = async (memberId, invoiceId) => {
+        setResendingInvoice(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/invoice/v2/resend-invoice?memberId=${memberId}&invoiceId=${invoiceId}`)
+            const resBody = await response.json();
+            if (response.ok) {
+                toast.success(resBody.message);
+                setResendingInvoice(false);
+            } else {
+                setResendingInvoice(false);
+                toast.error(resBody.message);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+            setResendingInvoice(false);
+        };
     };
 
     const deleteSalesInvoice = async (id) => {
@@ -749,8 +772,12 @@ const PaymentInvoice = () => {
         }
     };
 
+
     return (
         <div className="w-full py-7 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
+
+            {resendingInvoice && <ResendingInvoiceToMember />}
+
             {/* Breadcrumb Navigation */}
             <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
                 {/* Enhanced Breadcrumb with Icons */}
@@ -1057,7 +1084,7 @@ const PaymentInvoice = () => {
                                                                                 Cancel
                                                                             </AlertDialogCancel>
                                                                             <AlertDialogAction
-                                                                                onClick={() => sendInvoiceToMember(invoice._id)}
+                                                                                onClick={() => resendInvoiceToMember(invoice?.customer?._id, invoice?._id)}
                                                                                 className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-blue-500"
                                                                             >
                                                                                 Send Invoice
