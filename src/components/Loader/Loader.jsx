@@ -16,7 +16,7 @@ const Loader = () => {
                 </div>
 
                 {/* Top gear - Red - made larger */}
-                <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+                <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
                     <div className="w-12 h-12 animate-spin text-red-500" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }}>
                         <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
                     </div>
@@ -24,14 +24,14 @@ const Loader = () => {
 
                 {/* Right gear - Green - made larger */}
                 <div className="absolute top-1/2 right-0 transform -translate-y-1/2">
-                    <div className="w-14 h-14 animate-spin text-green-500" style={{ animationDuration: '2.5s' }}>
+                    <div className="w-14 h-14 animate-spin text-green-500" style={{ animationDuration: '2.5s', animationDirection: 'reverse' }}>
                         <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
                     </div>
                 </div>
 
                 {/* Left gear - Yellow - made larger */}
-                <div className="absolute top-1/2 left-0 transform -translate-y-1/2">
-                    <div className="w-12 h-12 animate-spin text-yellow-500" style={{ animationDuration: '1.8s', }}>
+                <div className="absolute top-1/2 left-3 transform -translate-y-1/2">
+                    <div className="w-12 h-12 animate-spin text-yellow-500" style={{ animationDuration: '1.8s', animationDirection: 'reverse' }}>
                         <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
                     </div>
                 </div>

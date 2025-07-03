@@ -27,6 +27,8 @@ const ReceiptDetails = ({ receiptId }) => {
 
     return (
         <div>
+                    <Loader />
+
             {
                 isLoading ? (
                     <Loader />
