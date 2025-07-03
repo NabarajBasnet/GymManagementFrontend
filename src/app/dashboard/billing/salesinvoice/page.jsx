@@ -1029,7 +1029,7 @@ const PaymentInvoice = () => {
                                                                                 <Button
                                                                                     variant="ghost"
                                                                                     size="icon"
-                                                                                    className="h-8 w-8 text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400"
+                                                                                    className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                                                                                 >
                                                                                     <LuSend className="h-4 w-4" />
                                                                                 </Button>
@@ -1037,20 +1037,30 @@ const PaymentInvoice = () => {
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>Send Invoice</TooltipContent>
                                                                     </Tooltip>
-                                                                    <AlertDialogContent>
+
+                                                                    <AlertDialogContent className="bg-white dark:bg-[#1f1f1f] border border-blue-200 dark:border-blue-400 shadow-xl rounded-2xl">
                                                                         <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Confirm Invoice Send</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                This will permanently delete invoice #{invoice.invoiceNo}. This action cannot be undone.
+                                                                            <AlertDialogTitle className="text-blue-600 dark:text-blue-400 text-lg font-semibold">
+                                                                                Send Invoice?
+                                                                            </AlertDialogTitle>
+                                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+                                                                                This will send invoice{" "}
+                                                                                <span className="font-medium text-black dark:text-white">
+                                                                                    #{invoice.invoiceNo}
+                                                                                </span>{" "}
+                                                                                to the member's email. You can’t undo this action.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                                                                        <AlertDialogFooter className="mt-6">
+                                                                            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                                                Cancel
+                                                                            </AlertDialogCancel>
                                                                             <AlertDialogAction
-                                                                                onClick={() => deleteSalesInvoice(invoice._id)}
-                                                                                className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500"
+                                                                                onClick={() => sendInvoiceToMember(invoice._id)}
+                                                                                className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-blue-500"
                                                                             >
-                                                                                Delete Invoice
+                                                                                Send Invoice
                                                                             </AlertDialogAction>
                                                                         </AlertDialogFooter>
                                                                     </AlertDialogContent>
