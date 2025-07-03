@@ -39,16 +39,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
@@ -58,39 +48,12 @@ const PaymentReceipts = () => {
     const { user } = useUser();
     const loggedInUser = user ? user.user : null;
 
-    // React Hook Form
-    const {
-        register,
-        reset,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        setValue,
-        setError,
-        control
-    } = useForm();
-
     const queryclient = useQueryClient();
-
-    // Form states
-    const [openReceiptForm, setOpenReceiptForm] = useState(false);
-
-    // Data states
-    const [paymentMethod, setPaymentMethod] = useState('');
-    const [paymentStatus, setPaymentStatus] = useState('');
-    const [memberId, setMemberId] = useState('');
-    const [staffId, setStaffId] = useState('');
     const [assignedStaffName, setAssignedStaffName] = useState('');
     const [assignedMemberName, setAssignedMemberName] = useState('');
 
     // Member search states
-    const [memberSearchQuery, setMemberSearchQuery] = useState('');
     const [memberName, setMemberName] = useState('');
-
-    // Staff search states
-    const [staffSearchQuery, setStaffSearchQuery] = useState('');
-    const [staffName, setStaffName] = useState('');
-    const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
-    const staffSearchRef = useRef(null);
 
     // Other states
     const [receiptData, setReceiptData] = useState(null);
@@ -493,7 +456,9 @@ const PaymentReceipts = () => {
     }, [searchQuery]);
 
     // Get Single Receipt Details
-    const getSingleReceiptDetails = async (id) => {
+    const getSingleReceiptDetails = async (details) => {
+        console.log("Details: ", details)
+        printReceipt(details);
         try {
             const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`);
             const responseBody = await response.json();
@@ -842,7 +807,7 @@ const PaymentReceipts = () => {
                                                     <td className="px-4 py-2 whitespace-nowrap text-right">
                                                         <div className="flex items-center justify-end space-x-2">
                                                             <button
-                                                                onClick={() => getSingleReceiptDetails(receipt._id)}
+                                                                onClick={() => getSingleReceiptDetails(receipt)}
                                                                 className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-600 transition-all duration-200"
                                                                 title="Print Receipt"
                                                             >
