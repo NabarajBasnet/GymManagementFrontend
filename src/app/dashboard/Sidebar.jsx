@@ -1,5 +1,6 @@
 "use client";
 
+import { HiClipboardList } from "react-icons/hi";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { TbListDetails } from "react-icons/tb";
@@ -398,7 +399,7 @@ const Sidebar = () => {
         //   link: "/dashboard/feedbacks",
         // },
         {
-          icon: FaBoxOpen,
+          icon: HiClipboardList,
           title: "Logs",
           link: "/dashboard/logs",
         },
