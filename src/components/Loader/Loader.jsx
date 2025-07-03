@@ -31,7 +31,7 @@ const Loader = () => {
 
                 {/* Left gear - Yellow - made larger */}
                 <div className="absolute top-1/2 left-0 transform -translate-y-1/2">
-                    <div className="w-12 h-12 animate-spin text-yellow-500" style={{ animationDuration: '1.8s', animationDirection: 'reverse' }}>
+                    <div className="w-12 h-12 animate-spin text-yellow-500" style={{ animationDuration: '1.8s', }}>
                         <IoSettingsSharp className="w-full h-full" strokeWidth={2.5} />
                     </div>
                 </div>
