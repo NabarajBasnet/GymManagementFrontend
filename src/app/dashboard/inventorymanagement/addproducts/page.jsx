@@ -57,7 +57,6 @@ const AddProducts = () => {
 
     // Form states
     const [formOpen, setFormOpen] = useState(false);
-    const [formMode, setFormMode] = useState('create');
 
     // Items states
     const [isActive, setIsActive] = useState(false);
@@ -66,8 +65,6 @@ const AddProducts = () => {
     const [category, setCategory] = useState('');
     const [subCategory, setSubCategory] = useState('');
     const [currency, setCurrency] = useState('');
-    const [taxRate, setTaxRate] = useState('');
-    const [itemId, setItemId] = useState('');
 
     // React Hook Form
     const {
@@ -442,14 +439,13 @@ const AddProducts = () => {
                             <Button
                                 variant="outline"
                                 type='button'
-                                onClick={() => setFormOpen(false)}
-                                className="min-w-[100px] dark:bg-gray-900 dark:text-white dark:border-none"
+                                className="min-w-[100px] py-6 rounded-sm dark:bg-gray-900 dark:text-white dark:border-none"
                             >
-                                Cancel
+                                Reset
                             </Button>
                             <Button
                                 type='submit'
-                                className="min-w-[100px] bg-blue-600 hover:bg-blue-700 dark:text-white">
+                                className="min-w-[100px] py-6 px-4 rounded-sm bg-blue-600 hover:bg-blue-700 dark:text-white">
                                 {isSubmitting ? <BiLoaderAlt className="h-4 w-4 mr-2 animate-spin duration-500" /> : <Save className="mr-2 h-4 w-4" />}
                                 {isSubmitting ? 'Submitting...' : 'Save'}
                             </Button>

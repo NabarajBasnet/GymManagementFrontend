@@ -683,7 +683,7 @@ const Logs = () => {
         </AlertDialog>
       )}
 
-      <div className="w-full flex justify-center md:justify-end pb-4">
+      <div className="w-full flex justify-center md:justify-end pb-4 px-4">
         <Pagination
           total={totalPages}
           page={currentPage}
