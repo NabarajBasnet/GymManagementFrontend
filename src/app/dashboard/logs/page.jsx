@@ -584,11 +584,11 @@ const Logs = () => {
                       <div className="space-y-3">
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Role</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.user.role}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.user.role}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Phone</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.user.phoneNumber}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.user.phoneNumber}</p>
                         </div>
                       </div>
                     </div>
@@ -620,21 +620,21 @@ const Logs = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Email</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organization.businessEmail}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organization.businessEmail}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Phone</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organization.phoneNumber}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organization.phoneNumber}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Location</span>
-                          <p className="text-sm font-medium">
+                          <p className="text-sm font-medium text-primary">
                             {selectedLog.metadata.organization.city}, {selectedLog.metadata.organization.country}
                           </p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Website</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organization.websiteUrl}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organization.websiteUrl}</p>
                         </div>
                       </div>
                     </div>
@@ -666,19 +666,19 @@ const Logs = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Email</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organizationBranch.orgBranchEmail}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organizationBranch.orgBranchEmail}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Phone</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organizationBranch.orgBranchPhone}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organizationBranch.orgBranchPhone}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Address</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organizationBranch.orgBranchAddress}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organizationBranch.orgBranchAddress}</p>
                         </div>
                         <div>
                           <span className="text-xs font-medium text-gray-500 dark:text-gray-400">Website</span>
-                          <p className="text-sm font-medium">{selectedLog.metadata.organizationBranch.orgBranchWebsite}</p>
+                          <p className="text-sm font-medium text-primary">{selectedLog.metadata.organizationBranch.orgBranchWebsite}</p>
                         </div>
                       </div>
                     </div>
@@ -690,7 +690,7 @@ const Logs = () => {
             <AlertDialogFooter className="border-t border-gray-200 dark:border-gray-700 pt-4">
               <AlertDialogAction
                 onClick={() => setSelectedLog(null)}
-                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
+                className="bg-blue-600 text-primary hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600"
               >
                 Close
               </AlertDialogAction>
