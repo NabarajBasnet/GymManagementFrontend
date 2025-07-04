@@ -27,9 +27,6 @@ import {
   FaChartLine,
   FaClipboardList,
   FaUserCog,
-  FaBoxOpen,
-  FaRulerHorizontal,
-  FaTags
 } from "react-icons/fa";
 import {
   MdPayments,
@@ -43,7 +40,6 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { HiUsers } from "react-icons/hi2";
 import { FaUsersGear, FaUsersRays } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
-import { FcParallelTasks } from "react-icons/fc";
 import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import {
   LogOut,
@@ -315,6 +311,23 @@ const Sidebar = () => {
           ],
         },
         {
+          icon: AiFillProduct,
+          title: "Manage Inventory",
+          link: "/dashboard/inventorymanagement",
+          subObj: [
+            {
+              icon: MdAdd,
+              title: "Add Products",
+              link: "/dashboard/inventorymanagement/addproducts",
+            },
+            {
+              icon: FaList,
+              title: "Products List",
+              link: "/dashboard/inventorymanagement/productslist",
+            },
+          ]
+        },
+        {
           icon: AiOutlineSchedule,
           title: "Class Schedules",
           link: "/dashboard/classschedulemanagement",
@@ -354,23 +367,6 @@ const Sidebar = () => {
           icon: MdPayments,
           title: "Payment History",
           link: "/dashboard/paymenthistory",
-        },
-        {
-          icon: AiFillProduct,
-          title: "Manage Inventory",
-          link: "/dashboard/inventorymanagement",
-          subObj: [
-            {
-              icon: MdAdd,
-              title: "Add Products",
-              link: "/dashboard/inventorymanagement/addproducts",
-            },
-            {
-              icon: FaList,
-              title: "Products List",
-              link: "/dashboard/inventorymanagement/productslist",
-            },
-          ]
         },
         {
           icon: MdAttachMoney,
