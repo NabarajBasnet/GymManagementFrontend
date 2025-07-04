@@ -1,5 +1,6 @@
 'use client';
 
+import { useReactToPrint } from "react-to-print";
 import { LuFileSearch2 } from "react-icons/lu";
 import {
     Home,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 import { FaFileInvoice } from "react-icons/fa6";
 import { PiPrinterBold } from "react-icons/pi";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,9 +22,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useForm, Controller } from "react-hook-form";
 import Pagination from '@/components/ui/CustomPagination';
-import { BiLoaderAlt } from "react-icons/bi";
 import { Plus, Search, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
 
 // Import shadcn components
@@ -56,6 +55,7 @@ const PaymentReceipts = () => {
     // Search Query
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+    const [openReceiptAlert, setOpenReceiptAlert] = useState([false, null]);
 
     // Sorting states
     const [sortBy, setSortBy] = useState('');
@@ -101,6 +101,39 @@ const PaymentReceipts = () => {
         } catch (error) {
             console.log("Error: ", error)
         };
+    }
+
+    const receiptContent = useRef(null);
+
+    // Initialize useReactToPrint hook
+    const handlePrint = useReactToPrint({
+        contentRef: receiptContent,
+        documentTitle: "Invoice",
+        onAfterPrint: () => {
+            toast.success('Invoice printed');
+        },
+        onPrintError: (error) => {
+            console.error('Print error:', error);
+            toast.error('Failed to generate Invoice');
+        }
+    });
+
+    const handleGenerateInvoice = () => {
+        // Check if ref is properly attached
+        if (!receiptContent.current) {
+            toast.error('Print component not ready. Please try again.');
+            return;
+        }
+        // Add a small delay to ensure DOM is ready
+        setTimeout(() => {
+            handlePrint();
+        }, 100);
+    };
+
+    // Helper function for date formatting
+    function formatDate(dateString) {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        return new Date(dateString).toLocaleDateString(undefined, options);
     }
 
     return (
@@ -404,7 +437,7 @@ const PaymentReceipts = () => {
                                                     <td className="px-4 py-2 whitespace-nowrap text-right">
                                                         <div className="flex items-center justify-end space-x-2">
                                                             <button
-                                                                onClick={() => window.location.href = `/dashboard/billing/paymentreceipts/${receipt?._id}`}
+                                                                onClick={() => setOpenReceiptAlert([true, receipt])}
                                                                 className="inline-flex items-center p-2 text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-blue-50 hover:text-blue-600 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-400 dark:hover:text-blue-400 dark:hover:bg-gray-600 transition-all duration-200"
                                                                 title="Print Receipt"
                                                             >
@@ -521,6 +554,145 @@ const PaymentReceipts = () => {
                             />
                         </div>
                     </div>
+
+                    {openReceiptAlert[0] && (
+                        <AlertDialog open={openReceiptAlert[0]}>
+                            <AlertDialogContent className="max-w-5xl h-[100vh] flex flex-col dark:bg-gray-700">
+                                {/* Scrollable content container */}
+                                <div className="flex-1 overflow-y-auto px-1">
+                                    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border dark:border-none">
+                                        <div ref={receiptContent} className="p-6 md:p-8 max-w-3xl rounded-md mx-auto bg-white dark:bg-gray-800 print:shadow-none print:border-0">
+                                            {/* Header */}
+                                            <div className="text-center mb-6 md:mb-8">
+                                                <div className="flex justify-center mb-3 md:mb-4">
+                                                    <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white">
+                                                        {openReceiptAlert[1].organization?.name}
+                                                    </h1>
+                                                </div>
+                                                <h1 className="text-xl md:text-2xl font-bold text-gray-800 dark:text-gray-200">OFFICIAL RECEIPT</h1>
+                                                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">{openReceiptAlert[1].organization?.name}</p>
+                                                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400">{openReceiptAlert[1].organizationBranch?.orgBranchName}</p>
+                                            </div>
+
+                                            {/* Receipt Info */}
+                                            <div className="flex flex-col md:flex-row justify-between mb-6 md:mb-8 gap-4">
+                                                <div className="space-y-1">
+                                                    <p className="font-semibold text-sm md:text-base text-primary">Receipt No: <span className="font-normal">{openReceiptAlert[1].receiptNo}</span></p>
+                                                    <p className="font-semibold text-sm md:text-base text-primary">Date: <span className="font-normal">{formatDate(openReceiptAlert[1].createdAt)}</span></p>
+                                                </div>
+                                                <div className="space-y-1 text-left md:text-right">
+                                                    <p className="font-semibold text-sm md:text-base text-primary">Amount: <span className="font-normal">Rs. {openReceiptAlert[1].receivedAmount?.toLocaleString()}</span></p>
+                                                    <p className="font-semibold text-sm md:text-base text-primary">Payment Status: <span className="font-normal text-green-600 dark:text-green-400">Paid</span></p>
+                                                </div>
+                                            </div>
+
+                                            {/* Payment Received Statement */}
+                                            <div className="mb-6 md:mb-8 p-3 md:p-4 bg-gray-50 dark:bg-gray-700 rounded">
+                                                <p className="text-gray-700 dark:text-gray-300 text-sm md:text-base">
+                                                    We at <span className="font-semibold">{openReceiptAlert[1].organization?.name}</span>, {openReceiptAlert[1].organizationBranch?.orgBranchName},
+                                                    have received a total of <span className="font-semibold">Rs. {openReceiptAlert[1].receivedAmount?.toLocaleString()}</span> from
+                                                    {openReceiptAlert[1].customer ? ` ${openReceiptAlert[1].customer.fullName}` : ' the customer'} on {formatDate(openReceiptAlert[1].createdAt)} towards
+                                                    {openReceiptAlert[1].membership?.map((item, index) => (
+                                                        <span key={index}>
+                                                            {index > 0 && index === openReceiptAlert[1].membership.length - 1 ? ' and ' : index > 0 ? ', ' : ' '}
+                                                            <span className="font-semibold">{item}</span>
+                                                        </span>
+                                                    ))}.
+                                                </p>
+                                            </div>
+
+                                            {/* Items Table */}
+                                            <div className="mb-6 md:mb-8">
+                                                <div className="overflow-x-auto">
+                                                    <table className="min-w-full border-collapse">
+                                                        <thead>
+                                                            <tr className="border-b-2 border-gray-200 dark:border-gray-600">
+                                                                <th className="text-left py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Description</th>
+                                                                <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Quantity</th>
+                                                                <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Rate (Rs.)</th>
+                                                                <th className="text-right py-2 px-3 md:px-4 font-semibold text-gray-700 dark:text-gray-300 text-sm md:text-base text-primary">Amount (Rs.)</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {openReceiptAlert[1].itemId && (
+                                                                <tr className="border-b border-gray-100 dark:border-gray-700">
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base text-primary">{openReceiptAlert[1].itemId.planName}</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">1</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{openReceiptAlert[1].itemId.price?.toLocaleString()}</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{openReceiptAlert[1].itemId.price?.toLocaleString()}</td>
+                                                                </tr>
+                                                            )}
+                                                            {openReceiptAlert[1].receivedAmount > openReceiptAlert[1].itemId?.price && (
+                                                                <tr className="border-b border-gray-100 dark:border-gray-700 text-primary">
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-sm md:text-base text-primary">Admission Fee</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">1</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{(openReceiptAlert[1].receivedAmount - openReceiptAlert[1].itemId?.price)?.toLocaleString()}</td>
+                                                                    <td className="py-2 md:py-3 px-3 md:px-4 text-right text-sm md:text-base text-primary">{(openReceiptAlert[1].receivedAmount - openReceiptAlert[1].itemId?.price)?.toLocaleString()}</td>
+                                                                </tr>
+                                                            )}
+                                                        </tbody>
+                                                        <tfoot>
+                                                            <tr className="border-t-2 border-gray-200 dark:border-gray-600">
+                                                                <td colSpan="3" className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base text-primary">Total Amount:</td>
+                                                                <td className="py-2 px-3 md:px-4 text-right font-semibold text-sm md:text-base text-primary">Rs. {openReceiptAlert[1].receivedAmount?.toLocaleString()}</td>
+                                                            </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            {/* Additional Information */}
+                                            <div className="mb-6 md:mb-8">
+                                                <div className="mb-3 md:mb-4">
+                                                    <p className="font-semibold text-sm md:text-base text-primary">Remarks:</p>
+                                                    <p className="text-sm md:text-base text-primary">Paid in full. {openReceiptAlert[1].itemId?.duration && `Valid for ${openReceiptAlert[1].itemId.duration} days.`}</p>
+                                                </div>
+                                                {openReceiptAlert[1].itemId?.timeRestriction && (
+                                                    <div className="mb-3 md:mb-4">
+                                                        <p className="font-semibold text-sm md:text-base text-primary">Access Hours:</p>
+                                                        <p className="text-sm md:text-base text-primary">{openReceiptAlert[1].itemId.timeRestriction.startTime} - {openReceiptAlert[1].itemId.timeRestriction.endTime}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Signatures */}
+                                            <div className="flex flex-col md:flex-row justify-between mt-8 md:mt-12 pt-4 border-t border-gray-200 dark:border-gray-600 gap-4 md:gap-0">
+                                                <div className="text-center">
+                                                    <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block text-primary">Customer Signature</p>
+                                                    <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 text-primary">Date: _________________</p>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="mb-6 md:mb-8 border-b border-gray-400 w-full md:w-48 inline-block text-primary">Authorized Signature</p>
+                                                    <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 text-primary">Date: _________________</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Footer */}
+                                            <div className="mt-6 md:mt-8 pt-4 border-t border-gray-200 dark:border-gray-600 text-center text-xs md:text-sm text-gray-500 dark:text-gray-400">
+                                                <p>{openReceiptAlert[1].organization?.name} • {openReceiptAlert[1].organizationBranch?.orgBranchAddress}</p>
+                                                <p>Tel: {openReceiptAlert[1].organizationBranch?.orgBranchPhone} • Email: {openReceiptAlert[1].organizationBranch?.orgBranchEmail}</p>
+                                                <p className="mt-1 md:mt-2">This is a computer generated receipt and does not require a physical signature.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Fixed footer buttons */}
+                                <AlertDialogFooter className="mt-0">
+                                    <AlertDialogCancel onClick={() => setOpenReceiptAlert([false, null])}
+                                        className='dark:border-none dark:text-primary'
+                                    >Close</AlertDialogCancel>
+                                    <AlertDialogAction
+                                        onClick={handleGenerateInvoice}
+                                        className="bg-blue-600 hover:bg-blue-700 text-white"
+                                    >
+                                        Print Invoice
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    )}
+
                 </div>
             </div>
         </div>
