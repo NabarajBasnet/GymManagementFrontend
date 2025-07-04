@@ -34,11 +34,15 @@ import {
     LayoutDashboard,
     CreditCard,
     FileText,
+    ChevronRight,
+    Plus,
+    Search,
+    Trash2,
+    ArrowUpDown
 } from "lucide-react";
 import { FaFileInvoice } from "react-icons/fa6";
 import { useRef, useEffect, useState } from 'react';
 import Pagination from '@/components/ui/CustomPagination';
-import { Plus, Search, Trash2, ArrowUpDown } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -69,9 +73,26 @@ const PaymentInvoice = () => {
     const [printInvoiceAlert, setPrintInvoiceAlert] = useState(false);
     const [resendingInvoice, setResendingInvoice] = useState(false);
     const [viewInvoiceAlert, setViewInvoiceAlert] = useState([false, null]);
-
+    const [selectedInvoices, setSelectedInvoices] = useState([]);
+    const [isAllSelected, setIsAllSelected] = useState(false);
     const invoiceContent = useRef(null);
 
+    const handleSelectAll = () => {
+        if (isAllSelected) {
+            setSelectedInvoices([]);
+        } else {
+            setSelectedInvoices(invoices.map(invoice => invoice._id));
+        }
+        setIsAllSelected(!isAllSelected);
+    };
+
+    const handleSelectInvoice = (invoiceId) => {
+        if (selectedInvoices.includes(invoiceId)) {
+            setSelectedInvoices(selectedInvoices.filter(id => id !== invoiceId));
+        } else {
+            setSelectedInvoices([...selectedInvoices, invoiceId]);
+        }
+    };
     // Initialize useReactToPrint hook
     const handlePrint = useReactToPrint({
         contentRef: invoiceContent,
@@ -160,6 +181,7 @@ const PaymentInvoice = () => {
         };
     };
 
+    // Delete bulk billing
     const deleteSalesInvoice = async (id) => {
         try {
             const response = await fetch(`http://localhost:3000/api/invoice/V2/${id}`, {
@@ -175,6 +197,36 @@ const PaymentInvoice = () => {
         } catch (error) {
             console.log("Error: ", error)
         };
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedInvoices.length === 0) {
+            toast.warning('No invoices selected');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3000/api/invoice/v2/bulk-delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ invoiceIds: selectedInvoices }),
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(`${selectedInvoices.length} invoices deleted successfully`);
+                setSelectedInvoices([]);
+                setIsAllSelected(false);
+                queryclient.invalidateQueries(['salesinvoice']);
+            } else {
+                toast.error(responseBody.message || 'Failed to delete invoices');
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error('An error occurred while deleting invoices');
+        }
     };
 
     // Get Badge
@@ -264,91 +316,149 @@ const PaymentInvoice = () => {
             {resendingInvoice && <ResendingInvoiceToMember />}
 
             {/* Breadcrumb Navigation */}
-            <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
-                {/* Enhanced Breadcrumb with Icons */}
-                <div className="mb-4">
-                    <Breadcrumb>
-                        <BreadcrumbList className="flex items-center">
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href="/"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-                                >
-                                    <Home className="h-4 w-4 mr-2" />
-                                    Home
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href="/dashboard"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-                                >
-                                    <LayoutDashboard className="h-4 w-4 mr-2" />
-                                    <span>
-                                        Dashboard
-                                    </span>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href="/dashboard/billing"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-                                >
-                                    <CreditCard className="h-4 w-4 mr-2" />
-                                    <span>Billing</span>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href="/dashboard/billing/invoice"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
-                                >
-                                    <FileText className="h-4 w-4 mr-2" />
-                                    <span>Invoice</span>
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                </div>
-
-                {/* Modern Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div className="flex items-center">
-                        <FaFileInvoice className="h-6 w-6 mr-3 text-primary" />
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-800 text-primary">Sales Invoices</h1>
-                            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                                Manage and track all your invoices
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3 items-end">
-                        {/* Enhanced Search with Floating Label */}
-                        <div className="relative flex-1 min-w-[280px]">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Search className="h-4 w-4 text-gray-400" />
+            <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-gray-900 dark:to-gray-800 rounded-sm">
+                {/* Professional Container */}
+                <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 shadow-md rounded-sm border-b border-gray-200/50 dark:border-gray-700/50">
+                    <div className="w-full mx-auto px-4">
+                        <div className="py-6 lg:py-8">
+                            {/* Enhanced Breadcrumb Navigation */}
+                            <div className="mb-8">
+                                <Breadcrumb>
+                                    <BreadcrumbList className="flex items-center space-x-1">
+                                        <BreadcrumbItem>
+                                            <BreadcrumbLink
+                                                href="/"
+                                                className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
+                                            >
+                                                <Home className="h-4 w-4 mr-2" />
+                                                Home
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                        <BreadcrumbSeparator>
+                                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                                        </BreadcrumbSeparator>
+                                        <BreadcrumbItem>
+                                            <BreadcrumbLink
+                                                href="/dashboard"
+                                                className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
+                                            >
+                                                <LayoutDashboard className="h-4 w-4 mr-2" />
+                                                Dashboard
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                        <BreadcrumbSeparator>
+                                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                                        </BreadcrumbSeparator>
+                                        <BreadcrumbItem>
+                                            <BreadcrumbLink
+                                                href="/dashboard/billing/salesinvoice"
+                                                className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
+                                            >
+                                                <CreditCard className="h-4 w-4 mr-2" />
+                                                Billing
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                        <BreadcrumbSeparator>
+                                            <ChevronRight className="h-4 w-4 text-gray-400" />
+                                        </BreadcrumbSeparator>
+                                        <BreadcrumbItem>
+                                            <BreadcrumbLink
+                                                href="/dashboard/billing/salesinvoice"
+                                                className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
+                                            >
+                                                <FileText className="h-4 w-4 mr-2" />
+                                                Invoice
+                                            </BreadcrumbLink>
+                                        </BreadcrumbItem>
+                                    </BreadcrumbList>
+                                </Breadcrumb>
                             </div>
-                            <Input
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search here..."
-                                className="pl-10 pr-4 py-6 h-12 bg-white dark:bg-gray-900 dark:border-none rounded-sm focus-visible:ring-primary"
-                            />
-                        </div>
 
-                        {/* Premium Button with Transition */}
-                        <Button
-                            onClick={() => setOpenInvoiceForm(true)}
-                            disabled
-                            className="h-12 px-6 rounded-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
-                        >
-                            <Plus className="h-5 w-5 mr-2" />
-                            <span className="font-semibold">New Invoice</span>
-                        </Button>
+                            {/* Main Header Section */}
+                            <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
+                                {/* Enhanced Title Section */}
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-start space-x-4">
+                                        <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/25">
+                                            <FaFileInvoice className="h-7 w-7 text-white" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                                                Sales Invoices
+                                            </h1>
+                                            <p className="text-base text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                                                Manage and track all your invoices with precision and ease
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Enhanced Action Controls */}
+                                <div className="flex flex-col md:flex-row items-stretch gap-4 xl:min-w-0">
+                                    {/* Bulk Delete Actions - Improved padding and spacing */}
+                                    {selectedInvoices.length > 0 && (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="py-6 rounded-sm px-4 bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg transition-all duration-200 border border-red-700 dark:border-red-600"
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                    ( {selectedInvoices.length} )
+                                                    Delete
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent className="sm:max-w-md">
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle className="text-xl font-semibold">
+                                                        Confirm Bulk Delete
+                                                    </AlertDialogTitle>
+                                                    <AlertDialogDescription className="text-base leading-relaxed">
+                                                        Are you sure you want to delete {selectedInvoices.length} selected invoice{selectedInvoices.length > 1 ? 's' : ''}?
+                                                        This action cannot be undone and will permanently remove the data from your system.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter className="gap-3">
+                                                    <AlertDialogCancel className="px-6">
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={handleBulkDelete}
+                                                        className="bg-red-600 hover:bg-red-700 px-6"
+                                                    >
+                                                        Delete Invoices
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
+
+                                    {/* Enhanced Search Bar - Improved icon positioning */}
+                                    <div className="relative flex-1 w-full">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <Search className="h-5 w-5 text-primary" />
+                                        </div>
+                                        <Input
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            placeholder="Search invoices, customers, amounts..."
+                                            className="pl-10 pr-4 text-primary py-6 rounded-sm bg-white/70 dark:bg-gray-800/70 border-gray-300 dark:border-gray-600 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:shadow-md"
+                                        />
+                                    </div>
+
+                                    {/* Premium New Invoice Button */}
+                                    <Button
+                                        onClick={() => setOpenInvoiceForm(true)}
+                                        disabled={false}
+                                        className="py-6 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-sm shadow-sm shadow-blue-500/25 hover:shadow-sm hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 whitespace-nowrap"
+                                    >
+                                        <Plus className="h-5 w-5 mr-2" />
+                                        New Invoice
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -372,7 +482,7 @@ const PaymentInvoice = () => {
             {/* Content Area */}
             <div className="w-full bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm my-6">
                 {/* Table Section */}
-                <div className="w-full">
+                <div className="w-full shadow-md">
                     {Array.isArray(invoices) && invoices?.length > 0 ? (
                         <div className="w-full">
                             <div className="overflow-x-auto">
@@ -381,12 +491,14 @@ const PaymentInvoice = () => {
                                         <Loader className="h-8 w-8 text-primary animate-spin" />
                                     </div>
                                 ) : (
-                                    <table className="w-full text-sm">
+                                    <table className="w-full text-sm shadow-md">
                                         <thead>
                                             <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
                                                 {/* Added checkbox column header */}
-                                                <th className="h-12 px-4 text-left font-medium text-gray-500 dark:text-gray-400 w-12">
-                                                    <Checkbox className="h-4 w-4 mt-2" />
+                                                <th className="p-4 align-middle">
+                                                    <Checkbox className="h-4 w-4"
+                                                        checked={isAllSelected}
+                                                        onCheckedChange={handleSelectAll} />
                                                 </th>
                                                 {[
                                                     { id: 'invoiceNo', label: 'Invoice No' },
@@ -428,8 +540,11 @@ const PaymentInvoice = () => {
                                                 >
                                                     {/* Added checkbox column cell */}
                                                     <td className="p-4 align-middle">
-                                                        <Checkbox className="h-4 w-4" />
+                                                        <Checkbox className="h-4 w-4"
+                                                            checked={selectedInvoices.includes(invoice._id)}
+                                                            onCheckedChange={() => handleSelectInvoice(invoice._id)} />
                                                     </td>
+
                                                     <td className="p-4 align-middle font-medium text-gray-900 dark:text-gray-100">
                                                         {invoice?.invoiceNo || 'N/A'}
                                                     </td>
