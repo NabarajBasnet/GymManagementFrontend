@@ -23,7 +23,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Pagination from '@/components/ui/CustomPagination';
-import { Plus, Search, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
+import { Plus, Search, Trash2, Save, X, ArrowUpDown, ChevronRight, } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -137,52 +137,56 @@ const PaymentReceipts = () => {
     }
 
     return (
-        <div className="w-full py-7 bg-gray-100 dark:bg-gray-900 min-h-screen px-4 mx-auto">
+        <div className="w-full py-6 bg-gray-100 dark:bg-gray-900 min-h-screen px-4 mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="p-4 rounded-md dark:bg-gray-800 bg-white shadow-sm">
+            <div className="p-4 rounded-sm dark:bg-gray-800 bg-white shadow-md">
                 {/* Enhanced Breadcrumb with Icons */}
                 <div className="mb-4">
                     <Breadcrumb>
-                        <BreadcrumbList className="flex items-center">
+                        <BreadcrumbList className="flex items-center space-x-1">
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     href="/"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
                                 >
                                     <Home className="h-4 w-4 mr-2" />
                                     Home
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbSeparator>
+                                <ChevronRight className="h-4 w-4 text-gray-400" />
+                            </BreadcrumbSeparator>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
                                     href="/dashboard"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
                                 >
                                     <LayoutDashboard className="h-4 w-4 mr-2" />
-                                    <span>
-                                        Dashboard
-                                    </span>
+                                    Dashboard
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbSeparator>
+                                <ChevronRight className="h-4 w-4 text-gray-400" />
+                            </BreadcrumbSeparator>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
-                                    href="/dashboard/billing"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                    href="/dashboard/billing/paymentreceipts"
+                                    className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-all duration-200"
                                 >
                                     <CreditCard className="h-4 w-4 mr-2" />
-                                    <span>Billing</span>
+                                    Billing
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
-                            <BreadcrumbSeparator className="mx-2 text-gray-300" />
+                            <BreadcrumbSeparator>
+                                <ChevronRight className="h-4 w-4 text-gray-400" />
+                            </BreadcrumbSeparator>
                             <BreadcrumbItem>
                                 <BreadcrumbLink
-                                    href="/dashboard/billing/receipts"
-                                    className="flex items-center text-sm font-medium text-gray-500 dark:text-gray-300 hover:text-primary transition-colors"
+                                    href="/dashboard/billing/paymentreceipts"
+                                    className="flex items-center px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-lg"
                                 >
                                     <FileText className="h-4 w-4 mr-2" />
-                                    <span>Receipts</span>
+                                    Receipts
                                 </BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
@@ -191,13 +195,19 @@ const PaymentReceipts = () => {
 
                 {/* Modern Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                    <div className="flex items-center">
-                        <FaFileInvoice className="h-6 w-6 mr-3 text-primary" />
-                        <div>
-                            <h1 className="text-2xl font-bold text-gray-800 text-primary">Payment Receipts</h1>
-                            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1">
-                                Manage and track all your receipts
-                            </p>
+                    <div className="flex-1 min-w-0">
+                        <div className="flex items-start space-x-4">
+                            <div className="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/25">
+                                <FaFileInvoice className="h-7 w-7 text-white" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                                    Payment Receipts
+                                </h1>
+                                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                                    Manage and track all your payment receipts with precision and ease
+                                </p>
+                            </div>
                         </div>
                     </div>
 
@@ -217,19 +227,18 @@ const PaymentReceipts = () => {
 
                         {/* Premium Button with Transition */}
                         <Button
-                            onClick={() => setOpenInvoiceForm(true)}
                             disabled
-                            className="h-12 px-6 rounded-sm bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-md transition-all duration-300 hover:shadow-lg"
+                            className="py-6 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-sm shadow-sm shadow-blue-500/25 hover:shadow-sm hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 whitespace-nowrap"
                         >
                             <Plus className="h-5 w-5 mr-2" />
-                            <span className="font-semibold">New Receipt</span>
+                            New Receipt
                         </Button>
                     </div>
                 </div>
             </div>
 
             {/* Content Area */}
-            <div className="w-full my-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="w-full my-6 bg-white dark:bg-gray-900 rounded-sm shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                 {/* Table Section */}
                 <div className="w-full">
                     {Array.isArray(receipts) && receipts?.length > 0 ? (

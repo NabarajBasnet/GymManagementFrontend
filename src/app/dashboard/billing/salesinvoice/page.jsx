@@ -311,7 +311,7 @@ const PaymentInvoice = () => {
     };
 
     return (
-        <div className="w-full py-7 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
+        <div className="w-full py-6 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
 
             {resendingInvoice && <ResendingInvoiceToMember />}
 
@@ -386,7 +386,7 @@ const PaymentInvoice = () => {
                                             <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                                                 Sales Invoices
                                             </h1>
-                                            <p className="text-base text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
+                                            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
                                                 Manage and track all your invoices with precision and ease
                                             </p>
                                         </div>
@@ -450,7 +450,7 @@ const PaymentInvoice = () => {
                                     {/* Premium New Invoice Button */}
                                     <Button
                                         onClick={() => setOpenInvoiceForm(true)}
-                                        disabled={false}
+                                        disabled
                                         className="py-6 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-sm shadow-sm shadow-blue-500/25 hover:shadow-sm hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 whitespace-nowrap"
                                     >
                                         <Plus className="h-5 w-5 mr-2" />
