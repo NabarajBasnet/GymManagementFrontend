@@ -1,5 +1,6 @@
 'use client';
 
+import { PiPrinterBold } from "react-icons/pi";
 import { useReactToPrint } from "react-to-print";
 import {
     AlertDialog,
@@ -917,20 +918,23 @@ const PaymentInvoice = () => {
                             </div>
                         )}
 
-                        <AlertDialogFooter className="border-t border-gray-200 dark:border-gray-700 pt-2">
-                            <AlertDialogCancel
-                                onClick={() => setViewInvoiceAlert([false, null])}
-                                className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600"
-                            >
-                                Close
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                                onClick={handleGenerateInvoice}
-                                className="bg-blue-600 hover:bg-blue-700 text-white"
-                            >
-                                Print Invoice
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
+                        <div className="bg-white dark:bg-gray-700 p-4 flex justify-end gap-4 backdrop-blur-sm">
+                            <AlertDialogFooter className="border-gray-200 dark:border-gray-700 pt-2">
+                                <AlertDialogCancel
+                                    onClick={() => setViewInvoiceAlert([false, null])}
+                                    className="bg-gray-100 py-6 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600"
+                                >
+                                    Close
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    onClick={handleGenerateInvoice}
+                                    className="bg-blue-600 py-6 hover:bg-blue-700 text-white"
+                                >
+                                    <PiPrinterBold className="h-4 w-4" />
+                                    Print Invoice
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </div>
                     </AlertDialogContent>
                 </AlertDialog>
             )}

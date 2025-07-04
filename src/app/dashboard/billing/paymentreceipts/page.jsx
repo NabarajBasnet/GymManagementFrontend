@@ -685,17 +685,18 @@ const PaymentReceipts = () => {
                                 </div>
 
                                 {/* Fixed footer buttons - centered with better styling */}
-                                <div className="sticky bottom-0 left-0 right-0 bg-white dark:bg-gray-700 p-4 flex justify-center gap-4 backdrop-blur-sm">
+                                <div className="sticky bottom-0 left-0 right-0 bg-white dark:bg-gray-700 p-4 flex justify-end gap-4 backdrop-blur-sm">
                                     <AlertDialogCancel
                                         onClick={() => setOpenReceiptAlert([false, null])}
-                                        className="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
+                                        className="px-6 py-6 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-md transition-colors"
                                     >
                                         Close
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                         onClick={handleGenerateInvoice}
-                                        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+                                        className="px-6 py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-sm transition-colors"
                                     >
+                                                                <PiPrinterBold className="h-4 w-4" />
                                         Print Invoice
                                     </AlertDialogAction>
                                 </div>
