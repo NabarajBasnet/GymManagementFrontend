@@ -226,7 +226,7 @@ const PaymentInvoice = () => {
             }
         } catch (error) {
             console.log("Error: ", error);
-            toast.error('An error occurred while deleting invoices');
+            toast.error(error.message);
         }
     };
 
@@ -731,7 +731,7 @@ const PaymentInvoice = () => {
             {/* Render View Invoice Alert */}
             {viewInvoiceAlert[0] && (
                 <AlertDialog open={viewInvoiceAlert[0]}>
-                    <AlertDialogContent ref={invoiceContent} className="max-w-4xl max-h-[100vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-2xl">
+                    <AlertDialogContent className="max-w-4xl max-h-[100vh] overflow-y-auto bg-white dark:bg-gray-900 shadow-2xl">
                         <AlertDialogHeader className="border-b border-gray-200 dark:border-gray-700 pb-2">
                             <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
                                 INVOICE
@@ -739,7 +739,7 @@ const PaymentInvoice = () => {
                         </AlertDialogHeader>
 
                         {viewInvoiceAlert[1] && (
-                            <div className="space-y-4 p-4">
+                            <div className="space-y-4 p-4" ref={invoiceContent}>
                                 {/* Professional Header */}
                                 <div className="flex justify-between items-start bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 p-4 rounded-lg">
                                     <div className="space-y-1">
