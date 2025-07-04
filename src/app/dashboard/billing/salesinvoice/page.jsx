@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Checkbox } from "@/components/ui/checkbox";
 import { LuSend } from "react-icons/lu";
-import { IoEyeOutline } from "react-icons/io5";
 import { FiPrinter } from "react-icons/fi";
 import {
     Tooltip,
@@ -53,16 +52,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { toast } from "sonner";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
@@ -80,12 +69,33 @@ const PaymentInvoice = () => {
     const [printInvoiceAlert, setPrintInvoiceAlert] = useState(false);
     const [resendingInvoice, setResendingInvoice] = useState(false);
     const [viewInvoiceAlert, setViewInvoiceAlert] = useState([false, null]);
+
     const invoiceContent = useRef(null);
-    const printInvoice = useReactToPrint({
-        content: () => invoiceContent.current,
-        onBeforeGetContent: () => setViewInvoiceAlert([true, viewInvoiceAlert[1]]),
+
+    // Initialize useReactToPrint hook
+    const handlePrint = useReactToPrint({
+        contentRef: invoiceContent,
+        documentTitle: "Invoice",
+        onAfterPrint: () => {
+            toast.success('Invoice printed');
+        },
+        onPrintError: (error) => {
+            console.error('Print error:', error);
+            toast.error('Failed to generate Invoice');
+        }
     });
 
+    const handleGenerateInvoice = () => {
+        // Check if ref is properly attached
+        if (!invoiceContent.current) {
+            toast.error('Print component not ready. Please try again.');
+            return;
+        }
+        // Add a small delay to ensure DOM is ready
+        setTimeout(() => {
+            handlePrint();
+        }, 100);
+    };
 
     // Pagination states
     let limit = 15;
@@ -807,7 +817,7 @@ const PaymentInvoice = () => {
                                 Close
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                onClick={() => printInvoice()}
+                                onClick={handleGenerateInvoice}
                                 className="bg-blue-600 hover:bg-blue-700 text-white"
                             >
                                 Print Invoice
