@@ -566,9 +566,9 @@ const PaymentReceipts = () => {
 
                     {openReceiptAlert[0] && (
                         <AlertDialog open={openReceiptAlert[0]}>
-                            <AlertDialogContent className="max-w-5xl h-[98vh] flex flex-col p-0 bg-white dark:bg-gray-800 border-none shadow-none overflow-hidden">
+                            <AlertDialogContent className="max-w-3xl h-[98vh] flex flex-col p-0 bg-white dark:bg-gray-800 border-none shadow-none overflow-hidden">
                                 {/* Scrollable content container */}
-                                <div className="flex-1 overflow-y-auto px-4 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+                                <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
                                     <div ref={receiptContent} className="p-6 md:p-8 max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-sm border dark:border-gray-700 print:shadow-none print:border-0">
                                         {/* Header */}
                                         <div className="text-center mb-6 md:mb-8">
