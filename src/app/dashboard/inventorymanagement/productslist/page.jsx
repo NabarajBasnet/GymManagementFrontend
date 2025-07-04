@@ -1,40 +1,40 @@
 'use client';
 
 import {
-  CircleDollarSign,
-  RotateCcw,
-  XCircle,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Home,
-  LayoutDashboard,
-  CreditCard,
-  FileText,
-  ChevronRight,
-  Plus,
-  Search,
-  Trash2,
-  ArrowUpDown,
-  Eye,
-  Calendar,
-  User,
-  Building,
-  Phone,
-  Mail,
-  Globe,
-  Filter,
-  Download,
-  RefreshCw,
-  AlertTriangle,
-  Info,
-  Bug,
-  Zap,
-  Activity,
-  Server,
-  Database,
-  Shield,
-  TrendingUp
+    CircleDollarSign,
+    RotateCcw,
+    XCircle,
+    Clock,
+    CheckCircle2,
+    AlertCircle,
+    Home,
+    LayoutDashboard,
+    CreditCard,
+    FileText,
+    ChevronRight,
+    Plus,
+    Search,
+    Trash2,
+    ArrowUpDown,
+    Eye,
+    Calendar,
+    User,
+    Building,
+    Phone,
+    Mail,
+    Globe,
+    Filter,
+    Download,
+    RefreshCw,
+    AlertTriangle,
+    Info,
+    Bug,
+    Zap,
+    Activity,
+    Server,
+    Database,
+    Shield,
+    TrendingUp
 } from "lucide-react";
 import {
     AlertDialog,
@@ -54,7 +54,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
 import React, { useEffect, useState } from 'react';
-import { Check,     Save, X, Edit, } from 'lucide-react';
+import { Check, Save, X, Edit } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -86,7 +86,6 @@ import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const ProductsList = () => {
-
     const queryClient = useQueryClient();
     const { user } = useUser();
     const loggedInUser = user ? user.user : null;
@@ -109,27 +108,7 @@ const ProductsList = () => {
     let limit = 15;
     const [currentPage, setCurrentPage] = useState(1);
 
-    // Items states
-    const [isActive, setIsActive] = useState(false);
-    const [itemType, setItemType] = useState('');
-    const [warehouse, setWareHouse] = useState('');
-    const [category, setCategory] = useState('');
-    const [subCategory, setSubCategory] = useState('');
-    const [currency, setCurrency] = useState('');
-    const [taxRate, setTaxRate] = useState('');
-
     const [itemId, setItemId] = useState('');
-
-    // React Hook Form
-    const {
-        register,
-        reset,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        setValue,
-        setError,
-        control
-    } = useForm();
 
     // Get all services and products from server
     const getAllServicesAndProducts = async ({ queryKey }) => {
@@ -260,116 +239,128 @@ const ProductsList = () => {
 
     return (
         <div className="w-full mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen py-6 px-4">
-               <div className="w-full bg-white mt-4 dark:bg-gray-800 space-y-4 p-4 border dark:border-none rounded-sm md:space-y-0 flex justify-between items-end">
-                    <div className="w-full flex items-center justify-between">
-                              <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
-                                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                                  <div className="py-6 lg:py-8">
-                                    {/* Breadcrumb */}
-                                    <div className="mb-8">
-                                      <Breadcrumb>
-                                        <BreadcrumbList className="flex items-center space-x-1">
-                                          <BreadcrumbItem>
-                                            <BreadcrumbLink
-                                              href="/"
-                                              className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
-                                            >
-                                              <Home className="h-4 w-4 mr-2" />
-                                              Home
-                                            </BreadcrumbLink>
-                                          </BreadcrumbItem>
-                                          <BreadcrumbSeparator>
-                                            <ChevronRight className="h-4 w-4 text-gray-400" />
-                                          </BreadcrumbSeparator>
-                                          <BreadcrumbItem>
-                                            <BreadcrumbLink
-                                              href="/dashboard"
-                                              className="flex items-center px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-all duration-200"
-                                            >
-                                              <LayoutDashboard className="h-4 w-4 mr-2" />
-                                              Dashboard
-                                            </BreadcrumbLink>
-                                          </BreadcrumbItem>
-                                          <BreadcrumbSeparator>
-                                            <ChevronRight className="h-4 w-4 text-gray-400" />
-                                          </BreadcrumbSeparator>
-                                          <BreadcrumbItem>
-                                            <BreadcrumbPage className="flex items-center px-3 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                                              <Server className="h-4 w-4 mr-2" />
-                                              System Logs
-                                            </BreadcrumbPage>
-                                          </BreadcrumbItem>
-                                        </BreadcrumbList>
-                                      </Breadcrumb>
-                                    </div>
-                        
-                                    {/* Title and Actions */}
-                                    <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-8">
-                                      <div className="flex-1 min-w-0">
-                                        <div className="flex items-start space-x-4">
-                                          <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-lg shadow-blue-500/25 dark:shadow-blue-500/20">
-                                            <Server className="h-8 w-8 text-white" />
-                                          </div>
-                                          <div className="flex-1 min-w-0">
-                                            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-                                              System Logs
-                                            </h1>
-                                            <p className="text-base text-gray-600 dark:text-gray-400 mt-2 leading-relaxed">
-                                              Monitor and analyze application activities, errors, and system events in real-time
-                                            </p>
-                                          </div>
-                                        </div>
-                                      </div>
-                        
-                                      <div className="flex items-center space-x-3">
-                                        <Button
-                                          onClick={() => refetch()}
-                                          variant="outline"
-                                          className="flex items-center space-x-2 dark:border-nones text-primary dark:bg-gray-700 border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                                        >
-                                          <RefreshCw className="h-4 w-4" />
-                                          <span>Refresh</span>
-                                        </Button>
-                                        <Button
-                                          variant="outline"
-                                          className="flex items-center space-x-2 dark:border-nones text-primary dark:bg-gray-700 border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
-                                        >
-                                          <Download className="h-4 w-4" />
-                                          <span>Export</span>
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+            <div className="max-w-7xl mx-auto">
+                {/* Header Section */}
+                <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
+                    <div className="mb-6">
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/" className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                                        <Home className="h-4 w-4 mr-2" />
+                                        Home
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator>
+                                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                                </BreadcrumbSeparator>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/dashboard" className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+                                        <LayoutDashboard className="h-4 w-4 mr-2" />
+                                        Dashboard
+                                    </BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator>
+                                    <ChevronRight className="h-4 w-4 text-gray-400" />
+                                </BreadcrumbSeparator>
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="flex items-center text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        <Server className="h-4 w-4 mr-2" />
+                                        System Logs
+                                    </BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    </div>
 
-                        <div className="w-full flex items-center justify-end space-x-4">
-                            {selectedItems.length === 0 ? (
-                                <></>
-                            ) : (
-                                <AlertDialog className='md:space-x-4'>
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+                        <div className="flex items-start space-x-4">
+                            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-lg">
+                                <Server className="h-8 w-8 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                                    System Logs
+                                </h1>
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                    Monitor and analyze application activities, errors, and system events in real-time
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center space-x-3">
+                            <Button
+                                variant="outline"
+                                className="flex items-center space-x-2 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                            >
+                                <RefreshCw className="h-4 w-4" />
+                                <span>Refresh</span>
+                            </Button>
+                            <Button
+                                variant="outline"
+                                className="flex items-center space-x-2 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                            >
+                                <Download className="h-4 w-4" />
+                                <span>Export</span>
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Filters and Actions Section */}
+                <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-4 mb-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <Tabs
+                            defaultValue="all"
+                            value={activeTab}
+                            onValueChange={setActiveTab}
+                            className="w-full md:w-auto"
+                        >
+                            <TabsList className="grid grid-cols-3 w-full md:w-auto dark:bg-gray-700">
+                                <TabsTrigger value="all">All</TabsTrigger>
+                                <TabsTrigger value="services">Services</TabsTrigger>
+                                <TabsTrigger value="products">Products</TabsTrigger>
+                            </TabsList>
+                        </Tabs>
+
+                        <div className="flex items-center gap-2 w-full md:w-auto">
+                            <div className="relative flex-1">
+                                <Search className="absolute left-2.5 top-3 h-4 w-4 text-gray-400" />
+                                <Input
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search items..."
+                                    className="pl-8 w-full rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                />
+                            </div>
+                            <Button variant="outline" size="icon" className="dark:bg-gray-700 dark:border-gray-600">
+                                <Filter className="h-4 w-4" />
+                            </Button>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            {selectedItems.length > 0 && (
+                                <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
-                                            className='rounded-sm'
                                             variant="destructive"
-                                            disabled={selectedItems.length === 0}
+                                            className="flex items-center gap-2"
                                         >
                                             <Trash2 className="h-4 w-4" />
-                                            Delete Selected ({selectedItems.length})
+                                            Delete ({selectedItems.length})
                                         </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete the assigned task
-                                                and remove data from servers.
+                                                This action cannot be undone. This will permanently delete the selected items.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                                             <AlertDialogAction
-                                                className='bg-red-600 hover:bg-red-700'
+                                                className="bg-red-600 hover:bg-red-700"
                                                 onClick={() => deleteSelectedItems()}
                                             >
                                                 Delete
@@ -378,16 +369,15 @@ const ProductsList = () => {
                                     </AlertDialogContent>
                                 </AlertDialog>
                             )}
-                            {loggedInUser?.role === 'Gym Admin' ? (
-                                <></>
-                            ) : (
+                            {loggedInUser?.role !== 'Gym Admin' && (
                                 <Button
-                                    className='rounded-sm md:space-x-4'
                                     onClick={() => {
                                         setOpenAddItemForm(true);
-                                    }
-                                    }>
-                                    <Plus className="mr-2 h-4 w-4" />
+                                        setFormMode('create');
+                                    }}
+                                    className="flex items-center gap-2"
+                                >
+                                    <Plus className="h-4 w-4" />
                                     Add New Item
                                 </Button>
                             )}
@@ -395,331 +385,252 @@ const ProductsList = () => {
                     </div>
                 </div>
 
-            <div className="w-full">
-             <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4 bg-white dark:bg-gray-800 dark:border-none">
-                    <Tabs
-                        defaultValue="all"
-                        value={activeTab}
-                        onValueChange={setActiveTab}
-                        className="w-full md:w-auto"
-                    >
-                        <TabsList className="grid grid-cols-3 w-full md:w-auto dark:bg-gray-900">
-                            <TabsTrigger value="all">All</TabsTrigger>
-                            <TabsTrigger value="services">Services</TabsTrigger>
-                            <TabsTrigger value="products">Products</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
-
-                    <div className="flex items-center gap-2">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search items..."
-                                className="pl-8 w-full rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none md:w-64"
-                            />
+                {/* Table Section */}
+                <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 overflow-hidden">
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-64">
+                            <Loader />
                         </div>
-                        <Button variant="outline" className='dark:bg-gray-900 dark:border-none' size="icon">
-                            <Filter className="h-4 w-4 text-primary" />
-                        </Button>
-                    </div>
-                </div>
-            </div>
-
-            {/* Table Section */}
-            <div className="w-full bg-white dark:bg-gray-800 dark:border-none rounded-lg border shadow">
-                {Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
-                    <div className="w-full">
-                        <div className="overflow-x-auto">
-                            {isLoading ? (
-                                <Loader />
-                            ) : (
-                                <table className="text-sm w-full">
-                                    <thead>
-                                        <tr className="border-b bg-gray-100">
-                                            <th className="h-16 px-4 text-left font-medium dark:text-gray-200">
-                                                {loggedInUser?.role === 'Gym Admin' ? (
-                                                    <>
-                                                    </>
-                                                ) : (
+                    ) : Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
+                        <>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead className="bg-gray-50 dark:bg-gray-700">
+                                        <tr>
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                {loggedInUser?.role !== 'Gym Admin' && (
                                                     <Checkbox
                                                         checked={serviceAndProducts?.length > 0 && selectedItems.length === serviceAndProducts.length}
                                                         onCheckedChange={handleSelectAllItems}
                                                     />
                                                 )}
                                             </th>
-
-                                            <th className="h-16 px-4 text-left font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Item ID
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('itemId');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="h-16 px-4 text-left font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Name
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('itemName');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Type
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('itemType');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Category
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('category');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="h-10 px-4 text-right font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Price
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('sellingPrice');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="px-4 text-right font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
-                                                    TaxRate
+                                            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
+                                                    Tax Rate
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('taxRate');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            <th className="h-10 px-4 text-left font-medium">
-                                                <div className="flex items-center dark:text-gray-200">
+                                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                <div className="flex items-center">
                                                     Status
                                                     <ArrowUpDown
                                                         onClick={() => {
                                                             setSortBy('status');
                                                             setSortOrderDesc(!sortOrderDesc);
                                                         }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                        className="ml-2 h-4 w-4 cursor-pointer"
+                                                    />
                                                 </div>
                                             </th>
-                                            {loggedInUser?.role === 'Gym Admin' ? (
-                                                <></>
-                                            ) : (
-                                                <th className="h-10 px-4 text-right font-medium">Actions</th>
+                                            {loggedInUser?.role !== 'Gym Admin' && (
+                                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                                    Actions
+                                                </th>
                                             )}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         {serviceAndProducts.map((item) => (
-                                            <tr key={item.itemId} className="border-b text-sm hover:bg-muted/50">
-                                                <td className="align-middle text-center font-medium">
-                                                    {loggedInUser?.role === 'Gym Admin' ? (
-                                                        <>
-                                                        </>
-                                                    ) : (
+                                            <tr key={item.itemId} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    {loggedInUser?.role !== 'Gym Admin' && (
                                                         <Checkbox
                                                             checked={selectedItems.includes(item.itemId)}
                                                             onCheckedChange={() => toggleIndividualItemSelection(item.itemId)}
                                                         />
                                                     )}
                                                 </td>
-                                                <td className="align-middle md:text-center font-medium">{item.itemId}</td>
-                                                <td className="p-4 align-middle font-medium">{item.itemName}</td>
-                                                <td className="p-4 align-middle">
-                                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.type === "service"
-                                                        ? "bg-purple-100 text-purple-800"
-                                                        : "bg-blue-100 text-blue-800"
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
+                                                    {item.itemId}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                    {item.itemName}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.itemType === "service"
+                                                            ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                                            : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                                         }`}>
                                                         {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)}
                                                     </span>
                                                 </td>
-                                                <td className="p-4 align-middle">{item.category}</td>
-                                                <td className="p-4 align-middle text-center">${item.sellingPrice.toFixed(2)}</td>
-                                                <td className="p-4 align-middle text-center">{item.taxRate}%</td>
-                                                <td className="p-4 align-middle">
-                                                    <span
-                                                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.status === 'Active'
-                                                            ? 'bg-green-100 text-green-800'
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                                    {item.category}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500 dark:text-gray-400">
+                                                    ${item.sellingPrice.toFixed(2)}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500 dark:text-gray-400">
+                                                    {item.taxRate}%
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.status === 'Active'
+                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
                                                             : item.status === 'Inactive'
-                                                                ? 'bg-red-100 text-red-800'
-                                                                : 'bg-yellow-100 text-yellow-800'
-                                                            }`}
-                                                    >
+                                                                ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                        }`}>
                                                         {item.status}
                                                     </span>
                                                 </td>
-                                                {loggedInUser?.role === 'Gym Admin' ? (
-                                                    <></>
-                                                ) : (
-                                                    <td className="flex items-center p-4 align-middle justify-end">
-                                                        <Edit
-                                                            onClick={() => getSingleServiceOrProduct(item.itemId)}
-                                                            className="h-4 w-4" />
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button
-                                                                    className='bg-transparent hover:bg-transparent hover:text-black text-gray-800'
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete this item and remove your data from our servers.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => deleteItems(item.itemId)}>Continue</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                {loggedInUser?.role !== 'Gym Admin' && (
+                                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                        <div className="flex items-center justify-end space-x-2">
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() => getSingleServiceOrProduct(item.itemId)}
+                                                                className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently delete this item.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            className="bg-red-600 hover:bg-red-700"
+                                                                            onClick={() => deleteItems(item.itemId)}
+                                                                        >
+                                                                            Delete
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
                                                     </td>
                                                 )}
                                             </tr>
                                         ))}
                                     </tbody>
                                 </table>
-                            )}
-                        </div>
-                        <div className="flex items-center justify-between px-4 py-2">
-                            <div className="text-sm text-muted-foreground">
-                                Showing <strong>{serviceAndProducts ? serviceAndProducts.length : ''}</strong> of <strong>{serviceAndProducts ? serviceAndProducts.length : ''}</strong> items
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <div className="flex justify-center py-2">
-                                    <Pagination
-                                        total={totalPages || 1}
-                                        page={currentPage || 1}
-                                        onChange={setCurrentPage}
-                                        withEdges={true}
-                                        siblings={1}
-                                        boundaries={1}
-                                        classNames={{
-                                            item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                                            active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
-                                            dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                                        }}
-                                    />
+                            <div className="bg-gray-50 dark:bg-gray-700 px-6 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-600">
+                                <div className="text-sm text-gray-500 dark:text-gray-400">
+                                    Showing <span className="font-medium">1</span> to <span className="font-medium">{serviceAndProducts.length}</span> of{' '}
+                                    <span className="font-medium">{serviceAndProducts.length}</span> results
                                 </div>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                    classNames={{
+                                        item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-700 relative inline-flex items-center px-4 py-2 text-sm font-medium",
+                                        active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:border-blue-700",
+                                        dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                                    }}
+                                />
                             </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
-                                <thead>
-                                    <tr className="border-b text-sm bg-muted/50">
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <Checkbox id="terms" />
-                                        </th>
-
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Item ID
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Name
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Type
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Category
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Price
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Tax Rate
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center dark:text-gray-200">
-                                                Status
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium dark:text-gray-200">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td colSpan={9} className="text-center py-6 text-sm text-muted-foreground">
-                                            Items not found.
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="flex items-center justify-between border-t border-gray-300 px-4 py-2">
-                            <div className="text-sm text-muted-foreground">
-                                Showing <strong>{data ? data.length : ''}</strong> of <strong>{data ? data.length : ''}</strong> items
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <div className="flex justify-center py-2">
-                                    <Pagination
-                                        total={1}
-                                        page={1}
-                                        onChange={setCurrentPage}
-                                        withEdges={true}
-                                        siblings={1}
-                                        boundaries={1}
-                                        classNames={{
-                                            item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                                            active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
-                                            dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                        </>
+                    ) : (
+                        <div className="w-full p-12 text-center">
+                            <div className="flex flex-col items-center justify-center space-y-4">
+                                <Server className="h-12 w-12 text-gray-400" />
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white">No items found</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                    Get started by adding a new item.
+                                </p>
+                                {loggedInUser?.role !== 'Gym Admin' && (
+                                    <Button
+                                        onClick={() => {
+                                            setOpenAddItemForm(true);
+                                            setFormMode('create');
                                         }}
-                                    />
-                                </div>
+                                        className="mt-4"
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add New Item
+                                    </Button>
+                                )}
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );
