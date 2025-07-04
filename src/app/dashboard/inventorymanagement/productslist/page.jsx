@@ -265,8 +265,8 @@ const ProductsList = () => {
                                 </BreadcrumbSeparator>
                                 <BreadcrumbItem>
                                     <BreadcrumbPage className="flex items-center text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        <Server className="h-4 w-4 mr-2" />
-                                        System Logs
+                                        <CircleDollarSign className="h-4 w-4 mr-2" />
+                                        Products & Services List
                                     </BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
@@ -275,15 +275,15 @@ const ProductsList = () => {
 
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                         <div className="flex items-start space-x-4">
-                            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 rounded-2xl shadow-lg">
-                                <Server className="h-8 w-8 text-white" />
+                            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 via-green-600 to-emerald-700 rounded-2xl shadow-lg">
+                                <CircleDollarSign className="h-8 w-8 text-white" />
                             </div>
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                                    System Logs
+                                    Products & Services List
                                 </h1>
                                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                                    Monitor and analyze application activities, errors, and system events in real-time
+                                    Manage your inventory of products and services with ease
                                 </p>
                             </div>
                         </div>
@@ -291,14 +291,14 @@ const ProductsList = () => {
                         <div className="flex items-center space-x-3">
                             <Button
                                 variant="outline"
-                                className="flex items-center space-x-2 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                className="flex items-center space-x-2 text-primary dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                             >
                                 <RefreshCw className="h-4 w-4" />
                                 <span>Refresh</span>
                             </Button>
                             <Button
                                 variant="outline"
-                                className="flex items-center space-x-2 dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
+                                className="flex items-center space-x-2 text-primary dark:border-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600"
                             >
                                 <Download className="h-4 w-4" />
                                 <span>Export</span>
@@ -314,12 +314,27 @@ const ProductsList = () => {
                             defaultValue="all"
                             value={activeTab}
                             onValueChange={setActiveTab}
-                            className="w-full md:w-auto"
+                            className="w-full"
                         >
-                            <TabsList className="grid grid-cols-3 w-full md:w-auto dark:bg-gray-700">
-                                <TabsTrigger value="all">All</TabsTrigger>
-                                <TabsTrigger value="services">Services</TabsTrigger>
-                                <TabsTrigger value="products">Products</TabsTrigger>
+                            <TabsList className="grid w-full md:w-6/12 grid-cols-3 p-1 h-10 rounded-lg bg-gray-100 dark:bg-gray-800">
+                                <TabsTrigger
+                                    value="all"
+                                    className="text-sm font-medium transition-all rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-100"
+                                >
+                                    All
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="services"
+                                    className="text-sm font-medium transition-all rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-100"
+                                >
+                                    Services
+                                </TabsTrigger>
+                                <TabsTrigger
+                                    value="products"
+                                    className="text-sm font-medium transition-all rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-gray-900 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-gray-100"
+                                >
+                                    Products
+                                </TabsTrigger>
                             </TabsList>
                         </Tabs>
 
@@ -330,58 +345,59 @@ const ProductsList = () => {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     placeholder="Search items..."
-                                    className="pl-8 w-full rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    className="w-full pl-8 bg-white dark:border-none w-full rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                 />
                             </div>
                             <Button variant="outline" size="icon" className="dark:bg-gray-700 dark:border-gray-600">
-                                <Filter className="h-4 w-4" />
+                                <Filter className="h-4 w-4 text-primary" />
                             </Button>
+
+                            <div className="flex items-center gap-2">
+                                {selectedItems.length > 0 && (
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                variant="destructive"
+                                                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 transition-colors"
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                                <span>Delete {selectedItems.length} item{selectedItems.length !== 1 ? 's' : ''}</span>
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent className="border-red-200 dark:bg-red-950/50 dark:border-red-800">
+                                            <AlertDialogHeader>
+                                                <div className="flex items-center gap-3">
+                                                    <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-500" />
+                                                    <AlertDialogTitle className="text-red-600 dark:text-red-500">
+                                                        Confirm Deletion
+                                                    </AlertDialogTitle>
+                                                </div>
+                                                <AlertDialogDescription className="text-left pt-3">
+                                                    You're about to permanently delete {selectedItems.length} selected item{selectedItems.length !== 1 ? 's' : ''}.
+                                                    <span className="block mt-2 font-medium text-red-600 dark:text-red-400">
+                                                        This action cannot be undone!
+                                                    </span>
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel className="border-gray-300 text-primary dark:bg-gray-800 dark:border-none hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700">
+                                                    Cancel
+                                                </AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    className="bg-red-600 hover:bg-red-700 text-white dark:bg-red-700 dark:hover:bg-red-800 focus-visible:ring-red-500"
+                                                    onClick={() => deleteSelectedItems()}
+                                                >
+                                                    <Trash2 className="h-4 w-4 mr-2" />
+                                                    Delete Permanently
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                )}
+                            </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            {selectedItems.length > 0 && (
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button
-                                            variant="destructive"
-                                            className="flex items-center gap-2"
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                            Delete ({selectedItems.length})
-                                        </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete the selected items.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction
-                                                className="bg-red-600 hover:bg-red-700"
-                                                onClick={() => deleteSelectedItems()}
-                                            >
-                                                Delete
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            )}
-                            {loggedInUser?.role !== 'Gym Admin' && (
-                                <Button
-                                    onClick={() => {
-                                        setOpenAddItemForm(true);
-                                        setFormMode('create');
-                                    }}
-                                    className="flex items-center gap-2"
-                                >
-                                    <Plus className="h-4 w-4" />
-                                    Add New Item
-                                </Button>
-                            )}
-                        </div>
+
                     </div>
                 </div>
 
@@ -515,8 +531,8 @@ const ProductsList = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.itemType === "service"
-                                                            ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
-                                                            : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                                                        ? "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                                        : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                                                         }`}>
                                                         {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)}
                                                     </span>
@@ -532,10 +548,10 @@ const ProductsList = () => {
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.status === 'Active'
-                                                            ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                                            : item.status === 'Inactive'
-                                                                ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                                                : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                        ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                                                        : item.status === 'Inactive'
+                                                            ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+                                                            : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
                                                         }`}>
                                                         {item.status}
                                                     </span>
