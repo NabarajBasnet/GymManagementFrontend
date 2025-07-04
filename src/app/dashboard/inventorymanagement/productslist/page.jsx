@@ -239,7 +239,7 @@ const ProductsList = () => {
 
     return (
         <div className="w-full mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen py-6 px-4">
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full mx-auto">
                 {/* Header Section */}
                 <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6 mb-6">
                     <div className="mb-6">
@@ -396,7 +396,6 @@ const ProductsList = () => {
                                 )}
                             </div>
                         </div>
-
 
                     </div>
                 </div>
