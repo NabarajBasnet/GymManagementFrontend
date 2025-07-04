@@ -40,6 +40,7 @@ import { AiOutlineSchedule } from "react-icons/ai";
 import { HiUsers } from "react-icons/hi2";
 import { FaUsersGear, FaUsersRays } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
+import { FcParallelTasks } from "react-icons/fc";
 import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import {
   LogOut,
@@ -49,8 +50,9 @@ import {
   LayoutDashboard,
   Bell,
   Crown,
-  Loader2,
+  Loader2
 } from "lucide-react";
+import { IoMdCart } from "react-icons/io";
 
 // Components
 import {
@@ -312,18 +314,33 @@ const Sidebar = () => {
         },
         {
           icon: AiFillProduct,
-          title: "Manage Inventory",
-          link: "/dashboard/inventorymanagement",
+          title: "E-Com Store",
+          link: "/dashboard/ecomstore",
           subObj: [
             {
               icon: MdAdd,
               title: "Add Products",
-              link: "/dashboard/inventorymanagement/addproducts",
+              link: "/dashboard/ecomstore/addproducts",
             },
             {
               icon: FaList,
               title: "Products List",
-              link: "/dashboard/inventorymanagement/productslist",
+              link: "/dashboard/ecomstore/productslist",
+            },
+            {
+              icon: IoMdCart,
+              title: "Orders",
+              link: "/dashboard/ecomstore/orders",
+            },
+            {
+              icon: MdPayments,
+              title: "Payments",
+              link: "/dashboard/ecomstore/payments",
+            },
+            {
+              icon: FaChartLine,
+              title: "Reports",
+              link: "/dashboard/ecomstore/reports",
             },
           ]
         },

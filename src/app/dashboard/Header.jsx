@@ -1,5 +1,6 @@
 "use client";
 
+import { IoMdCart } from "react-icons/io";
 import { MdAdd } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
@@ -381,20 +382,35 @@ const Header = () => {
         },
         {
           icon: AiFillProduct,
-          title: "Inventory Management",
-          link: "/dashboard/inventorymanagement",
+          title: "E-Com Store",
+          link: "/dashboard/ecomstore",
           subObj: [
             {
               icon: MdAdd,
               title: "Add Products",
-              link: "/dashboard/inventorymanagement/addproducts",
+              link: "/dashboard/ecomstore/addproducts",
             },
             {
               icon: FaList,
               title: "Products List",
-              link: "/dashboard/inventorymanagement/productslist",
+              link: "/dashboard/ecomstore/productslist",
             },
-          ],
+            {
+              icon: IoMdCart,
+              title: "Orders",
+              link: "/dashboard/ecomstore/orders",
+            },
+            {
+              icon: MdPayments,
+              title: "Payments",
+              link: "/dashboard/ecomstore/payments",
+            },
+            {
+              icon: FaChartLine,
+              title: "Reports",
+              link: "/dashboard/ecomstore/reports",
+            },
+          ]
         },
         {
           icon: AiOutlineSchedule,
