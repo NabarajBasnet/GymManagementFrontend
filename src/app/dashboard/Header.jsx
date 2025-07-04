@@ -1,5 +1,7 @@
 "use client";
 
+import { MdAdd } from "react-icons/md";
+import { FaList } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { ImUsers } from "react-icons/im";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -434,7 +436,21 @@ const Header = () => {
         {
           icon: AiFillProduct,
           title: "Inventory Management",
-          link: "/dashboard/inventory",
+          link: "/dashboard/inventorymanagement",
+           subObj: [
+              {
+              icon: MdAdd,
+              title: "Add Products",
+              link: "/dashboard/inventorymanagement/addproducts",
+            },
+            {
+              icon: FaList,
+              title: "Products List",
+              link: "/dashboard/inventorymanagement/productslist",
+            },
+            // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+            // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+          ],
         },
         {
           icon: MdAttachMoney,

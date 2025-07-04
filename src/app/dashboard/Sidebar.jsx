@@ -1,5 +1,7 @@
 "use client";
 
+import { MdAdd } from "react-icons/md";
+import { FaList } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
@@ -355,8 +357,20 @@ const Sidebar = () => {
         },
         {
           icon: AiFillProduct,
-          title: "Inventory Management",
-          link: "/dashboard/inventory",
+          title: "Manage Inventory",
+          link: "/dashboard/inventorymanagement",
+          subObj: [
+            {
+              icon: MdAdd,
+              title: "Add Products",
+              link: "/dashboard/inventorymanagement/addproducts",
+            },
+            {
+              icon: FaList,
+              title: "Products List",
+              link: "/dashboard/inventorymanagement/productslist",
+            },
+          ]
         },
         {
           icon: MdAttachMoney,
