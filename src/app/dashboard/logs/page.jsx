@@ -90,11 +90,12 @@ const Logs = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [selectedLog, setSelectedLog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const limit = 20;
 
-  const getLogs = async () => {
+  const getLogs = async ({ queryKey }) => {
+    const [, currentPage, limit] = queryKey
     try {
-      const response = await fetch('http://localhost:3000/api/applogs');
+      const response = await fetch(`http://localhost:3000/api/applogs?page=${currentPage}&limit=${limit}`);
       const resBody = await response.json();
 
       if (!response.ok) {
@@ -108,11 +109,11 @@ const Logs = () => {
   };
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['logs'],
+    queryKey: ['logs', currentPage, limit],
     queryFn: getLogs
   });
 
-  const { logs } = data || {};
+  const { logs, totalLogs, totalPages } = data || {};
 
   // Filter and sort logs
   const filteredAndSortedLogs = logs ? logs
@@ -138,9 +139,8 @@ const Logs = () => {
     }) : [];
 
   // Pagination
-  const totalPages = Math.ceil(filteredAndSortedLogs.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedLogs = filteredAndSortedLogs.slice(startIndex, startIndex + itemsPerPage);
+  const startIndex = (currentPage - 1) * limit;
+  const paginatedLogs = filteredAndSortedLogs.slice(startIndex, startIndex + limit);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString('en-US', {
@@ -227,19 +227,8 @@ const Logs = () => {
 
   const stats = getLogStats();
 
-  if (isLoading) {
-    return (
-      <div className="w-full min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <div className="text-center">
-          <Loader />
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">Loading system logs...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-950">
+    <div className="w-full bg-gray-50 dark:bg-gray-950">
       {/* Header Section */}
       <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -535,19 +524,6 @@ const Logs = () => {
             </table>
           </div>
         </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="mt-6 flex justify-center">
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 px-4 py-3">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Log Details Modal */}
@@ -722,6 +698,14 @@ const Logs = () => {
           </AlertDialogContent>
         </AlertDialog>
       )}
+
+      <div className="w-full flex justify-center md:justify-end pb-4">
+        <Pagination
+          total={totalPages}
+          page={currentPage}
+          onChange={setCurrentPage}
+        />
+      </div>
     </div>
   );
 };
