@@ -323,7 +323,7 @@ const Logs = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="w-full mx-auto p-4">
+      <div className="w-full mx-auto pt-4 px-4 mb-2">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div className="bg-white dark:bg-gray-900 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
             <div className="flex items-center justify-between">
@@ -388,8 +388,8 @@ const Logs = () => {
       </div>
 
       {/* Filters and Search */}
-      <div className="w-full mx-auto p-4">
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-6">
+      <div className="w-full mx-auto pt-2 px-4 pb-4">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 mb-4">
           <div className="p-6">
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-4 items-center">
