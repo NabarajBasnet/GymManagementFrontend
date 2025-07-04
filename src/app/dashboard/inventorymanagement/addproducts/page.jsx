@@ -217,7 +217,9 @@ const AddProducts = () => {
                                                 <SelectContent className='dark:bg-gray-900 rounded-lg dark:border-none'>
                                                     <SelectGroup>
                                                         <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Product'>Product</SelectItem>
+                                                        <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Standard'>Standard</SelectItem>
+                                                        <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Combo'>Combo</SelectItem>
+                                                        <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Digital'>Digital</SelectItem>
                                                         <SelectItem className='hover:cursor-pointer text-primary hover:bg-blue-600/30' value='Service'>Service</SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>

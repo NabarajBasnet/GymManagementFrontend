@@ -1,8 +1,5 @@
 'use client';
 
-import { LuLogs } from "react-icons/lu";
-import { PiPrinterBold } from "react-icons/pi";
-import { useReactToPrint } from "react-to-print";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,16 +11,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Checkbox } from "@/components/ui/checkbox";
-import { LuSend } from "react-icons/lu";
-import { FiPrinter } from "react-icons/fi";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { LuFileSearch2 } from "react-icons/lu";
-import { FaUser } from "react-icons/fa";
 import { Badge } from "@/components/ui/badge";
 import {
   CircleDollarSign,
@@ -61,8 +48,7 @@ import {
   Shield,
   TrendingUp
 } from "lucide-react";
-import { FaFileInvoice } from "react-icons/fa6";
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
 import Pagination from '@/components/ui/CustomPagination';
 
 // Import shadcn components
@@ -78,9 +64,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import Loader from "@/components/Loader/Loader";
-import { useUser } from "@/components/Providers/LoggedInUserProvider";
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 const Logs = () => {
 
