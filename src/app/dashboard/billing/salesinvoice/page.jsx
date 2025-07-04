@@ -311,14 +311,14 @@ const PaymentInvoice = () => {
     };
 
     return (
-        <div className="w-full py-6 bg-gray-100 px-4 dark:bg-gray-900 bg-gray-100 min-h-screen mx-auto">
+        <div className="w-full py-6 bg-gray-100 px-4 dark:bg-gray-900 min-h-screen mx-auto">
 
             {resendingInvoice && <ResendingInvoiceToMember />}
 
             {/* Breadcrumb Navigation */}
-            <div className="bg-gradient-to-br from-slate-50 to-blue-50/30 dark:from-gray-900 dark:to-gray-800 rounded-sm">
+            <div className="bg-slate-50 dark:bg-gray-800 rounded-sm">
                 {/* Professional Container */}
-                <div className="bg-white/80 backdrop-blur-sm dark:bg-gray-900/80 shadow-md rounded-sm border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="bg-slate-50 dark:bg-gray-800 shadow-md rounded-sm border-b border-gray-200/50 dark:border-none">
                     <div className="w-full mx-auto px-4">
                         <div className="py-6 lg:py-8">
                             {/* Enhanced Breadcrumb Navigation */}
@@ -480,12 +480,12 @@ const PaymentInvoice = () => {
             </AlertDialog>
 
             {/* Content Area */}
-            <div className="w-full bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 shadow-sm my-6">
+            <div className="w-full bg-slate-50 dark:bg-gray-800 rounded-md border border-gray-200 dark:border-none shadow-sm my-6">
                 {/* Table Section */}
-                <div className="w-full shadow-md">
+                <div className="shadow-md">
                     {Array.isArray(invoices) && invoices?.length > 0 ? (
                         <div className="w-full">
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto rounded-md">
                                 {isLoading ? (
                                     <div className="flex justify-center items-center h-64">
                                         <Loader className="h-8 w-8 text-primary animate-spin" />
@@ -493,7 +493,7 @@ const PaymentInvoice = () => {
                                 ) : (
                                     <table className="w-full text-sm shadow-md">
                                         <thead>
-                                            <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
+                                            <tr className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800">
                                                 {/* Added checkbox column header */}
                                                 <th className="p-4 align-middle">
                                                     <Checkbox className="h-4 w-4"
