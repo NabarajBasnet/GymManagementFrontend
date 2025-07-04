@@ -89,6 +89,11 @@ const MemberHeader = ({ activeTab }) => {
     { id: "qrcode", icon: <QrCode size={20} />, label: "QR Code" },
     { id: "chat", icon: <MessageSquare size={20} />, label: "Chat" },
     {
+      id: "store",
+      icon: <ShoppingCart size={20} />,
+      label: "Store",
+    },
+    {
       id: "membershipdetails",
       icon: <MdCardMembership size={20} />,
       label: "Membership Details",
