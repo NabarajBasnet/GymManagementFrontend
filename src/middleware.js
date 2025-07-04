@@ -25,18 +25,18 @@ export const middleware = async (request) => {
       return NextResponse.redirect(new URL("/memberlogin", request.url));
     }
 
-    if (
-      member &&
-      (path.startsWith("/dashboard") ||
-        path.startsWith("/StaffLogin") ||
-        path === "/login" ||
-        path === "/signup" ||
-        path.startsWith("/MyProfile"))
-    ) {
-      return NextResponse.redirect(
-        new URL(`/member/${member.id}/qrcode`, request.url)
-      );
-    }
+    // if (
+    //   member &&
+    //   (path.startsWith("/dashboard") ||
+    //     path.startsWith("/StaffLogin") ||
+    //     path === "/login" ||
+    //     path === "/signup" ||
+    //     path.startsWith("/MyProfile"))
+    // ) {
+    //   return NextResponse.redirect(
+    //     new URL(`/member/${member.id}/qrcode`, request.url)
+    //   );
+    // }
 
     // 🧿 STAFF LOGIC
     if (!staff && path.startsWith("/MyProfile")) {

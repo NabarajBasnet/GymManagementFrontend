@@ -386,6 +386,11 @@ const Header = () => {
           link: "/dashboard/ecomstore",
           subObj: [
             {
+              icon: AiFillProduct,
+              title: "Dashboard",
+              link: "/dashboard/ecomstore/dashboard",
+            },
+            {
               icon: MdAdd,
               title: "Add Products",
               link: "/dashboard/ecomstore/addproducts",

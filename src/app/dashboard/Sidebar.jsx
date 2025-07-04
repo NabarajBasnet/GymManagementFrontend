@@ -5,7 +5,6 @@ import { FaList } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
-import { TbListDetails } from "react-icons/tb";
 import { AiFillProduct } from "react-icons/ai";
 import { ImUsers } from "react-icons/im";
 import Loader from "@/components/Loader/Loader";
@@ -317,6 +316,11 @@ const Sidebar = () => {
           title: "E-Com Store",
           link: "/dashboard/ecomstore",
           subObj: [
+            {
+              icon: AiFillProduct,
+              title: "Dashboard",
+              link: "/dashboard/ecomstore/dashboard",
+            },
             {
               icon: MdAdd,
               title: "Add Products",
