@@ -390,7 +390,7 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 {[
                                                     { id: 'invoiceNo', label: 'Invoice No' },
-                                                    { id: 'customerName', label: 'Customer' },
+                                                    { id: 'customer.fullName', label: 'Customer' },
                                                     { id: 'dueDate', label: 'Due Date' },
                                                     { id: 'amount', label: 'Amount', align: 'right' },
                                                     { id: 'paidAmount', label: 'Paid', align: 'right' },
@@ -748,13 +748,6 @@ const PaymentInvoice = () => {
                                             </div>
                                         )}
 
-                                        {viewInvoiceAlert[1].tax > 0 && (
-                                            <div className="flex justify-between items-center py-1">
-                                                <span className="font-medium text-gray-700 dark:text-gray-300 text-sm">Tax:</span>
-                                                <span className="font-medium text-gray-900 dark:text-white text-sm">{formatCurrency(viewInvoiceAlert[1].tax)}</span>
-                                            </div>
-                                        )}
-
                                         <div className="flex justify-between items-center py-2 border-t-2 border-gray-300 dark:border-gray-600">
                                             <span className="text-base font-bold text-gray-900 dark:text-white">TOTAL:</span>
                                             <span className="text-base font-bold text-blue-600 dark:text-blue-400">{formatCurrency(viewInvoiceAlert[1].grandTotal)}</span>
@@ -801,7 +794,7 @@ const PaymentInvoice = () => {
                                                 Thank you for your business!
                                             </p>
                                             <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                                This is a computer-generated invoice.
+                                                This is computer generated invoice no signature required.
                                             </p>
                                         </div>
                                     </div>
