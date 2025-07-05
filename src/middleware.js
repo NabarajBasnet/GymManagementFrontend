@@ -58,6 +58,12 @@ export const middleware = async (request) => {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
+    if (tenant && path.startsWith("/login")) {
+      return NextResponse.redirect(
+        new URL("/clientarea/dashboard", request.url)
+      );
+    }
+
     if (
       user?.role === "Gym Admin" &&
       (path.includes("/users") || path.includes("/staffmanagement/staffs"))
