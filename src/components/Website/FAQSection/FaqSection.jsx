@@ -7,8 +7,7 @@ import {
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion"
-import { ChevronDown } from 'lucide-react';
+} from "./FaqAccordion"
 
 const FAQSection = () => {
     const [ref, inView] = useInView({

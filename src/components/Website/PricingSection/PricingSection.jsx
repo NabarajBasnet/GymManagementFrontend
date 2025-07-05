@@ -89,7 +89,7 @@ const PricingSection = () => {
     };
 
     return (
-        <section className="w-full min-h-screen bg-gray-900 relative overflow-hidden flex items-center">
+        <section id="pricing" className="w-full min-h-screen bg-gray-900 relative overflow-hidden flex items-center">
             {/* Enhanced Glowing Background Effects */}
             <div className="absolute inset-0 z-0 overflow-hidden">
                 <div className="absolute top-40 left-20 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-float1"></div>

@@ -108,7 +108,7 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
                     {/* Enhanced Responsive Logo */}
                     <div className="flex items-center flex-shrink-0">
-                        <a href="#" className="text-lg md:text-2xl font-bold tracking-tight">
+                        <a href="/" className="text-lg md:text-2xl font-bold tracking-tight">
                             <img
                                 className='w-32 lg:w-40 h-auto'
                                 src='./images/FitBinaryLogo.png'
@@ -186,9 +186,9 @@ const Navbar = () => {
                             <Button
                                 onClick={() => window.location.href = "/login"}
                                 className={cn(
-                                    "px-4 xl:px-6 py-2.5 rounded-sm font-medium shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm",
+                                    "px-4 xl:px-6 py-2.5 rounded-full font-medium shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl text-sm",
                                     scrolled
-                                        ? "bg-transparent hover:bg-gray-100 text-gray-300 border border-gray-300 dark:bg-transparent dark:hover:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                                        ? "bg-transparent hover:bg-gray-800 text-gray-300 border border-sky-600 dark:bg-transparent dark:hover:bg-gray-800 dark:text-gray-200 dark:border-sky-600 rounded-full"
                                         : "bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/20"
                                 )}
                             >
@@ -196,7 +196,7 @@ const Navbar = () => {
                             </Button>
                             <Button
                                 onClick={() => window.location.href = "/register"}
-                                className="px-4 xl:px-6 py-2.5 rounded-sm font-medium shadow-lg bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center group text-sm"
+                                className="px-4 xl:px-6 py-2.5 rounded-full font-medium shadow-lg bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center group text-sm"
                             >
                                 <span className="hidden xl:inline">Start 14 Days Free Trail</span>
                                 <span className="xl:hidden">Free Trial</span>
@@ -222,7 +222,7 @@ const Navbar = () => {
                 {/* Enhanced Mobile Menu */}
                 <div
                     className={cn(
-                        'lg:hidden fixed inset-x-0 top-16 sm:top-20 transition-all duration-300 ease-out bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl z-50 overflow-hidden border-t border-gray-200/20 dark:border-gray-700/20',
+                        'lg:hidden fixed inset-x-0 top-16 transition-all duration-300 ease-out bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl z-50 overflow-hidden border-t border-gray-200/20 dark:border-gray-700/20',
                         isOpen ? 'translate-y-0 opacity-100 max-h-screen' : '-translate-y-full opacity-0 max-h-0'
                     )}
                 >
