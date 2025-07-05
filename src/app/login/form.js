@@ -11,12 +11,8 @@ import {
   X,
   AtSign,
   Lock,
-  CheckCircle2,
   ChevronRight,
-  Github,
-  Linkedin,
   Shield,
-  Zap,
   Eye,
   EyeOff,
   Dumbbell,
@@ -26,9 +22,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
-const TenantLoginForm = ({ className, ...props }) => {
+const TenantLoginForm = ({ className }) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const {
     register,
@@ -47,7 +44,7 @@ const TenantLoginForm = ({ className, ...props }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ ...data, rememberMe }),
           credentials: "include",
         }
       );
@@ -237,6 +234,8 @@ const TenantLoginForm = ({ className, ...props }) => {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
                   className="h-5 w-5 cursor-pointer text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label
