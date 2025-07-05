@@ -224,14 +224,6 @@ export function LoginForm({ className, ...props }) {
                   }}
                   error={errors.password}
                   placeholder="Enter your password"
-                  rightElement={
-                    <a
-                      href="#"
-                      className="ml-auto text-sm text-blue-600 hover:underline"
-                    >
-                      Forgot password?
-                    </a>
-                  }
                 />
 
                 <Button

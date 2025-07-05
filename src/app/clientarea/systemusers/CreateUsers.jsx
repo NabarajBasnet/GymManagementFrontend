@@ -1,5 +1,7 @@
 "use client";
 
+import { FaEye } from "react-icons/fa";
+import { FaEyeSlash } from "react-icons/fa";
 import { toast as soonerToast } from "sonner";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
@@ -13,7 +15,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  CheckCircle2,
   X,
   AtSign,
   User,
@@ -34,6 +35,7 @@ import {
 } from "lucide-react";
 import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 const CreateUsers = () => {
   const {
@@ -46,6 +48,8 @@ const CreateUsers = () => {
   } = useForm();
 
   const watchPassword = watch("password", "");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { tenant } = useTenant();
   const loggedInTenant = tenant?.tenant;
@@ -436,13 +440,24 @@ const CreateUsers = () => {
                         <div className="relative group">
                           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
                           <Input
-                            type="password"
-                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            type={showPassword ? "text" : "password"}
+                            className="pl-12 pr-10 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
                             placeholder="Create secure password"
                             {...register("password", {
                               required: "Password is required",
                             })}
                           />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <FaEyeSlash className="h-5 w-5" />
+                            ) : (
+                              <FaEye className="h-5 w-5" />
+                            )}
+                          </button>
                         </div>
                         {errors.password && (
                           <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
@@ -459,8 +474,8 @@ const CreateUsers = () => {
                         <div className="relative group">
                           <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
                           <Input
-                            type="password"
-                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            type={showConfirmPassword ? "text" : "password"}
+                            className="pl-12 pr-10 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
                             placeholder="Confirm password"
                             {...register("confirmPassword", {
                               required: "Please confirm your password",
@@ -469,6 +484,17 @@ const CreateUsers = () => {
                                 "Passwords do not match",
                             })}
                           />
+                          <button
+                            type="button"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-emerald-500 transition-colors"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          >
+                            {showConfirmPassword ? (
+                              <FaEyeSlash className="h-5 w-5" />
+                            ) : (
+                              <FaEye className="h-5 w-5" />
+                            )}
+                          </button>
                         </div>
                         {errors.confirmPassword && (
                           <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
