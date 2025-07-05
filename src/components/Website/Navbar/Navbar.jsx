@@ -110,7 +110,7 @@ const Navbar = () => {
                     <div className="flex items-center flex-shrink-0">
                         <a href="#" className="text-lg md:text-2xl font-bold tracking-tight">
                             <img
-                                className='w-20 sm:w-24 md:w-32 lg:w-40 h-auto'
+                                className='w-32 lg:w-40 h-auto'
                                 src='./images/FitBinaryLogo.png'
                                 alt="FitBinary Logo"
                             />

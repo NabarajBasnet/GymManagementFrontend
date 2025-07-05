@@ -1,37 +1,50 @@
-"use client";
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, User, MessageSquare, Send, CheckCircle } from 'lucide-react';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
-import { Mail, MapPin, Phone, Send, Clock } from 'lucide-react';
-
-const ContactSection = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
-    const [submitted, setSubmitted] = useState(false);
-
-    const [ref, inView] = useInView({
-        triggerOnce: true,
-        threshold: 0.1,
+export default function ContactForm() {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        company: '',
+        message: ''
     });
+    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ name, email, message });
-        setSubmitted(true);
+        setIsSubmitting(true);
 
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        setIsSubmitted(true);
+        setIsSubmitting(false);
+
+        // Reset form after 3 seconds
         setTimeout(() => {
-            setName('');
-            setEmail('');
-            setMessage('');
-            setSubmitted(false);
+            setIsSubmitted(false);
+            setFormData({
+                name: '',
+                email: '',
+                phone: '',
+                company: '',
+                message: ''
+            });
         }, 3000);
     };
 
     return (
-        <section id="contact" className="py-28 relative bg-gray-900/40 min-h-[80vh]">
-            {/* Glowing Background Effects - Matching Hero Section */}
+        <div id="contact" className="min-h-screen bg-gray-900/40 relative overflow-hidden">
+            {/* Glassmorphism Background */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
@@ -39,245 +52,174 @@ const ContactSection = () => {
                 <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
             </div>
 
-            <div className="container mx-auto px-4 relative z-10">
-                <motion.div
-                    ref={ref}
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-center max-w-4xl mx-auto mb-20"
-                >
-                    <motion.h2
-                        className="text-4xl md:text-5xl font-bold text-white mb-6"
-                        initial={{ opacity: 0 }}
-                        animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                        transition={{ delay: 0.2 }}
-                    >
-                        Get In <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Touch</span>
-                    </motion.h2>
-                    <motion.p
-                        className="text-lg text-gray-300 max-w-3xl mx-auto"
-                        initial={{ opacity: 0 }}
-                        animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                        transition={{ delay: 0.4 }}
-                    >
-                        Have questions or need assistance? We're here to help you get the most out of Fitbinary.
-                    </motion.p>
-                </motion.div>
+            {/* Content */}
+            <div className="relative z-10 container mx-auto px-4 py-12 lg:py-20">
+                <div className="max-w-6xl mx-auto">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-                    {/* Left Side - Contact Form */}
-                    <motion.div
-                        initial={{ opacity: 0, x: -80 }}
-                        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: -80 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-                    >
-                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
-                            <h3 className="text-2xl font-bold text-white mb-8">Send Us a Message</h3>
-
-                            {submitted ? (
-                                <motion.div
-                                    className="bg-green-900/20 border border-green-800 rounded-xl p-6 text-center"
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{ duration: 0.4 }}
-                                >
-                                    <Send className="h-10 w-10 text-green-400 mx-auto mb-4" />
-                                    <p className="text-green-300 font-medium text-lg">
-                                        Thanks for reaching out! We'll get back to you soon.
-                                    </p>
-                                </motion.div>
-                            ) : (
-                                <form onSubmit={handleSubmit} className="space-y-6">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Name
-                                        </label>
-                                        <input
-                                            type="text"
-                                            required
-                                            value={name}
-                                            onChange={(e) => setName(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
-                                            placeholder="Your name"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            required
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
-                                            placeholder="your@email.com"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-300 mb-2">
-                                            Message
-                                        </label>
-                                        <textarea
-                                            required
-                                            rows={5}
-                                            value={message}
-                                            onChange={(e) => setMessage(e.target.value)}
-                                            className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
-                                            placeholder="How can we help you?"
-                                        ></textarea>
-                                    </div>
-
-                                    <motion.button
-                                        type="submit"
-                                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                    >
-                                        Send Message
-                                    </motion.button>
-                                </form>
-                            )}
-                        </div>
-                    </motion.div>
-
-                    {/* Right Side - Contact Information */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 80 }}
-                        animate={inView ? { opacity: 1, x: 0 } : { opacity: 0, x: 80 }}
-                        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-                        className="space-y-8"
-                    >
-                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
-                            <h3 className="text-2xl font-bold text-white mb-8">Contact Information</h3>
+                        {/* Left Side - Info */}
+                        <div className="space-y-8">
+                            <div className="space-y-4">
+                                <h1 className="text-4xl lg:text-6xl font-bold text-white leading-tight">
+                                    Let's Transform Your
+                                    <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent block">
+                                        Fitness Business
+                                    </span>
+                                </h1>
+                                <p className="text-xl text-gray-300 leading-relaxed">
+                                    Ready to revolutionize your fitness center? Get in touch with our team and discover how our SaaS platform can streamline your operations.
+                                </p>
+                            </div>
 
                             <div className="space-y-6">
-                                <motion.div
-                                    className="flex items-start"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 0.6 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4">
-                                        <Mail className="h-6 w-6 text-blue-400" />
+                                <div className="flex items-center space-x-4 group">
+                                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                                        <Mail className="w-6 h-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-300">Email</p>
-                                        <a href="mailto:hello@fitbinary.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
-                                            hello@fitbinary.com
-                                        </a>
+                                        <h3 className="text-white font-semibold">Email Us</h3>
+                                        <p className="text-gray-400">hello@fitbinary.com</p>
                                     </div>
-                                </motion.div>
+                                </div>
 
-                                <motion.div
-                                    className="flex items-start"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 0.7 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4">
-                                        <Phone className="h-6 w-6 text-blue-400" />
+                                <div className="flex items-center space-x-4 group">
+                                    <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:bg-blue-500/30 transition-colors">
+                                        <Phone className="w-6 h-6 text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-gray-300">Phone</p>
-                                        <a href="tel:+977 9763427690" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
-                                            +977 976-3427690
-                                        </a>
+                                        <h3 className="text-white font-semibold">Call Us</h3>
+                                        <p className="text-gray-400">+977 9763427690</p>
                                     </div>
-                                </motion.div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <motion.div
-                                    className="flex items-start"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 0.8 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4">
-                                        <MapPin className="h-6 w-6 text-blue-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-300">Office</p>
-                                        <p className="text-lg font-medium text-white">
-                                            Baneshwor Height 10<br />
-                                            Bagmati, Kathmandu, NP 44600
+                        {/* Right Side - Form */}
+                        <div className="relative">
+                            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+                                {!isSubmitted ? (
+                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                        <div className="text-center mb-8">
+                                            <h2 className="text-2xl font-bold text-white mb-2">Get Started Today</h2>
+                                            <p className="text-gray-300">Fill out the form below and we'll get back to you within 24 hours</p>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-300 flex items-center space-x-2">
+                                                    <User className="w-4 h-4" />
+                                                    <span>Full Name</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    value={formData.name}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                    placeholder="Your full name"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-300 flex items-center space-x-2">
+                                                    <Mail className="w-4 h-4" />
+                                                    <span>Email Address</span>
+                                                </label>
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    value={formData.email}
+                                                    onChange={handleChange}
+                                                    required
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                    placeholder="your@email.com"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-300 flex items-center space-x-2">
+                                                    <Phone className="w-4 h-4" />
+                                                    <span>Phone Number</span>
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    name="phone"
+                                                    value={formData.phone}
+                                                    onChange={handleChange}
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                    placeholder="(555) 123-4567"
+                                                />
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <label className="text-sm font-medium text-gray-300 flex items-center space-x-2">
+                                                    <MapPin className="w-4 h-4" />
+                                                    <span>Gym/Company Name</span>
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="company"
+                                                    value={formData.company}
+                                                    onChange={handleChange}
+                                                    className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                                    placeholder="Your gym name"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-medium text-gray-300 flex items-center space-x-2">
+                                                <MessageSquare className="w-4 h-4" />
+                                                <span>Message</span>
+                                            </label>
+                                            <textarea
+                                                name="message"
+                                                value={formData.message}
+                                                onChange={handleChange}
+                                                rows={4}
+                                                required
+                                                className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+                                                placeholder="Tell us about your gym and what you're looking for..."
+                                            />
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-4 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-transparent transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
+                                        >
+                                            {isSubmitting ? (
+                                                <>
+                                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                                    <span>Sending...</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Send className="w-5 h-5" />
+                                                    <span>Send Message</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+                                            <CheckCircle className="w-8 h-8 text-green-400" />
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-white mb-4">Message Sent Successfully!</h3>
+                                        <p className="text-gray-300 leading-relaxed">
+                                            Thank you for reaching out. Our team will review your message and get back to you within 24 hours.
                                         </p>
                                     </div>
-                                </motion.div>
+                                )}
                             </div>
                         </div>
-
-                        <div className="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 shadow-xl p-8">
-                            <h3 className="text-2xl font-bold text-white mb-6">Customer Support Hours</h3>
-
-                            <div className="space-y-4">
-                                <motion.div
-                                    className="flex items-center"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 0.9 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4">
-                                        <Clock className="h-6 w-6 text-blue-400" />
-                                    </div>
-                                    <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-300">Monday - Friday:</span>
-                                        <span className="font-medium text-white">8:00 AM - 8:00 PM EST</span>
-                                    </div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="flex items-center"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 1.0 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4 opacity-0">
-                                        <Clock className="h-6 w-6 text-blue-400" />
-                                    </div>
-                                    <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-300">Saturday:</span>
-                                        <span className="font-medium text-white">10:00 AM - 6:00 PM EST</span>
-                                    </div>
-                                </motion.div>
-
-                                <motion.div
-                                    className="flex items-center"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                                    transition={{ delay: 1.1 }}
-                                >
-                                    <div className="p-3 bg-blue-500/10 rounded-lg mr-4 opacity-0">
-                                        <Clock className="h-6 w-6 text-blue-400" />
-                                    </div>
-                                    <div className="flex-1 flex justify-between items-center">
-                                        <span className="text-gray-300">Sunday:</span>
-                                        <span className="font-medium text-white">Closed</span>
-                                    </div>
-                                </motion.div>
-                            </div>
-
-                            <motion.div
-                                className="mt-8 pt-6 border-t border-white/10"
-                                initial={{ opacity: 0 }}
-                                animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                                transition={{ delay: 1.2 }}
-                            >
-                                <p className="text-gray-300">
-                                    For urgent matters outside of business hours, please email{' '}
-                                    <a href="mailto:support@fitbinary.com" className="text-blue-400 font-medium hover:underline">
-                                        support@fitbinary.com
-                                    </a>
-                                </p>
-                            </motion.div>
-                        </div>
-                    </motion.div>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
-};
-
-export default ContactSection;
+}

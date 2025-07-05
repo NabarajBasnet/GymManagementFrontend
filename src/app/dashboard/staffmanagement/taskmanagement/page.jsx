@@ -113,7 +113,7 @@ const StaffTaskManagement = () => {
     // Functions
     const getAllStaffMembers = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -130,7 +130,7 @@ const StaffTaskManagement = () => {
     const getAllTasks = async ({ queryKey }) => {
         const [, page, searchQuery, status, priority, category] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/tasks?page=${page}&limit=${limit}&taskSearchQuery=${searchQuery}&status=${status}&priority=${priority}&category=${category}`);
+            const response = await fetch(`http://localhost:3000/api/tasks?page=${page}&limit=${limit}&taskSearchQuery=${searchQuery}&status=${status}&priority=${priority}&category=${category}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -163,7 +163,7 @@ const StaffTaskManagement = () => {
 
     const getSingleTask = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/tasks/${id}`);
+            const response = await fetch(`http://localhost:3000/api/tasks/${id}`);
             const responseBody = await response.json();
             if (response.ok && response.status === 200) {
                 setCurrentTask(responseBody.task)
@@ -192,7 +192,7 @@ const StaffTaskManagement = () => {
                     return;
                 };
             };
-            const response = await fetch(`https://fitbinary.com/api/tasks`, {
+            const response = await fetch(`http://localhost:3000/api/tasks`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -216,7 +216,7 @@ const StaffTaskManagement = () => {
     const deleteSingleTask = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`https://fitbinary.com/api/tasks/delete/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/delete/${id}`, {
                 method: "DELETE",
             });
 
@@ -260,7 +260,7 @@ const StaffTaskManagement = () => {
     const deleteSelectedTask = async () => {
         setDeleting(true);
         try {
-            const response = await fetch(`https://fitbinary.com/api/tasks/delete-multiple-tasks`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/delete-multiple-tasks`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
