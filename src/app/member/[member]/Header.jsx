@@ -89,27 +89,27 @@ const MemberHeader = ({ activeTab }) => {
   const navItems = [
     { id: "smartcheckin", icon: <FaUserCheck size={20} />, label: "Smart Check-In" },
     { id: "qrcode", icon: <QrCode size={20} />, label: "QR Code" },
-    { id: "chat", icon: <MessageSquare size={20} />, label: "Chat" },
-    {
-      id: "store",
-      icon: <ShoppingCart size={20} />,
-      label: "Store",
-    },
+    // { id: "chat", icon: <MessageSquare size={20} />, label: "Chat" },
+    // {
+    //   id: "store",
+    //   icon: <ShoppingCart size={20} />,
+    //   label: "Store",
+    // },
     {
       id: "membershipdetails",
       icon: <MdCardMembership size={20} />,
       label: "Membership Details",
     },
-    {
-      id: "measurements",
-      icon: <LineChart size={20} />,
-      label: "Measurements",
-    },
-    {
-      id: "payments",
-      icon: <FaMoneyBillWaveAlt size={20} />,
-      label: "Payments",
-    },
+    // {
+    //   id: "measurements",
+    //   icon: <LineChart size={20} />,
+    //   label: "Measurements",
+    // },
+    // {
+    //   id: "payments",
+    //   icon: <FaMoneyBillWaveAlt size={20} />,
+    //   label: "Payments",
+    // },
     { id: "feedback", icon: <Star size={20} />, label: "Feedback" },
     {
       id: "promotions&offers",
@@ -121,7 +121,7 @@ const MemberHeader = ({ activeTab }) => {
       icon: <AiOutlineSchedule size={20} />,
       label: "Class Booking",
     },
-    { id: "settings", icon: <Settings size={20} />, label: "Settings" },
+    // { id: "settings", icon: <Settings size={20} />, label: "Settings" },
   ];
 
   const handleNavClick = (id, tab) => {
