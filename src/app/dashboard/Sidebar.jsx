@@ -1,5 +1,6 @@
 "use client";
 
+import { TbLiveViewFilled } from "react-icons/tb";
 import { RiUserLocationFill } from "react-icons/ri";
 import { MdAdd } from "react-icons/md";
 import { FaList } from "react-icons/fa";
@@ -219,7 +220,7 @@ const Sidebar = () => {
               link: "/dashboard/smartcheckin/staffcheckin",
             },
             {
-              icon: FaClipboardList,
+              icon: TbLiveViewFilled,
               title: "Live Track",
               link: "/dashboard/smartcheckin/livetrack",
             },

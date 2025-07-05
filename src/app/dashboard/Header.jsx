@@ -1,5 +1,6 @@
 "use client";
 
+import { TbLiveViewFilled } from "react-icons/tb";
 import { RiUserLocationFill } from "react-icons/ri";
 import { IoMdCart } from "react-icons/io";
 import { MdAdd } from "react-icons/md";
@@ -307,7 +308,7 @@ const Header = () => {
               link: "/dashboard/smartcheckin/staffcheckin",
             },
             {
-              icon: FaClipboardList,
+              icon: TbLiveViewFilled,
               title: "Live Track",
               link: "/dashboard/smartcheckin/livetrack",
             },

@@ -1,5 +1,6 @@
 "use client";
 
+import { FaUserCheck } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import { Moon, Sun, Bell, MessageCircle, ShoppingCart } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -86,6 +87,7 @@ const MemberHeader = ({ activeTab }) => {
   };
 
   const navItems = [
+    { id: "smartcheckin", icon: <FaUserCheck size={20} />, label: "Smart Check-In" },
     { id: "qrcode", icon: <QrCode size={20} />, label: "QR Code" },
     { id: "chat", icon: <MessageSquare size={20} />, label: "Chat" },
     {
