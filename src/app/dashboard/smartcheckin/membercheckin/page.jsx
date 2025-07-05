@@ -6,12 +6,31 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Users, Clock, CheckCircle, XCircle, Activity } from "lucide-react"
+import {
+    MapPin,
+    Users,
+    Clock,
+    CheckCircle,
+    XCircle,
+    Activity,
+    Play,
+    Square,
+    Search,
+    Wifi,
+    WifiOff,
+    User,
+    Calendar,
+    Phone,
+    CreditCard,
+    Crown,
+    Loader2,
+    Eye,
+    EyeOff
+} from "lucide-react"
 
 const gymLocation = {
     lat: 27.7121,
@@ -36,6 +55,7 @@ const SmartAttendanceDashboard = () => {
     const [location, setLocation] = useState(null)
     const [sessionActive, setSessionActive] = useState(false)
     const [withinRange, setWithinRange] = useState(false)
+    const [isSearching, setIsSearching] = useState(false)
     const [attendanceLogs, setAttendanceLogs] = useState([
         { id: 1, memberName: "John Doe", category: "Premium", membership: "Monthly", timestamp: new Date(Date.now() - 3600000) },
         { id: 2, memberName: "Sarah Wilson", category: "Basic", membership: "Yearly", timestamp: new Date(Date.now() - 7200000) },
@@ -79,9 +99,14 @@ const SmartAttendanceDashboard = () => {
 
                 // Mock member detection when in range
                 if (inRange && !currentMember) {
-                    setCurrentMember(mockMember)
+                    setIsSearching(true)
+                    setTimeout(() => {
+                        setCurrentMember(mockMember)
+                        setIsSearching(false)
+                    }, 1500)
                 } else if (!inRange && currentMember) {
                     setCurrentMember(null)
+                    setIsSearching(false)
                 }
             },
             (err) => {
@@ -105,6 +130,7 @@ const SmartAttendanceDashboard = () => {
         setSessionActive(false)
         setCurrentMember(null)
         setWithinRange(false)
+        setIsSearching(false)
     }
 
     const checkInMember = () => {
@@ -123,271 +149,280 @@ const SmartAttendanceDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
-            <div className="max-w-7xl mx-auto">
+        <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-6">
+            <div className="w-full mx-auto">
                 {/* Header */}
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Geo-Location Attendance System</h1>
-                    <p className="text-gray-600">Track member check-ins using location-based verification</p>
+                <div className="mb-8">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl">
+                            <Activity className="h-6 w-6 text-white" />
+                        </div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                            Geo-Location Attendance System
+                        </h1>
+                    </div>
+                    <p className="text-slate-600 dark:text-slate-300 font-medium">
+                        Track member check-ins using location-based verification
+                    </p>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column - Session Control & Live Check-in */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {/* Session Control Card */}
-                        <Card className="border-2 shadow-lg">
-                            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
-                                <CardTitle className="flex items-center gap-2">
-                                    <Activity className="h-5 w-5" />
-                                    Attendance Session Control
-                                </CardTitle>
-                                <CardDescription>
-                                    Enable live session to track member check-ins within gym premises
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <div className="space-y-2">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
-                                            <MapPin className="h-4 w-4 text-blue-600" />
-                                            Current Location
-                                        </div>
-                                        {location ? (
-                                            <p className="text-sm text-gray-600 font-mono">
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6'>
+                    {/* Session Control Card */}
+                    <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl">
+                        <CardHeader className="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-500/20 dark:to-indigo-500/20 rounded-t-lg">
+                            <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+                                <div className="p-2 bg-blue-500/20 dark:bg-blue-500/30 rounded-lg">
+                                    <Activity className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                Attendance Session Control
+                            </CardTitle>
+                            <CardDescription className="text-slate-600 dark:text-slate-400">
+                                Enable live session to track member check-ins within gym premises
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                        <MapPin className="h-4 w-4 text-blue-500" />
+                                        Current Location
+                                    </div>
+                                    {location ? (
+                                        <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <p className="text-sm text-slate-600 dark:text-slate-400 font-mono">
                                                 {location.lat.toFixed(6)}, {location.lng.toFixed(6)}
                                             </p>
-                                        ) : (
-                                            <p className="text-sm text-gray-400">Location unavailable</p>
-                                        )}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <div className="flex items-center gap-2 text-sm font-medium">
-                                            <MapPin className="h-4 w-4 text-green-600" />
-                                            Detection Range
                                         </div>
-                                        <p className="text-sm text-gray-600">{gymLocation.radius} meters radius</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-sm font-medium">Session Status:</span>
-                                        <Badge variant={sessionActive ? "default" : "secondary"} className="flex items-center gap-1">
-                                            {sessionActive ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                                            {sessionActive ? "Active" : "Inactive"}
-                                        </Badge>
-                                    </div>
-                                </div>
-
-                                <div className="flex gap-2">
-                                    <Button
-                                        onClick={startSession}
-                                        disabled={sessionActive}
-                                        className="flex-1"
-                                    >
-                                        {sessionActive ? "Session Running" : "Start Session"}
-                                    </Button>
-                                    <Button
-                                        onClick={stopSession}
-                                        disabled={!sessionActive}
-                                        variant="outline"
-                                        className="flex-1"
-                                    >
-                                        Stop Session
-                                    </Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Live Check-in Detection */}
-                        <Card className="border-2 shadow-lg">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Users className="h-5 w-5" />
-                                    Live Member Detection
-                                </CardTitle>
-                                <CardDescription>
-                                    Real-time detection of members within gym premises
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-center py-8">
-                                    {sessionActive ? (
-                                        withinRange && currentMember ? (
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-center">
-                                                    <div className="relative">
-                                                        <img
-                                                            src={currentMember.photo}
-                                                            alt={currentMember.name}
-                                                            className="w-16 h-16 rounded-full object-cover border-4 border-green-500"
-                                                        />
-                                                        <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                                                            <CheckCircle className="h-4 w-4 text-white" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <h3 className="font-semibold text-lg text-green-600">{currentMember.name}</h3>
-                                                    <p className="text-sm text-gray-600">Ready to check in</p>
-                                                </div>
-                                                <Button onClick={checkInMember} className="bg-green-600 hover:bg-green-700">
-                                                    <CheckCircle className="h-4 w-4 mr-2" />
-                                                    Check In Member
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <div className="text-gray-400">
-                                                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                                                    <Users className="h-8 w-8 text-gray-400" />
-                                                </div>
-                                                <p className="text-sm">No member detected in range</p>
-                                                <p className="text-xs text-gray-500 mt-1">Scanning for members...</p>
-                                            </div>
-                                        )
                                     ) : (
-                                        <div className="text-gray-400">
-                                            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                                                <XCircle className="h-8 w-8 text-gray-400" />
-                                            </div>
-                                            <p className="text-sm">Session not active</p>
-                                            <p className="text-xs text-gray-500 mt-1">Start session to begin detection</p>
+                                        <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <p className="text-sm text-slate-400 dark:text-slate-500">Location unavailable</p>
                                         </div>
                                     )}
                                 </div>
-                            </CardContent>
-                        </Card>
-
-                        {/* Attendance History Toggle */}
-                        <Card className="border-2 shadow-lg">
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Clock className="h-5 w-5" />
-                                    Today's Attendance
-                                </CardTitle>
-                                <CardDescription>
-                                    View all member check-ins for today
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center gap-2">
-                                        <Badge variant="outline" className="text-sm">
-                                            {attendanceLogs.length} Check-ins Today
-                                        </Badge>
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                        <Wifi className="h-4 w-4 text-emerald-500" />
+                                        Detection Range
                                     </div>
-                                    <Button
-                                        onClick={() => setShowAttendanceList(!showAttendanceList)}
-                                        variant="outline"
-                                        size="sm"
-                                    >
-                                        {showAttendanceList ? "Hide List" : "Show List"}
-                                    </Button>
+                                    <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">{gymLocation.radius}m radius</p>
+                                    </div>
                                 </div>
+                            </div>
 
-                                {showAttendanceList && (
-                                    <div className="space-y-3 max-h-60 overflow-y-auto">
-                                        {attendanceLogs.length === 0 ? (
-                                            <p className="text-gray-400 text-sm text-center py-4">No check-ins yet today</p>
-                                        ) : (
-                                            attendanceLogs.map((log) => (
-                                                <div key={log.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                                                    <div>
-                                                        <p className="font-medium text-sm">{log.memberName}</p>
-                                                        <p className="text-xs text-gray-500">{log.category} • {log.membership}</p>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <p className="text-xs text-gray-600">{log.timestamp.toLocaleTimeString()}</p>
-                                                        <Badge variant="secondary" className="text-xs">
-                                                            <CheckCircle className="h-3 w-3 mr-1" />
-                                                            Checked In
-                                                        </Badge>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Session Status:</span>
+                                    <Badge
+                                        variant={sessionActive ? "default" : "secondary"}
+                                        className={`flex items-center gap-1.5 px-3 py-1.5 transition-all duration-[2000] ${sessionActive
+                                                ? "bg-emerald-500 hover:bg-emerald-600 text-white animate-pulse"
+                                                : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
+                                            }`}
+                                    >
+                                        {sessionActive ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                                        {sessionActive ? "Active" : "Inactive"}
+                                    </Badge>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <Button
+                                    onClick={startSession}
+                                    disabled={sessionActive}
+                                    className="flex-1 py-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                                >
+                                    <Play className="h-4 w-4 mr-2" />
+                                    {sessionActive ? "Session Running" : "Start Session"}
+                                </Button>
+                                <Button
+                                    onClick={stopSession}
+                                    disabled={!sessionActive}
+                                    className="flex-1 py-6 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+                                >
+                                    <Square className="h-4 w-4 mr-2" />
+                                    Stop Session
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Member Details Card */}
+                    <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl">
+                        <CardHeader className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 dark:from-purple-500/20 dark:to-pink-500/20 rounded-t-lg">
+                            <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+                                <div className="p-2 bg-purple-500/20 dark:bg-purple-500/30 rounded-lg">
+                                    <Users className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                                </div>
+                                Member Detection
+                            </CardTitle>
+                            <CardDescription className="text-slate-600 dark:text-slate-400">
+                                Information about detected member
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                            {isSearching ? (
+                                <div className="text-center py-8">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center animate-spin">
+                                        <Search className="h-8 w-8 text-white" />
                                     </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Right Column - Member Details */}
-                    <div className="lg:col-span-1">
-                        <Card className="border-2 shadow-lg sticky top-6">
-                            <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-                                <CardTitle className="flex items-center gap-2">
-                                    <Users className="h-5 w-5" />
-                                    Member Details
-                                </CardTitle>
-                                <CardDescription>
-                                    Information about detected member
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-6">
-                                {currentMember ? (
-                                    <div className="space-y-4">
-                                        <div className="text-center">
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 font-medium">Detecting member...</p>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                                        Scanning for registered members in range
+                                    </p>
+                                </div>
+                            ) : currentMember ? (
+                                <div className="space-y-4 animate-in fade-in-50 duration-500">
+                                    <div className="text-center">
+                                        <div className="relative inline-block">
                                             <img
                                                 src={currentMember.photo}
                                                 alt={currentMember.name}
-                                                className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-4 border-purple-200"
+                                                className="w-20 h-20 rounded-full object-cover mx-auto mb-3 border-4 border-purple-300 dark:border-purple-500 shadow-lg"
                                             />
-                                            <h3 className="font-semibold text-lg">{currentMember.name}</h3>
-                                            <p className="text-sm text-gray-600">Member ID: #{currentMember.id}</p>
-                                        </div>
-
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between items-center py-2 border-b">
-                                                <span className="text-sm font-medium text-gray-600">Category:</span>
-                                                <Badge variant={currentMember.category === "Premium" ? "default" : "secondary"}>
-                                                    {currentMember.category}
-                                                </Badge>
-                                            </div>
-
-                                            <div className="flex justify-between items-center py-2 border-b">
-                                                <span className="text-sm font-medium text-gray-600">Membership:</span>
-                                                <span className="text-sm">{currentMember.membership}</span>
-                                            </div>
-
-                                            <div className="flex justify-between items-center py-2 border-b">
-                                                <span className="text-sm font-medium text-gray-600">Expiry:</span>
-                                                <span className="text-sm">{currentMember.membershipExpiry}</span>
-                                            </div>
-
-                                            <div className="flex justify-between items-center py-2 border-b">
-                                                <span className="text-sm font-medium text-gray-600">Phone:</span>
-                                                <span className="text-sm">{currentMember.phone}</span>
-                                            </div>
-
-                                            <div className="flex justify-between items-center py-2 border-b">
-                                                <span className="text-sm font-medium text-gray-600">Joined:</span>
-                                                <span className="text-sm">{currentMember.joinedDate}</span>
+                                            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-emerald-500 rounded-full border-2 border-white dark:border-slate-800 flex items-center justify-center">
+                                                <CheckCircle className="h-3 w-3 text-white" />
                                             </div>
                                         </div>
+                                        <h3 className="font-bold text-lg text-slate-800 dark:text-slate-100">{currentMember.name}</h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">Member ID: #{currentMember.id}</p>
+                                    </div>
 
-                                        <div className="pt-4">
-                                            <Button onClick={checkInMember} className="w-full bg-green-600 hover:bg-green-700">
-                                                <CheckCircle className="h-4 w-4 mr-2" />
-                                                Check In Member
-                                            </Button>
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-center py-3 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <div className="flex items-center gap-2">
+                                                <Crown className="h-4 w-4 text-amber-500" />
+                                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Category:</span>
+                                            </div>
+                                            <Badge variant={currentMember.category === "Premium" ? "default" : "secondary"} className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
+                                                {currentMember.category}
+                                            </Badge>
                                         </div>
+
+                                        <div className="flex justify-between items-center py-3 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <div className="flex items-center gap-2">
+                                                <CreditCard className="h-4 w-4 text-blue-500" />
+                                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Membership:</span>
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{currentMember.membership}</span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center py-3 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <div className="flex items-center gap-2">
+                                                <Calendar className="h-4 w-4 text-emerald-500" />
+                                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Expiry:</span>
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{currentMember.membershipExpiry}</span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center py-3 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <div className="flex items-center gap-2">
+                                                <Phone className="h-4 w-4 text-purple-500" />
+                                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Phone:</span>
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{currentMember.phone}</span>
+                                        </div>
+
+                                        <div className="flex justify-between items-center py-3 px-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                            <div className="flex items-center gap-2">
+                                                <User className="h-4 w-4 text-indigo-500" />
+                                                <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Joined:</span>
+                                            </div>
+                                            <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{currentMember.joinedDate}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-4">
+                                        <Button
+                                            onClick={checkInMember}
+                                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
+                                        >
+                                            <CheckCircle className="h-4 w-4 mr-2" />
+                                            Check In Member
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center py-8">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
+                                        <Users className="h-8 w-8 text-slate-400 dark:text-slate-500" />
+                                    </div>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">No member detected</p>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                                        {sessionActive ? "Waiting for member to come in range..." : "Start session to detect members"}
+                                    </p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Attendance Log Card */}
+                <Card className="border-0 shadow-xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl">
+                    <CardHeader className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 dark:from-indigo-500/20 dark:to-purple-500/20 rounded-t-lg">
+                        <CardTitle className="flex items-center gap-3 text-slate-800 dark:text-slate-100">
+                            <div className="p-2 bg-indigo-500/20 dark:bg-indigo-500/30 rounded-lg">
+                                <Clock className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                            </div>
+                            Today's Attendance
+                        </CardTitle>
+                        <CardDescription className="text-slate-600 dark:text-slate-400">
+                            View all member check-ins for today
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-6">
+                            <Badge variant="outline" className="text-sm font-medium px-3 py-1.5 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-200 dark:border-indigo-700 text-indigo-700 dark:text-indigo-300">
+                                {attendanceLogs.length} Check-ins Today
+                            </Badge>
+                            <Button
+                                onClick={() => setShowAttendanceList(!showAttendanceList)}
+                                variant="outline"
+                                size="sm"
+                                className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-700 dark:to-slate-600 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-600 dark:hover:to-slate-500 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-300 transition-all duration-300"
+                            >
+                                {showAttendanceList ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
+                                {showAttendanceList ? "Hide List" : "Show List"}
+                            </Button>
+                        </div>
+
+                        <div className={`transition-all duration-500 ease-in-out ${showAttendanceList ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                            <div className="space-y-3 max-h-80 overflow-y-auto">
+                                {attendanceLogs.length === 0 ? (
+                                    <div className="text-center py-8">
+                                        <Clock className="h-12 w-12 mx-auto mb-3 text-slate-400 dark:text-slate-500" />
+                                        <p className="text-slate-400 dark:text-slate-500 text-sm">No check-ins yet today</p>
                                     </div>
                                 ) : (
-                                    <div className="text-center py-8">
-                                        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                                            <Users className="h-8 w-8 text-gray-400" />
+                                    attendanceLogs.map((log, index) => (
+                                        <div
+                                            key={log.id}
+                                            className="flex items-center justify-between p-4 bg-gradient-to-r from-slate-50 to-slate-100/50 dark:from-slate-700/50 dark:to-slate-600/50 rounded-xl border border-slate-200 dark:border-slate-600 hover:shadow-md transition-all duration-300 animate-in fade-in-50"
+                                            style={{ animationDelay: `${index * 100}ms` }}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                                    <User className="h-5 w-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <p className="font-semibold text-sm text-slate-800 dark:text-slate-100">{log.memberName}</p>
+                                                    <p className="text-xs text-slate-500 dark:text-slate-400">{log.category} • {log.membership}</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">{log.timestamp.toLocaleTimeString()}</p>
+                                                <Badge variant="secondary" className="text-xs mt-1 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-700">
+                                                    <CheckCircle className="h-3 w-3 mr-1" />
+                                                    Checked In
+                                                </Badge>
+                                            </div>
                                         </div>
-                                        <p className="text-sm text-gray-500">No member detected</p>
-                                        <p className="text-xs text-gray-400 mt-1">
-                                            {sessionActive ? "Waiting for member to come in range..." : "Start session to detect members"}
-                                        </p>
-                                    </div>
+                                    ))
                                 )}
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
