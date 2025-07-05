@@ -264,43 +264,6 @@ const MemberHeader = ({ activeTab }) => {
 
           {/* Right side icons */}
           <div className="flex items-center space-x-2">
-            {/* Notification Icon */}
-            <button
-              onClick={handleNotificationClick}
-              className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
-              aria-label="Notifications"
-            >
-              <Bell className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-110 transition-all duration-200" />
-              {/* Notification badge */}
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold animate-pulse">
-                3
-              </span>
-            </button>
-
-            {/* Chat Icon */}
-            <button
-              onClick={handleChatClick}
-              className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
-              aria-label="Chat"
-            >
-              <MessageCircle className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-110 transition-all duration-200" />
-              {/* Online indicator */}
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white dark:border-gray-900"></span>
-            </button>
-
-            {/* Cart Icon */}
-            <button
-              onClick={handleCartClick}
-              className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
-              aria-label="Cart"
-            >
-              <ShoppingCart className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 group-hover:scale-110 transition-all duration-200" />
-              {/* Cart item count */}
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-purple-500 text-white text-xs rounded-full flex items-center justify-center font-bold">
-                2
-              </span>
-            </button>
-
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
