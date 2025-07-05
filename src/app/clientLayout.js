@@ -83,7 +83,11 @@ export default function MainClientLayout({ children }) {
         </main>
 
         {/* Footer */}
-        {!hideNavbar && <Footer />}
+        {!hideNavbar && (
+          <div className="relative z-0">
+            <Footer />
+          </div>
+        )}
       </div>
     </ThemeProvider>
   );

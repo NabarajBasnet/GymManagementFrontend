@@ -27,12 +27,14 @@ const BackToTop = () => {
     };
 
     return (
-        <div
-            className={`back-to-top ${isVisible ? 'visible' : ''}`}
+        <button
+            className={`fixed bottom-6 right-6 p-3 rounded-full bg-cyan-500 text-white shadow-lg transition-all duration-300 z-50 ${isVisible ? 'opacity-100' : 'fixed bottom-6 right-6 opacity-0 pointer-events-none z-50'
+                }`}
             onClick={scrollToTop}
+            aria-label="Back to top"
         >
-            <ChevronUp size={24}/>
-        </div>
+            <ChevronUp size={24} />
+        </button>
     );
 };
 

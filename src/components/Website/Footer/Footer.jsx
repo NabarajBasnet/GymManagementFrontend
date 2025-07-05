@@ -195,7 +195,7 @@ const Footer = () => {
                 </div>
 
                 {/* Newsletter Subscription */}
-                <motion.div
+                <div
                     className="mt-16 p-8 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700"
                     variants={itemVariants}
                 >
@@ -219,7 +219,7 @@ const Footer = () => {
                             </motion.button>
                         </form>
                     </div>
-                </motion.div>
+                </div>
             </motion.div>
 
             {/* Bottom Bar */}
