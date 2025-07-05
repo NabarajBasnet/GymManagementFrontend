@@ -216,8 +216,8 @@ const SmartAttendanceDashboard = () => {
                                     <Badge
                                         variant={sessionActive ? "default" : "secondary"}
                                         className={`flex items-center gap-1.5 px-3 py-1.5 transition-all duration-[2000] ${sessionActive
-                                                ? "bg-emerald-500 hover:bg-emerald-600 text-white animate-pulse"
-                                                : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
+                                            ? "bg-emerald-500 hover:bg-emerald-600 text-white animate-pulse"
+                                            : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
                                             }`}
                                     >
                                         {sessionActive ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}

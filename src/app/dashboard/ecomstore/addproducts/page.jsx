@@ -97,7 +97,7 @@ const AddProducts = () => {
                 taxRate
             };
 
-            const url = 'http://localhost:3000/api/accounting/serviceandproducts'
+            const url = 'http://88.198.112.156:3100/api/accounting/serviceandproducts'
             const response = await fetch(url, {
                 method: "POST",
                 headers: {

@@ -98,7 +98,7 @@ const SubscriptionManagement = () => {
     const { data: subscriptions, isLoading } = useQuery({
         queryKey: ['subscriptions'],
         queryFn: async () => {
-            const response = await fetch('http://localhost:3000/api/subscription/getall');
+            const response = await fetch('http://88.198.112.156:3100/api/subscription/getall');
             const data = await response.json();
             return data.subscriptions;
         }
@@ -140,8 +140,8 @@ const SubscriptionManagement = () => {
     const onSubmit = async (data) => {
         try {
             const url = editingSubscription 
-                ? `http://localhost:3000/api/subscription/update/${editingSubscription._id}`
-                : 'http://localhost:3000/api/subscription/create';
+                ? `http://88.198.112.156:3100/api/subscription/update/${editingSubscription._id}`
+                : 'http://88.198.112.156:3100/api/subscription/create';
             
             const method = editingSubscription ? 'PUT' : 'POST';
 
@@ -190,7 +190,7 @@ const SubscriptionManagement = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/subscription/delete/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/subscription/delete/${id}`, {
                 method: 'DELETE',
             });
 

@@ -81,7 +81,7 @@ export default function GymBillingProfileForm() {
     const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://localhost:3000/api/organization/setup-billing-profile`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/organization/setup-billing-profile`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': "application/json"
