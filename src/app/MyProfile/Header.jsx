@@ -97,11 +97,11 @@ const StaffHeader = ({ activeTab }) => {
 
     const navItems = [
         { id: '/MyProfile', icon: <CgProfile size={20} />, label: "Profile", color: "from-blue-500 to-cyan-500" },
-        { id: '/MyProfile/chats', icon: <MessageSquare size={20} />, label: "Chat", color: "from-green-500 to-emerald-500" },
-        { id: '/MyProfile/taskmanagement', icon: <GoTasklist size={20} />, label: "Task Management", color: "from-purple-500 to-violet-500" },
+        // { id: '/MyProfile/chats', icon: <MessageSquare size={20} />, label: "Chat", color: "from-green-500 to-emerald-500" },
         { id: '/MyProfile/attendance', icon: <FaUserCheck size={20} />, label: "Attendance", color: "from-orange-500 to-red-500" },
-        { id: '/MyProfile/feedbacksandratings', icon: <VscFeedback size={20} />, label: "Feedbacks & Ratings", color: "from-pink-500 to-rose-500" },
-        { id: '/MyProfile/settings', icon: <Settings size={20} />, label: "Settings", color: "from-gray-500 to-slate-500" },
+        { id: '/MyProfile/taskmanagement', icon: <GoTasklist size={20} />, label: "Task Management", color: "from-purple-500 to-violet-500" },
+        // { id: '/MyProfile/feedbacksandratings', icon: <VscFeedback size={20} />, label: "Feedbacks & Ratings", color: "from-pink-500 to-rose-500" },
+        // { id: '/MyProfile/settings', icon: <Settings size={20} />, label: "Settings", color: "from-gray-500 to-slate-500" },
     ];
 
     const handleNavClick = (id, tab) => {

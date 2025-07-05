@@ -201,8 +201,8 @@ const TaskManagement = () => {
     }
 
     return (
-        <div className="container w-full mx-auto px-4 py-8">
-            <Card className='w-full'>
+        <div className="w-full min-h-screen mx-auto dark:bg-gray-900 bg-gray-100 px-4 py-8">
+            <Card className='w-full dark:border-none bg-white dark:bg-gray-800'>
                 <CardHeader>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
@@ -214,14 +214,14 @@ const TaskManagement = () => {
                                 <HiOutlineSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                                 <Input
                                     placeholder="Search tasks..."
-                                    className="pl-10 pr-4 py-2"
+                                    className="pl-10 pr-4 py-2 dark:bg-gray-900 bg-white dark:border-none"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                             </div>
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" className="gap-2">
+                                    <Button variant="outline" className="gap-2 dark:border-none text-primary dark:bg-gray-900 dark:hover:bg-gray-950 transition-color duration-300">
                                         <BsFilter className="h-4 w-4" />
                                         <span className="hidden md:inline">Filters</span>
                                     </Button>
@@ -301,7 +301,7 @@ const TaskManagement = () => {
                 <CardContent>
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                        <Card>
+                        <Card className='dark:border-none bg-gray-100 dark:bg-gray-900'>
                             <CardContent className="pt-4">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -314,7 +314,7 @@ const TaskManagement = () => {
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className='dark:border-none bg-gray-100 dark:bg-gray-900'>
                             <CardContent className="pt-4">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -329,7 +329,7 @@ const TaskManagement = () => {
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className='dark:border-none bg-gray-100 dark:bg-gray-900'>
                             <CardContent className="pt-4">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -344,7 +344,7 @@ const TaskManagement = () => {
                                 </div>
                             </CardContent>
                         </Card>
-                        <Card>
+                        <Card className='dark:border-none bg-gray-100 dark:bg-gray-900'>
                             <CardContent className="pt-4">
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -363,13 +363,11 @@ const TaskManagement = () => {
 
                     {/* Task List */}
                     {isLoading ? (
-                        <div className="flex justify-center items-center h-64">
-                            <Loader />
-                        </div>
+                        <Loader />
                     ) : tasks.length > 0 ? (
                         <div className="space-y-4">
                             {tasks.map((task) => (
-                                <Card key={task._id} className="relative overflow-hidden hover:shadow-md transition-shadow">
+                                <Card key={task._id} className="relative overflow-hidden dark:border-none bg-gray-100 dark:bg-gray-800 hover:shadow-md transition-shadow">
                                     <div className={`absolute left-0 top-0 h-full w-1 ${getPriorityColor(task.priority)}`} />
                                     <div className="p-4">
                                         <div className="flex items-start gap-4">
@@ -400,7 +398,7 @@ const TaskManagement = () => {
                                                                         variant="outline"
                                                                         size="sm"
                                                                         onClick={() => startTask(task._id)}
-                                                                        className="gap-2"
+                                                                        className="gap-2 dark:bg-gray-900 dark:hover:bg-gray-950 dark:border-none transition-color duration-300"
                                                                     >
                                                                         <FaLongArrowAltRight />
                                                                         Start Task
@@ -408,7 +406,7 @@ const TaskManagement = () => {
                                                                 )}
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger asChild>
-                                                                        <Button variant="outline" size="sm" className="gap-2">
+                                                                        <Button variant="outline" size="sm" className="gap-2 dark:bg-gray-900 dark:hover:bg-gray-950 dark:border-none transition-color duration-300">
                                                                             <FaCircleCheck className="text-green-600" />
                                                                             Complete
                                                                         </Button>
@@ -439,8 +437,8 @@ const TaskManagement = () => {
                                                                     <FiMoreHorizontal className="h-4 w-4" />
                                                                 </Button>
                                                             </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem className="gap-2">
+                                                            <DropdownMenuContent align="end" className='dark:bg-gray-900 dark:border-none'>
+                                                                <DropdownMenuItem className="gap-2 dark:hover:bg-gray-950 transition-color duration-300 cursor-pointer">
                                                                     <LuMessageSquareText className="h-4 w-4" />
                                                                     Add Comment
                                                                 </DropdownMenuItem>
@@ -468,18 +466,16 @@ const TaskManagement = () => {
                     )}
 
                     {/* Pagination */}
-                    {totalTasks > limit && (
-                        <div className="mt-6">
-                            <Pagination
-                                total={Math.ceil(totalTasks / limit)}
-                                page={currentPage}
-                                onChange={setCurrentPage}
-                                withEdges={true}
-                                siblings={1}
-                                boundaries={1}
-                            />
-                        </div>
-                    )}
+                    <div className="w-full flex justify-center md:justify-end mt-4">
+                        <Pagination
+                            total={Math.ceil(totalTasks / limit)}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </div>
