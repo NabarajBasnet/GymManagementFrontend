@@ -53,7 +53,7 @@ const EditTaskDetails = ({ task, id }) => {
     // Functions
     const getAllStaffMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/staffsmanagement`);
+            const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -79,7 +79,7 @@ const EditTaskDetails = ({ task, id }) => {
                     return;
                 };
             };
-            const response = await fetch(`http://88.198.112.156:3100/api/tasks/edit/${id}`, {
+            const response = await fetch(`https://fitbinary.com/api/tasks/edit/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

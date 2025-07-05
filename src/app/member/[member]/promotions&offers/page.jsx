@@ -14,7 +14,7 @@ const OfferShowcase = () => {
     const [copiedCode, setCopiedCode] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-    const baseURL = `http://88.198.112.156:3100/api/promotionsandoffers/`;
+    const baseURL = `https://fitbinary.com/api/promotionsandoffers/`;
 
     // Fetch real offers data
     const getAllOffers = async ({ queryKey }) => {

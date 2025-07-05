@@ -72,7 +72,7 @@ const LocationAndLocaleForm = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch('http://88.198.112.156:3100/api/organization/update-location-details', {
+            const response = await fetch('https://fitbinary.com/api/organization/update-location-details', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

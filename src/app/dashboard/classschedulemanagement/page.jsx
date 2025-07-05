@@ -104,8 +104,8 @@ const ScheduleManagement = () => {
 
         try {
             const url = isEditing
-                ? `http://88.198.112.156:3100/api/schedules/${editingScheduleId}`
-                : 'http://88.198.112.156:3100/api/schedules';
+                ? `https://fitbinary.com/api/schedules/${editingScheduleId}`
+                : 'https://fitbinary.com/api/schedules';
 
             const method = isEditing ? 'PUT' : 'POST';
 
@@ -174,7 +174,7 @@ const ScheduleManagement = () => {
     // Get all staffs
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/staffsmanagement`);
+            const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -215,7 +215,7 @@ const ScheduleManagement = () => {
     // Get all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/schedules?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`https://fitbinary.com/api/schedules?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -248,7 +248,7 @@ const ScheduleManagement = () => {
 
     const deleteSchedule = async (scheduleId) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/schedules/${scheduleId}`, {
+            const response = await fetch(`https://fitbinary.com/api/schedules/${scheduleId}`, {
                 method: 'DELETE',
             });
 

@@ -57,7 +57,7 @@ const MyOrders = () => {
 
   const getMyOrders = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3100/api/order/tenant`, {
+      const response = await fetch(`https://fitbinary.com/api/order/tenant`, {
         credentials: "include",
       });
       const responseBody = await response.json();

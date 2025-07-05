@@ -33,7 +33,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch("http://88.198.112.156:3100/api/auth/login", {
+      const response = await fetch("https://fitbinary.com/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -60,7 +60,7 @@ const CreateLocker = () => {
     // Get Organization Branches If Applicable
     const getBranches = async () => {
         try {
-            const request = await fetch(`http://88.198.112.156:3100/api/organizationbranch/tenant`);
+            const request = await fetch(`https://fitbinary.com/api/organizationbranch/tenant`);
             const resBody = await request.json();
             return resBody;
         } catch (error) {
@@ -79,7 +79,7 @@ const CreateLocker = () => {
 
     const onSubmitLockers = async (data) => {
         try {
-            const request = await fetch(`http://88.198.112.156:3100/api/lockers`, {
+            const request = await fetch(`https://fitbinary.com/api/lockers`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

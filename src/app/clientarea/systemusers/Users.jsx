@@ -79,7 +79,7 @@ const Users = () => {
   // Get branches only if multi-branch is supported
   const getOrganizationBranch = async () => {
     try {
-      const request = await fetch(`http://88.198.112.156:3100/api/organizationbranch/tenant`);
+      const request = await fetch(`https://fitbinary.com/api/organizationbranch/tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
@@ -121,7 +121,7 @@ const Users = () => {
     const [, page, searchQuery] = queryKey;
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/systemusers?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+        `https://fitbinary.com/api/systemusers?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
       return responseBody || {};
@@ -148,7 +148,7 @@ const Users = () => {
     reset();
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/systemusers/${id}`
+        `https://fitbinary.com/api/systemusers/${id}`
       );
       const responseBody = await response.json();
       setUser(responseBody.user);
@@ -195,7 +195,7 @@ const Users = () => {
         status,
       };
       const response = await fetch(
-        `http://88.198.112.156:3100/api/systemusers/update/${userId}`,
+        `https://fitbinary.com/api/systemusers/update/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -225,7 +225,7 @@ const Users = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/systemusers/remove/${id}`,
+        `https://fitbinary.com/api/systemusers/remove/${id}`,
         {
           method: "DELETE",
           headers: {

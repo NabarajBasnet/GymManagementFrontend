@@ -146,7 +146,7 @@ const CreateUsers = () => {
 
   const getOrganizationDetails = async () => {
     try {
-      const request = await fetch(`http://88.198.112.156:3100/api/organization`);
+      const request = await fetch(`https://fitbinary.com/api/organization`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
@@ -161,7 +161,7 @@ const CreateUsers = () => {
 
   const getOrganizationBranch = async () => {
     try {
-      const request = await fetch(`http://88.198.112.156:3100/api/organizationbranch/tenant`);
+      const request = await fetch(`https://fitbinary.com/api/organizationbranch/tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {

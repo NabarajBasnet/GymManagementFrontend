@@ -27,7 +27,7 @@ const chartConfig = {
 export function BarChartInterActive() {
     const getMemberAttendance = async () => {
         try {
-            const response = await fetch("http://88.198.112.156:3100/api/graphdata/memberattendance")
+            const response = await fetch("https://fitbinary.com/api/graphdata/memberattendance")
             if (!response.ok) throw new Error("Network response was not ok")
             const data = await response.json()
             return data.memberAttendance || []

@@ -99,7 +99,7 @@ const MemberTransfer = () => {
     queryKey: ["members"],
     queryFn: async () => {
       try {
-        const response = await fetch(`http://88.198.112.156:3100/api/org-members/by-branch`);
+        const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
         return await response.json();
       } catch (error) {
         toast.error(error.message);
@@ -127,7 +127,7 @@ const MemberTransfer = () => {
     queryKey: ["branches"],
     queryFn: async () => {
       try {
-        const response = await fetch("http://88.198.112.156:3100/api/organizationbranch/by-system-user");
+        const response = await fetch("https://fitbinary.com/api/organizationbranch/by-system-user");
         return await response.json();
       } catch (error) {
         toast.error(error.message);
@@ -163,7 +163,7 @@ const MemberTransfer = () => {
   const transferMember = async () => {
     try {
       setTransfering(true);
-      const response = await fetch(`http://88.198.112.156:3100/api/organizationbranch/transfer-member?selectedMemberId=${selectedMemberId}&selectedBranchId=${selectedBranchId}`, {
+      const response = await fetch(`https://fitbinary.com/api/organizationbranch/transfer-member?selectedMemberId=${selectedMemberId}&selectedBranchId=${selectedBranchId}`, {
         method: "PATCH"
       });
       const resBody = await response.json();

@@ -104,8 +104,8 @@ const BranchManagement = () => {
     const tenantId = loggedInTenant?._id;
     try {
       const url = isEditing
-        ? `http://88.198.112.156:3100/api/organizationbranch/${editingBranch._id}`
-        : `http://88.198.112.156:3100/api/organizationbranch`;
+        ? `https://fitbinary.com/api/organizationbranch/${editingBranch._id}`
+        : `https://fitbinary.com/api/organizationbranch`;
 
       const method = isEditing ? "PUT" : "POST";
 
@@ -161,7 +161,7 @@ const BranchManagement = () => {
   const handleDeleteBranch = async (branchId) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/organizationbranch/${branchId}`,
+        `https://fitbinary.com/api/organizationbranch/${branchId}`,
         {
           method: "DELETE",
         }
@@ -184,7 +184,7 @@ const BranchManagement = () => {
     const [, page, sortBy, sortOrderDesc, searchQuery] = queryKey;
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/organizationbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
+        `https://fitbinary.com/api/organizationbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
           searchQuery
         )}`
       );

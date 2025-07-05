@@ -40,7 +40,7 @@ const NewMemberRevenue = ({
         queryKey: ['membershipPlans'],
         queryFn: async () => {
             try {
-                const response = await fetch('http://88.198.112.156:3100/api/membershipplans/by-org');
+                const response = await fetch('https://fitbinary.com/api/membershipplans/by-org');
                 if (!response.ok) throw new Error('Failed to fetch plans');
                 const resbody = await response.json();
                 return resbody?.membershipPlans;

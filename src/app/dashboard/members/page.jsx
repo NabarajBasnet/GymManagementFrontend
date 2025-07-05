@@ -101,7 +101,7 @@ const AllMembers = () => {
 
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/org-members/by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+        `https://fitbinary.com/api/org-members/by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
       );
       const resBody = await response.json();
       return resBody;
@@ -132,7 +132,7 @@ const AllMembers = () => {
   const sendQrInEmail = async (id) => {
     setEmailSending(true);
     try {
-      const response = await fetch(`http://88.198.112.156:3100/api/send-qr`, {
+      const response = await fetch(`https://fitbinary.com/api/send-qr`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +161,7 @@ const AllMembers = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/members/deleteMember/${id}`,
+        `https://fitbinary.com/api/members/deleteMember/${id}`,
         {
           method: "DELETE",
           headers: {

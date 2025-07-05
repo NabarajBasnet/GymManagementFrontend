@@ -95,7 +95,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/forget-password-pin?email=${email}`,
+        `https://fitbinary.com/api/tenant/forget-password-pin?email=${email}`,
         {
           method: "PATCH",
         }
@@ -123,7 +123,7 @@ const ForgotPassword = () => {
 
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/forget-password-pin?email=${email}`,
+        `https://fitbinary.com/api/tenant/forget-password-pin?email=${email}`,
         {
           method: "PATCH",
         }
@@ -159,7 +159,7 @@ const ForgotPassword = () => {
     setVerifying(true);
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/verify-forget-password-pin?OTP=${forgetPasswordOTP}`
+        `https://fitbinary.com/api/tenant/verify-forget-password-pin?OTP=${forgetPasswordOTP}`
       );
       const responseBody = await response.json();
 
@@ -198,7 +198,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/reset-password`,
+        `https://fitbinary.com/api/tenant/reset-password`,
         {
           method: "PATCH",
           headers: {

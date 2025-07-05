@@ -79,7 +79,7 @@ const Logs = () => {
   const getLogs = async ({ queryKey }) => {
     const [, currentPage, limit] = queryKey
     try {
-      const response = await fetch(`http://88.198.112.156:3100/api/applogs?page=${currentPage}&limit=${limit}`);
+      const response = await fetch(`https://fitbinary.com/api/applogs?page=${currentPage}&limit=${limit}`);
       const resBody = await response.json();
 
       if (!response.ok) {

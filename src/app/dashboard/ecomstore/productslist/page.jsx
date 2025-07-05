@@ -114,7 +114,7 @@ const ProductsList = () => {
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
+            const response = await fetch(`https://fitbinary.com/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -164,7 +164,7 @@ const ProductsList = () => {
 
     const getSingleServiceOrProduct = async (itemId) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/serviceandproducts/${itemId}`);
+            const response = await fetch(`https://fitbinary.com/api/accounting/serviceandproducts/${itemId}`);
             const responseBody = await response.json();
             const subCategory = responseBody.item.subCategory
             const taxRate = responseBody.item.taxRate
@@ -199,7 +199,7 @@ const ProductsList = () => {
 
     const deleteItems = async (itemId) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/serviceandproducts/${itemId}`, {
+            const response = await fetch(`https://fitbinary.com/api/accounting/serviceandproducts/${itemId}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
@@ -215,7 +215,7 @@ const ProductsList = () => {
 
     const deleteSelectedItems = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/serviceandproducts`, {
+            const response = await fetch(`https://fitbinary.com/api/accounting/serviceandproducts`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"
