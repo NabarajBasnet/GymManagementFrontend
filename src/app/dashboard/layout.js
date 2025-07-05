@@ -1,16 +1,14 @@
 import ClientLayout from "./clientLayout";
 
 export const metadata = {
-    title: "Revive Fitness",
-    description: "Revive Fitness Management System",
+  title: "Fitbinary | Enterprise Gym Management System",
+  description: "Fitbinary Enterprise Gym Management System",
 };
 
 export default function DashboardLayout({ children }) {
-    return (
-        <ClientLayout>
-            <div className='w-full'>
-                {children}
-            </div>
-        </ClientLayout>
-    );
+  return (
+    <ClientLayout>
+      <div className="w-full">{children}</div>
+    </ClientLayout>
+  );
 }
