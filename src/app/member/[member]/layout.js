@@ -70,10 +70,8 @@ const MemberLayout = ({ children }) => {
     <div className="w-full">
       <LoggedInMemberProvider>
         <ReactQueryClientProvider>
-          {/* <MemberClientLayout> */}
           <MemberHeader />
           {children}
-          {/* </MemberClientLayout> */}
         </ReactQueryClientProvider>
       </LoggedInMemberProvider>
     </div>
