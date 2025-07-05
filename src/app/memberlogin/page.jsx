@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form';
 
 const MemberLogin = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const [loginError, setLoginError] = useState('');
     const router = useRouter();
 
@@ -38,7 +39,7 @@ const MemberLogin = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(credentials),
+                body: JSON.stringify({ ...credentials, rememberMe }),
             });
 
             const responseBody = await response.json();
@@ -187,6 +188,8 @@ const MemberLogin = () => {
                                 <input
                                     id="remember-me"
                                     name="remember-me"
+                                    checked={rememberMe}
+                                    onChange={() => setRememberMe(!rememberMe)}
                                     type="checkbox"
                                     className="w-4 h-4 text-indigo-600 bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-600 rounded focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:ring-2 transition-colors duration-200"
                                 />
