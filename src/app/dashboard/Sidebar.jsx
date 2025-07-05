@@ -1,5 +1,6 @@
 "use client";
 
+import { RiUserLocationFill } from "react-icons/ri";
 import { MdAdd } from "react-icons/md";
 import { FaList } from "react-icons/fa";
 import { HiClipboardList } from "react-icons/hi";
@@ -199,6 +200,28 @@ const Sidebar = () => {
               icon: FaClipboardList,
               title: "Attendance History",
               link: "/dashboard/attendance/attendancehistory",
+            },
+          ],
+        },
+        {
+          icon: RiUserLocationFill,
+          title: "Smart Check-In",
+          link: "/dashboard/smartcheckin/membercheckin",
+          subObj: [
+            {
+              icon: FaRegUser,
+              title: "Member Check-In",
+              link: "/dashboard/smartcheckin/membercheckin",
+            },
+            {
+              icon: FaUserCog,
+              title: "Staff Check-In",
+              link: "/dashboard/smartcheckin/staffcheckin",
+            },
+            {
+              icon: FaClipboardList,
+              title: "Live Track",
+              link: "/dashboard/smartcheckin/livetrack",
             },
           ],
         },
