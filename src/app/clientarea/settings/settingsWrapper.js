@@ -49,7 +49,6 @@ import { Input } from "@/components/ui/input";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import OrgDetailsForm from "./OrgDetailsForm";
 import LocationAndLocaleForm from "./LocationAndLocaleForm";
-import TenantDetailsCard from "./DetailsCard";
 import PasswordComponent from "./PasswordComponent";
 import OrganizationNotificationAndAlertSettings from "./OrgNotificationAndAlert";
 
@@ -108,32 +107,6 @@ const TenantSetting = () => {
     });
   }, [loggedInTenant]);
 
-  // Password toggle
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // constants
-  const businessTypes = [
-    "Gym",
-    "CrossFit",
-    "Yoga",
-    "Fitness",
-    "Martial Arts",
-    "Other",
-  ];
-  const countries = [
-    "United States",
-    "Canada",
-    "United Kingdom",
-    "Australia",
-    "Germany",
-    "France",
-  ];
-  const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"];
-  const languages = ["English", "Spanish", "French", "German", "Chinese"];
-  const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"];
-
   // Change basic details
   const changePersonalDetails = async (data) => {
     try {
@@ -150,15 +123,12 @@ const TenantSetting = () => {
       const responseBody = await response.json();
       if (response.ok) {
         sonnerToast.success(responseBody.message);
-        hotToast.success(responseBody.message);
       } else {
         sonnerToast.error(responseBody.message);
-        hotToast.error(responseBody.message);
       }
     } catch (error) {
       console.log("Error: ", error);
       sonnerToast.error(error.message);
-      hotToast.error(error.message);
     }
   };
 
@@ -176,18 +146,14 @@ const TenantSetting = () => {
         }
       );
       const responseBody = await response.json();
-      console.log("Response body: ", responseBody);
       if (response.ok) {
         sonnerToast.success(responseBody.message);
-        hotToast.success(responseBody.message);
       } else {
         sonnerToast.error(responseBody.message);
-        hotToast.error(responseBody.message);
       }
     } catch (error) {
       console.log("Error: ", error);
       sonnerToast.error(error.message);
-      hotToast.error(error.message);
     }
   };
 
@@ -211,15 +177,12 @@ const TenantSetting = () => {
 
       if (response.ok) {
         sonnerToast.success(responseData.message);
-        hotToast.success(responseData.message);
       } else {
         sonnerToast.error(responseData.message);
-        hotToast.error(responseData.message);
       }
     } catch (error) {
       console.error("Error:", error);
       sonnerToast.error("Failed to save notification settings");
-      hotToast.error("Failed to save notification settings");
     }
   };
 
@@ -257,11 +220,15 @@ const TenantSetting = () => {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
       });
-
+      const resBody = await response.json();
       if (response.ok) {
-        sonnerToast.success("Membership cancelled successfully");
+        sonnerToast.success(
+          resBody.message || "Membership cancelled successfully"
+        );
       } else {
-        throw new Error("Failed to cancel membership");
+        sonnerToast.error(
+          resBody.message || "Membership cancelled successfully"
+        );
       }
     } catch (error) {
       sonnerToast.error(error.message);

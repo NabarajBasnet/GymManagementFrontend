@@ -1,6 +1,5 @@
 "use client";
 
-import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import { useForm, Controller } from "react-hook-form";
 import { MapPin, Globe } from "lucide-react";
@@ -85,25 +84,12 @@ const LocationAndLocaleForm = () => {
 
             if (response.ok) {
                 sonnerToast.success(result.message || "Location details saved successfully");
-                hotToast.success(result.message || "Location details saved successfully");
-
-                // Update the tenant context with new organization data
-                // if (result.organization && updateTenant) {
-                //     updateTenant({
-                //         tenant: {
-                //             ...loggedInTenant,
-                //             organization: result.organization
-                //         }
-                //     });
-                // }
             } else {
                 sonnerToast.error(result.message || "Failed to save location details");
-                hotToast.error(result.message || "Failed to save location details");
             }
         } catch (error) {
             console.error("Error:", error);
             sonnerToast.error("An error occurred while saving location details");
-            hotToast.error("An error occurred while saving location details");
         } finally {
             setIsLoading(false);
         }

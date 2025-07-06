@@ -1,6 +1,5 @@
 'use client'
 
-import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -16,18 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState, useEffect } from "react";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
-import {
-    Eye,
-    EyeOff,
-    AlertTriangle,
-    Info,
-    Bell,
-    BellOff,
-    Mail,
-    Phone,
-    Trash2,
-    ChevronRight
-} from "lucide-react";
+import { Mail } from "lucide-react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -47,10 +35,6 @@ const orgDetailsSchema = z.object({
 });
 
 const businessTypes = ["Gym", "CrossFit", "Yoga", "Fitness", "Martial Arts", "Other"]
-const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]
-const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"]
-const languages = ["English", "Spanish", "French", "German", "Chinese"]
-const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"]
 
 const OrgDetailsForm = () => {
     const tenant = useTenant();
@@ -110,18 +94,12 @@ const OrgDetailsForm = () => {
 
             if (response.ok) {
                 sonnerToast.success(result.message || "Organization details saved successfully");
-                hotToast.success(result.message || "Organization details saved successfully");
-
-                // If this is during onboarding, you might want to update the tenant context here
-                // For example: updateTenant({ ...tenant, organization: data });
             } else {
                 sonnerToast.error(result.message || "Failed to save organization details");
-                hotToast.error(result.message || "Failed to save organization details");
             }
         } catch (error) {
             console.error("Error:", error);
             sonnerToast.error("An error occurred while saving organization details");
-            hotToast.error("An error occurred while saving organization details");
         } finally {
             setIsLoading(false);
         }
