@@ -832,7 +832,7 @@ const Header = () => {
             {currentDateTime.date}
           </h1>
         </div>
-        <div className="flex items-center rounded-md px-3 py-2">
+        <div className="flex items-center rounded-md pl-3 py-2">
           <Clock size={16} className="text-blue-600 mr-1" />
           <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
             {currentDateTime.time}
@@ -862,7 +862,7 @@ const Header = () => {
             <button
               className="relative p-2.5 rounded-full text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
             >
-              <Bell className="w-4 h-4" />
+              <Bell className="w-4 h-4 text-sky-600" />
               <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
                 {3}
               </span>
@@ -943,7 +943,7 @@ const Header = () => {
         {/* Theme changer */}
         <button
           onClick={toggleTheme}
-          className="relative p-2 rounded-full bg-transparent dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
+          className="relative p-2 rounded-full bg-transparent dark:bg-transparent hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
           aria-label="Toggle theme"
         >
           <div className="relative w-5 h-5">
@@ -965,9 +965,9 @@ const Header = () => {
         {/* Settings Dialog */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <div className="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border border-gray-200 dark:border-gray-700">
+            <div className="bg-transparent dark:hover:bg-gray-800/80 p-2 md:p-4 rounded-full dark:shadow-none hover:bg-gray-100 transition-all duration-300 cursor-pointer hover:scale-105 border-none">
               <SettingsIcon
-                size={24}
+                size={20}
                 className="text-blue-600 dark:text-blue-400 hover:rotate-90 duration-300 transition-all"
               />
             </div>

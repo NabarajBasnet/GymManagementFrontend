@@ -509,7 +509,7 @@ const NewMemberRegistrationForm = () => {
   }, [admissionPrice, selectedPlanDetails]);
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 pt-10 md:py-8">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-4 md:pt-9">
       <div className="flex items-center gap-2 mb-3">
         <Breadcrumb>
           <BreadcrumbList>
@@ -565,8 +565,8 @@ const NewMemberRegistrationForm = () => {
           </CardHeader>
           <form onSubmit={handleSubmit(onRegisterMember)}>
             <CardContent>
-              <Card className="w-full mb-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-none">
-                <CardContent className="pt-6 pb-4 px-4">
+              <Card className="w-full md:mb-8 mb-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-none">
+                <CardContent className="pt-6 pb-4 px-2 md:px-4">
                   {/* Stepper Steps */}
                   <div className="flex items-center justify-between relative w-full">
                     {[1, 2, 3].map((step) => (
@@ -1396,7 +1396,7 @@ const NewMemberRegistrationForm = () => {
                     type="button"
                     onClick={handleNextStep}
                     disabled={!validateStep(currentStep)}
-                    className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
+                    className="bg-indigo-600 px-6 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
                   >
                     Next
                   </Button>
