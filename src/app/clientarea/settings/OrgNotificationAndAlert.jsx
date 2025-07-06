@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
-import { Separator } from "@/components/ui/separator";
+import { toast } from "sonner";
 
 const OrganizationNotificationAndAlertSettings = () => {
     const tenant = useTenant();
@@ -16,35 +16,38 @@ const OrganizationNotificationAndAlertSettings = () => {
     const { control, handleSubmit, reset } = useForm({
         defaultValues: {
             memberNotifications: {
-                paymentReminders: true,
-                invoiceAttachments: true,
-                membershipRenewal: true,
-                classReminders: true,
-                bookingConfirmation: true,
-            },
-            staffNotifications: {
-                newMemberSignup: true,
-                paymentReceived: true,
-                equipmentMaintenance: true,
-                shiftReminders: true,
-            },
-            alertSettings: {
-                lowAttendanceWarning: true,
-                revenueTargetAlerts: true,
-                inventoryAlerts: true,
-                emergencyAlerts: true,
+                paymentReminders: false,
+                invoiceAttachments: false,
+                membershipRenewal: false,
+                classReminders: false,
             },
             notificationPreferences: {
-                email: true,
+                email: false,
                 sms: false,
-                inApp: true,
+                inApp: false,
             },
         },
     });
 
-    const onSubmit = (data) => {
-        console.log("Notification settings saved:", data);
-        // Your logic here
+    const onSubmit = async (data) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/organization/notification-alert-setting`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ data })
+            });
+            const resBody = await response.json();
+            if (response.ok) {
+                toast.success(resBody.message);
+            } else {
+                toast.error(resBody.message);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+        };
     };
 
     return (
@@ -70,7 +73,7 @@ const OrganizationNotificationAndAlertSettings = () => {
                     <CardHeader>
                         <CardTitle>Member Communications</CardTitle>
                         <CardDescription>
-                            Control what notifications are sent to your gym members
+                            Control what notifications are sent to your organization members
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-6">
@@ -154,205 +157,6 @@ const OrganizationNotificationAndAlertSettings = () => {
                             />
                         </div>
 
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="booking-confirmation">Booking Confirmations</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Send confirmations when members book facilities or classes
-                                </p>
-                            </div>
-                            <Controller
-                                name="memberNotifications.bookingConfirmation"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="booking-confirmation"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Staff Notifications</CardTitle>
-                        <CardDescription>
-                            Configure what alerts your staff receive about gym operations
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-6">
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="new-member-signup">New Member Signups</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Notify staff when new members join the gym
-                                </p>
-                            </div>
-                            <Controller
-                                name="staffNotifications.newMemberSignup"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="new-member-signup"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="payment-received">Payment Received</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Alert staff when payments are successfully processed
-                                </p>
-                            </div>
-                            <Controller
-                                name="staffNotifications.paymentReceived"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="payment-received"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="equipment-maintenance">Equipment Maintenance Alerts</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Notify staff when equipment requires maintenance
-                                </p>
-                            </div>
-                            <Controller
-                                name="staffNotifications.equipmentMaintenance"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="equipment-maintenance"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="shift-reminders">Shift Reminders</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Send reminders to staff about upcoming shifts
-                                </p>
-                            </div>
-                            <Controller
-                                name="staffNotifications.shiftReminders"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="shift-reminders"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Alert Settings</CardTitle>
-                        <CardDescription>
-                            Configure critical alerts for gym management
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid gap-6">
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="low-attendance">Low Attendance Warnings</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Alert when class attendance falls below threshold
-                                </p>
-                            </div>
-                            <Controller
-                                name="alertSettings.lowAttendanceWarning"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="low-attendance"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="revenue-alerts">Revenue Target Alerts</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Notify when revenue is below expected targets
-                                </p>
-                            </div>
-                            <Controller
-                                name="alertSettings.revenueTargetAlerts"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="revenue-alerts"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="inventory-alerts">Inventory Alerts</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Warn when supplement or merchandise stock is low
-                                </p>
-                            </div>
-                            <Controller
-                                name="alertSettings.inventoryAlerts"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="inventory-alerts"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
-
-                        <div className="flex items-center justify-between space-x-4">
-                            <div className="space-y-1">
-                                <Label htmlFor="emergency-alerts">Emergency Alerts</Label>
-                                <p className="text-sm text-muted-foreground">
-                                    Critical alerts for facility emergencies or closures
-                                </p>
-                            </div>
-                            <Controller
-                                name="alertSettings.emergencyAlerts"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="emergency-alerts"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
-                            />
-                        </div>
                     </CardContent>
                 </Card>
 
