@@ -1,42 +1,44 @@
 "use client";
 
-import { MapPin, Globe, Settings2Icon } from "lucide-react";
-import { useForm, Controller } from "react-hook-form";
+import { Settings2Icon } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
 
 const OrganizationNotificationAndAlertSettings = () => {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
 
-    const { control, handleSubmit, reset } = useForm({
-        defaultValues: {
-            memberNotifications: {
-                paymentReminders: false,
-                invoiceAttachments: false,
-                membershipRenewal: false,
-                classReminders: false,
-            },
-            notificationPreferences: {
-                email: false,
-                sms: false,
-                inApp: false,
-            },
-        },
-    });
+    const organization = loggedInTenant?.organization;
 
-    const onSubmit = async (data) => {
+    const { handleSubmit, reset } = useForm();
+
+    const [paymentReminders, setPaymentReminders] = useState(false);
+    const [invoiceAttachments, setInvoiceAttachments] = useState(false);
+    const [membershipRenewal, setMembershipRenewal] = useState(false);
+    const [classReminders, setClassReminders] = useState(false);
+
+    const [email, setEmail] = useState(false);
+    const [sms, setSMS] = useState(false);
+    const [inApp, setInApp] = useState(false);
+
+    const onSubmit = async () => {
+        const finalData = {
+            paymentReminders, invoiceAttachments, membershipRenewal, classReminders,
+            email, sms, inApp
+        };
         try {
             const response = await fetch(`http://localhost:3000/api/organization/notification-alert-setting`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ data })
+                body: JSON.stringify({ finalData })
             });
             const resBody = await response.json();
             if (response.ok) {
@@ -49,6 +51,18 @@ const OrganizationNotificationAndAlertSettings = () => {
             toast.error(error.message);
         };
     };
+
+
+    useEffect(() => {
+        setPaymentReminders(organization?.memberPaymentReminder)
+        setInvoiceAttachments(organization?.sendInvoiceAttachments)
+        setMembershipRenewal(organization?.membershipRenewalNotice)
+        setClassReminders(organization?.classReminder)
+        setEmail(organization?.emailNotification)
+        setSMS(organization?.smsNotification)
+        setInApp(organization?.inAppNotification)
+    }, [organization, loggedInTenant])
+
 
     return (
         <div className="space-y-6">
@@ -84,16 +98,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Send automated reminders for upcoming or overdue payments
                                 </p>
                             </div>
-                            <Controller
-                                name="memberNotifications.paymentReminders"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="payment-reminders"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="payment-reminders"
+                                checked={paymentReminders}
+                                onCheckedChange={() => setPaymentReminders(!paymentReminders)}
                             />
                         </div>
 
@@ -104,16 +112,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Include PDF invoices with payment notifications
                                 </p>
                             </div>
-                            <Controller
-                                name="memberNotifications.invoiceAttachments"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="invoice-attachments"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="invoice-attachments"
+                                checked={invoiceAttachments}
+                                onCheckedChange={() => setInvoiceAttachments(!invoiceAttachments)}
                             />
                         </div>
 
@@ -124,16 +126,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Notify members before their membership expires
                                 </p>
                             </div>
-                            <Controller
-                                name="memberNotifications.membershipRenewal"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="membership-renewal"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="membership-renewal"
+                                checked={membershipRenewal}
+                                onCheckedChange={() => setMembershipRenewal(!membershipRenewal)}
                             />
                         </div>
 
@@ -144,16 +140,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Send reminders for scheduled classes or personal training
                                 </p>
                             </div>
-                            <Controller
-                                name="memberNotifications.classReminders"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="class-reminders"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="class-reminders"
+                                checked={classReminders}
+                                onCheckedChange={() => setClassReminders(!classReminders)}
                             />
                         </div>
 
@@ -175,16 +165,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Send notifications via email
                                 </p>
                             </div>
-                            <Controller
-                                name="notificationPreferences.email"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="email-notifications"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="email-notifications"
+                                checked={email}
+                                onCheckedChange={() => setEmail(!email)}
                             />
                         </div>
 
@@ -195,16 +179,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Send text message notifications (additional charges may apply)
                                 </p>
                             </div>
-                            <Controller
-                                name="notificationPreferences.sms"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="sms-notifications"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="sms-notifications"
+                                checked={sms}
+                                onCheckedChange={() => setSMS(!sms)}
                             />
                         </div>
 
@@ -215,16 +193,10 @@ const OrganizationNotificationAndAlertSettings = () => {
                                     Show notifications within the gym management app
                                 </p>
                             </div>
-                            <Controller
-                                name="notificationPreferences.inApp"
-                                control={control}
-                                render={({ field }) => (
-                                    <Switch
-                                        id="in-app-notifications"
-                                        checked={field.value}
-                                        onCheckedChange={field.onChange}
-                                    />
-                                )}
+                            <Switch
+                                id="in-app-notifications"
+                                checked={inApp}
+                                onCheckedChange={() => setInApp(!inApp)}
                             />
                         </div>
                     </CardContent>
