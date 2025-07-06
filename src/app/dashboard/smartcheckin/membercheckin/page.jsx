@@ -60,15 +60,25 @@ const SmartAttendanceDashboard = () => {
     const multiBranchSupport = features?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
     })
-    const onFreeTrail = user?.tenant?.freeTrailStatus==='Active';
+    const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
 
     const enableMemberCheckInFlag = async () => {
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/enable-member-checkin`, {
-                method: "PUT",
-            });
+            let resBody = null;
 
-            const resBody = await response.json();
+            if (multiBranchSupport || onFreeTrail) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag`, {
+                    method: "PUT",
+                });
+                resBody = await response.json();
+
+            } else {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin`, {
+                    method: "PUT",
+                });
+                resBody = await response.json();
+            }
+
             consol.log(resBody);
         } catch (error) {
             console.log('Error: ', error.message)
