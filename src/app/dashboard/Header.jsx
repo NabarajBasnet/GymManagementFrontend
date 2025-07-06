@@ -228,7 +228,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -392,11 +392,13 @@ const Header = () => {
           title: "Personal Training",
           link: "/dashboard/personaltraining",
           subObj: [
-            {
-              icon: FaDumbbell,
-              title: "Training Packages",
-              link: "/dashboard/personaltraining/trainingpackages",
-            },
+            ...(loggedInUser?.role !== 'Gym Admin' ? [
+              {
+                icon: FaDumbbell,
+                title: "Training Packages",
+                link: "/dashboard/personaltraining/trainingpackages",
+              },
+            ] : []),
             {
               icon: FaDumbbell,
               title: "Book Training",
@@ -568,7 +570,7 @@ const Header = () => {
         <div>
           <Sheet>
             <SheetTrigger asChild>
-              <div className="flex items-center">
+              <div className="w-full flex items-start justify-start">
                 <FiSidebar className="text-xl md:hidden flex cursor-pointer text-blue-600 hover:text-blue-800" />
               </div>
             </SheetTrigger>
@@ -823,15 +825,15 @@ const Header = () => {
       </div>
 
       {/* Date/Time for mobile */}
-      <div className="flex items-center md:hidden space-x-2">
-        <div className="flex items-center rounded-md px-3 py-2">
+      <div className="flex items-center md:hidden space-x-0 md:space-x-2">
+        <div className="flex items-center rounded-md px-0 py-2">
           <Calendar size={16} className="text-blue-600 mr-2" />
           <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
             {currentDateTime.date}
           </h1>
         </div>
         <div className="flex items-center rounded-md px-3 py-2">
-          <Clock size={16} className="text-blue-600 mr-2" />
+          <Clock size={16} className="text-blue-600 mr-1" />
           <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
             {currentDateTime.time}
           </h1>
