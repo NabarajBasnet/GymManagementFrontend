@@ -965,27 +965,27 @@ const Header = () => {
         {/* Settings Dialog */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+            <div className="bg-white dark:bg-gray-800 p-3 md:p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover:scale-105 border border-gray-200 dark:border-gray-700">
               <SettingsIcon
-                size={20}
-                className="text-blue-600 dark:text-blue-400 hover:animate-spin duration-300 transition-all"
+                size={24}
+                className="text-blue-600 dark:text-blue-400 hover:rotate-90 duration-300 transition-all"
               />
             </div>
           </AlertDialogTrigger>
-          <AlertDialogContent className="max-w-4xl dark:bg-gray-800 dark:border-none w-[95vw]">
+          <AlertDialogContent className="max-w-4xl dark:bg-gray-900 dark:border-gray-700 w-[95vw] rounded-xl shadow-2xl">
             <AlertDialogHeader>
-              <div className="w-full flex justify-between items-center">
-                <AlertDialogTitle className="text-xl font-bold text-blue-800 dark:text-white">
+              <div className="w-full flex justify-between items-center p-6 pb-4">
+                <AlertDialogTitle className="text-2xl font-bold text-blue-800 dark:text-white">
                   Settings
                 </AlertDialogTitle>
-                <AlertDialogCancel className="border-none hover:bg-none hover:bg-transparent p-1 dark:bg-transparent">
+                <AlertDialogCancel className="border-none hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-full dark:bg-transparent transition-colors">
                   <IoClose className="text-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" />
                 </AlertDialogCancel>
               </div>
-              <Separator orientation="horizontal" className="my-2 dark:bg-gray-200" />
-              <AlertDialogDescription className="h-[80vh]">
+              <Separator orientation="horizontal" className="mx-6 dark:bg-gray-700" />
+              <AlertDialogDescription className="h-[80vh] max-h-[600px]">
                 <Tabs defaultValue="general" className="h-full flex flex-col">
-                  <TabsList className="w-full justify-start px-2 bg-transparent">
+                  <TabsList className="w-full justify-start px-6 py-4 bg-transparent flex flex-wrap gap-2">
                     <TabsTrigger value="general">General</TabsTrigger>
                     <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     <TabsTrigger value="notifications">
@@ -994,44 +994,47 @@ const Header = () => {
                     <TabsTrigger value="advanced">Advanced</TabsTrigger>
                   </TabsList>
 
-                  <div className="flex-1 overflow-y-auto py-4 px-2">
-                    <TabsContent value="general" className="space-y-6">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  <div className="flex-1 overflow-y-auto py-4 px-6">
+                    <TabsContent value="general" className="space-y-8">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
                           Account
                         </h3>
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="name">Name</Label>
+                        <div className="space-y-6">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <Label htmlFor="name" className="text-base">Name</Label>
                             <Input
                               value={`${loggedInUser?.firstName} ${loggedInUser?.lastName}`}
                               id="name"
                               defaultValue="John Doe"
-                              className="max-w-xs py-6 rounded-sm dark:bg-gray-900 dark:border-none bg-gray-100"
+                              className="w-full sm:max-w-xs py-3 rounded-lg dark:bg-gray-800 dark:border-gray-700 bg-gray-50 border-gray-200"
                             />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="email">Email</Label>
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <Label htmlFor="email" className="text-base">Email</Label>
                             <Input
                               value={loggedInUser?.email}
                               id="email"
                               type="email"
                               defaultValue="john@example.com"
-                              className="max-w-xs py-6 rounded-sm dark:bg-gray-900 dark:border-none bg-gray-100"
+                              className="w-full sm:max-w-xs py-3 rounded-lg dark:bg-gray-800 dark:border-gray-700 bg-gray-50 border-gray-200"
                             />
                           </div>
                         </div>
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="appearance" className="space-y-6">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <TabsContent value="appearance" className="space-y-8">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
                           Theme
                         </h3>
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="dark-mode">Dark Mode</Label>
+                        <div className="space-y-6">
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="dark-mode" className="text-base">Dark Mode</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Toggle between light and dark themes</p>
+                            </div>
                             <Switch id="dark-mode"
                               checked={darkMode}
                               onCheckedChange={toggleTheme}
@@ -1041,80 +1044,104 @@ const Header = () => {
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="notifications" className="space-y-6">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <TabsContent value="notifications" className="space-y-8">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
                           Email Notifications
                         </h3>
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="product-updates">
-                              Product updates
-                            </Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="product-updates" className="text-base">
+                                Product updates
+                              </Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Get notified about new features</p>
+                            </div>
                             <Switch id="product-updates" defaultChecked />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="security-alerts">
-                              Security alerts
-                            </Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="security-alerts" className="text-base">
+                                Security alerts
+                              </Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Important security notifications</p>
+                            </div>
                             <Switch id="security-alerts" defaultChecked />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="newsletter">Newsletter</Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="newsletter" className="text-base">Newsletter</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Weekly product updates</p>
+                            </div>
                             <Switch id="newsletter" />
                           </div>
                         </div>
                       </div>
 
-                      <Separator />
+                      <Separator className="my-6" />
 
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
                           In-app Notifications
                         </h3>
                         <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="mentions">Mentions</Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="mentions" className="text-base">Mentions</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">When someone mentions you</p>
+                            </div>
                             <Switch id="mentions" defaultChecked />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="messages">Direct messages</Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="messages" className="text-base">Direct messages</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Personal messages from others</p>
+                            </div>
                             <Switch id="messages" defaultChecked />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="sounds">Notification sounds</Label>
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="sounds" className="text-base">Notification sounds</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Play sound for notifications</p>
+                            </div>
                             <Switch id="sounds" />
                           </div>
                         </div>
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="advanced" className="space-y-6">
-                      <div className="space-y-2">
-                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    <TabsContent value="advanced" className="space-y-8">
+                      <div className="space-y-4">
+                        <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 border-b border-gray-200 dark:border-gray-700 pb-2">
                           Performance
                         </h3>
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="hardware-accel">
-                              Hardware Acceleration
-                            </Label>
+                        <div className="space-y-6">
+                          <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="hardware-accel" className="text-base">
+                                Hardware Acceleration
+                              </Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Use GPU for better performance</p>
+                            </div>
                             <Switch id="hardware-accel" defaultChecked />
                           </div>
-                          <div className="flex items-center justify-between">
-                            <Label htmlFor="cache-size">Cache Size</Label>
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                            <div>
+                              <Label htmlFor="cache-size" className="text-base">Cache Size</Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Set maximum cache size</p>
+                            </div>
                             <Select defaultValue="medium">
-                              <SelectTrigger className="w-[180px] dark:border-none rounded-sm">
+                              <SelectTrigger className="w-full sm:w-[180px] dark:border-gray-700 rounded-lg">
                                 <SelectValue placeholder="Select cache size" />
                               </SelectTrigger>
-                              <SelectContent className='dark:border-none'>
-                                <SelectItem value="small" className='hover:bg-blue-600/30 cursor-pointer'>
+                              <SelectContent className='dark:border-gray-700'>
+                                <SelectItem value="small" className='hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer'>
                                   Small (100MB)
                                 </SelectItem>
-                                <SelectItem value="medium" className='hover:bg-blue-600/30 cursor-pointer'>
+                                <SelectItem value="medium" className='hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer'>
                                   Medium (500MB)
                                 </SelectItem>
-                                <SelectItem value="large" className='hover:bg-blue-600/30 cursor-pointer'>
+                                <SelectItem value="large" className='hover:bg-blue-50 dark:hover:bg-blue-900/30 cursor-pointer'>
                                   Large (1GB)
                                 </SelectItem>
                               </SelectContent>
