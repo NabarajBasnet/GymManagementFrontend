@@ -29,7 +29,7 @@ const OrganizationNotificationAndAlertSettings = () => {
             sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp
         };
         try {
-            const response = await fetch(`http://localhost:3000/api/organization/notification-alert-setting`, {
+            const response = await fetch(`https://fitbinary.com/api/organization/notification-alert-setting`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'

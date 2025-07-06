@@ -240,7 +240,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     // Add selectedBranch conditionally
 
     try {
-      const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`;
+      const url = `https://fitbinary.com/api/staffsmanagement/changedetails/${staff.staff._id}`;
       const method = "PATCH";
 
       const response = await fetch(url, {

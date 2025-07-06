@@ -143,7 +143,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   const logOutTenant = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/tenant/auth/logout`,
+        `https://fitbinary.com/api/tenant/auth/logout`,
         {
           method: "POST",
           headers: {
@@ -598,20 +598,6 @@ const ClientAreaHeader = ({ activeTab }) => {
                   </DropdownMenuLabel>
 
                   <div className="py-2">
-                    <DropdownMenuItem
-                      className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"
-                      onClick={() => router.push("/clientarea/accountsetting")}
-                    >
-                      <User className="mr-3" size={16} />
-                      <div>
-                        <div className="font-medium text-gray-900 dark:text-gray-100">
-                          Account Details
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          View and manage account details
-                        </div>
-                      </div>
-                    </DropdownMenuItem>
 
                     <DropdownMenuItem
                       className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800"

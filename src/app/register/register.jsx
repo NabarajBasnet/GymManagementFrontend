@@ -186,7 +186,7 @@ export default function TenantSignUpPage() {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/tenant/signup', {
+            const response = await fetch('https://fitbinary.com/api/tenant/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
