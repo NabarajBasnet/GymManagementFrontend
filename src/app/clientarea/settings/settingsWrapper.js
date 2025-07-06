@@ -51,6 +51,7 @@ import OrgDetailsForm from "./OrgDetailsForm";
 import LocationAndLocaleForm from "./LocationAndLocaleForm";
 import TenantDetailsCard from "./DetailsCard";
 import PasswordComponent from "./PasswordComponent";
+import OrganizationNotificationAndAlertSettings from "./OrgNotificationAndAlert";
 
 const TenantSetting = () => {
   const tenant = useTenant();
@@ -315,14 +316,7 @@ const TenantSetting = () => {
               className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
             >
               <FaBuilding className="w-5 h-5 mr-2" />
-              <span>Organization</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="cards"
-              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
-            >
-              <PiCardsThreeFill className="w-5 h-5 mr-2" />
-              <span>Cards</span>
+              <span>Organization Settings</span>
             </TabsTrigger>
           </TabsList>
 
@@ -869,16 +863,16 @@ const TenantSetting = () => {
               className="w-full flex flex-col items-center space-y-6"
             >
               <Card className="w-full md:w-10/12 lg:w-9/12 dark:border-none dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700">
+                <OrganizationNotificationAndAlertSettings />
+              </Card>
+
+              <Card className="w-full md:w-10/12 lg:w-9/12 dark:border-none dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700">
                 <OrgDetailsForm />
               </Card>
 
               <Card className="w-full md:w-10/12 lg:w-9/12 dark:border-none dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700">
                 <LocationAndLocaleForm />
               </Card>
-            </TabsContent>
-
-            <TabsContent value="cards">
-              <TenantDetailsCard tenantData={loggedInTenant} />
             </TabsContent>
           </Card>
         </Tabs>
