@@ -5,27 +5,64 @@ import { useState, useEffect } from "react";
 import { FaClock, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
+import { toast } from "sonner";
 
 const socket = io.connect('http://localhost:5000');
 
 export default function CheckInCard() {
-    const [time, setTime] = useState(new Date());
-    const [isCheckingIn, setIsCheckingIn] = useState(false);
-    const [checkInSuccess, setCheckInSuccess] = useState(false);
     const { member } = useMember();
     const loggedInMember = member?.loggedInMember;
-
     const tenantFeatures = loggedInMember?.tenant?.subscription?.subscriptionFeatures;
     const multiBranchSupport = tenantFeatures?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
     });
     const onFreeTrail = loggedInMember?.tenant?.freeTrailStatus === 'Active';
 
-    useEffect(() => {
-        const timer = setInterval(() => setTime(new Date()), 1000);
-        return () => clearInterval(timer);
-    }, []);
+    const [isCheckingIn, setIsCheckingIn] = useState(false);
+    const [checkInSuccess, setCheckInSuccess] = useState(false);
+    const [memberLat, setMemberLat] = useState(null);
+    const [memberLng, setMemberLng] = useState(null);
+    const [locationError, setLocationError] = useState(null);
 
+    useEffect(() => {
+        window.navigator.permissions.query({ name: 'geolocation' })
+            .then((permissionStatus) => {
+                console.log("Location permision state: ", permissionStatus.state)
+            })
+            .catch((error) => {
+                console.log("Failed to check permissions: ", error)
+            });
+
+        if ('geolocation' in navigator) {
+            const watchId = navigator.geolocation.watchPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setMemberLat(latitude)
+                    setMemberLng(longitude)
+                    setLocationError(null);
+                    console.log('Latitude: ', latitude);
+                    console.log('Longitude: ', longitude);
+                },
+                (error) => {
+                    console.log('Geolocation error: ', error.message);
+                    setLocationError(error.message)
+                    toast.error(error.message);
+                }, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 1000
+            }
+            )
+
+            // Cleanup watcher on unmount
+            return () => {
+                navigator.geolocation.clearWatch(watchId);
+            };
+        } else {
+            setLocationError('Geolocation not supported');
+            toast.error('Geolocation not supported');
+        }
+    }, []);
 
     const requestForCheckin = async () => {
         try {
@@ -43,35 +80,9 @@ export default function CheckInCard() {
         }
     };
 
-    const formatTime = (date) => {
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    };
-
-    const formatDate = (date) => {
-        return date.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
-    };
-
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
             <div className="w-full max-w-md">
-                {/* Time and Date Card */}
-                <div className="bg-white rounded-xl shadow-sm p-6 mb-6 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                        <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
-                            <FaClock className="text-xl" />
-                        </div>
-                        <div>
-                            <p className="text-sm text-gray-500">Current Time</p>
-                            <p className="text-2xl font-semibold text-gray-800">{formatTime(time)}</p>
-                        </div>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-sm text-gray-500">{formatDate(time)}</p>
-                        <p className="text-sm font-medium text-gray-600">
-                            {loggedInMember?.organization?.name || 'Organization'}
-                        </p>
-                    </div>
-                </div>
 
                 {/* Main Check-In Card */}
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -144,6 +155,18 @@ export default function CheckInCard() {
                                 <p className="text-xs text-gray-400 text-center mt-1">
                                     {loggedInMember.organizationBranch.name}
                                 </p>
+                            )}
+                        </div>
+
+                        <div>
+                            <h2>Live Member Location</h2>
+                            {locationError ? (
+                                <p style={{ color: "red" }}>{locationError}</p>
+                            ) : (
+                                <>
+                                    <p>Latitude: {memberLat}</p>
+                                    <p>Longitude: {memberLng}</p>
+                                </>
                             )}
                         </div>
                     </div>
