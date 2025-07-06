@@ -204,28 +204,28 @@ const Sidebar = () => {
             },
           ],
         },
-        // {
-        //   icon: RiUserLocationFill,
-        //   title: "Smart Check-In",
-        //   link: "/dashboard/smartcheckin/membercheckin",
-        //   subObj: [
-        //     {
-        //       icon: FaRegUser,
-        //       title: "Member Check-In",
-        //       link: "/dashboard/smartcheckin/membercheckin",
-        //     },
-        //     {
-        //       icon: FaUserCog,
-        //       title: "Staff Check-In",
-        //       link: "/dashboard/smartcheckin/staffcheckin",
-        //     },
-        //     {
-        //       icon: TbLiveViewFilled,
-        //       title: "Live Track",
-        //       link: "/dashboard/smartcheckin/livetrack",
-        //     },
-        //   ],
-        // },
+        {
+          icon: RiUserLocationFill,
+          title: "Smart Check-In",
+          link: "/dashboard/smartcheckin/membercheckin",
+          subObj: [
+            {
+              icon: FaRegUser,
+              title: "Member Check-In",
+              link: "/dashboard/smartcheckin/membercheckin",
+            },
+            {
+              icon: FaUserCog,
+              title: "Staff Check-In",
+              link: "/dashboard/smartcheckin/staffcheckin",
+            },
+            {
+              icon: TbLiveViewFilled,
+              title: "Live Track",
+              link: "/dashboard/smartcheckin/livetrack",
+            },
+          ],
+        },
       ],
     },
     // Member Management

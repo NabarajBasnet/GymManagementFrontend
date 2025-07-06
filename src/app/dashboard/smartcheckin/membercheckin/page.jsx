@@ -31,6 +31,8 @@ import {
     Eye,
     EyeOff
 } from "lucide-react"
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { toast } from "sonner";
 
 const gymLocation = {
     lat: 27.7121,
@@ -52,6 +54,28 @@ function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
 }
 
 const SmartAttendanceDashboard = () => {
+    const { user: loggedInUser } = useUser();
+    const user = loggedInUser?.user;
+    const features = user?.tenant?.subscription?.subscriptionFeatures
+    const multiBranchSupport = features?.find((feature) => {
+        return feature.toString() === 'Multi Branch Support'
+    })
+    const onFreeTrail = user?.tenant?.freeTrailStatus==='Active';
+
+    const enableMemberCheckInFlag = async () => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/enable-member-checkin`, {
+                method: "PUT",
+            });
+
+            const resBody = await response.json();
+            consol.log(resBody);
+        } catch (error) {
+            console.log('Error: ', error.message)
+            toast.error(error.message);
+        };
+    };
+
     const [location, setLocation] = useState(null)
     const [sessionActive, setSessionActive] = useState(false)
     const [withinRange, setWithinRange] = useState(false)
@@ -158,11 +182,11 @@ const SmartAttendanceDashboard = () => {
                             <Activity className="h-6 w-6 text-white" />
                         </div>
                         <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                            Geo-Location Attendance System
+                            Socket Check In System
                         </h1>
                     </div>
                     <p className="text-slate-600 dark:text-slate-300 font-medium">
-                        Track member check-ins using location-based verification
+                        Track member check-ins using socket and geo based availability
                     </p>
                 </div>
 

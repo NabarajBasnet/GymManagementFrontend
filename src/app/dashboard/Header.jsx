@@ -292,28 +292,28 @@ const Header = () => {
             },
           ],
         },
-        // {
-        //   icon: RiUserLocationFill,
-        //   title: "Smart Check-In",
-        //   link: "/dashboard/attendance/memberattendance",
-        //   subObj: [
-        //     {
-        //       icon: FaRegUser,
-        //       title: "Member Check-In",
-        //       link: "/dashboard/smartcheckin/membercheckin",
-        //     },
-        //     {
-        //       icon: FaUserCog,
-        //       title: "Staff Check-In",
-        //       link: "/dashboard/smartcheckin/staffcheckin",
-        //     },
-        //     {
-        //       icon: TbLiveViewFilled,
-        //       title: "Live Track",
-        //       link: "/dashboard/smartcheckin/livetrack",
-        //     },
-        //   ],
-        // },
+        {
+          icon: RiUserLocationFill,
+          title: "Smart Check-In",
+          link: "/dashboard/attendance/memberattendance",
+          subObj: [
+            {
+              icon: FaRegUser,
+              title: "Member Check-In",
+              link: "/dashboard/smartcheckin/membercheckin",
+            },
+            {
+              icon: FaUserCog,
+              title: "Staff Check-In",
+              link: "/dashboard/smartcheckin/staffcheckin",
+            },
+            {
+              icon: TbLiveViewFilled,
+              title: "Live Track",
+              link: "/dashboard/smartcheckin/livetrack",
+            },
+          ],
+        },
       ],
     },
     // Member Management
@@ -965,7 +965,7 @@ const Header = () => {
         {/* Settings Dialog */}
         <AlertDialog>
           <AlertDialogTrigger asChild>
-            <div className="bg-transparent dark:hover:bg-gray-800/80 p-2 md:p-4 rounded-full dark:shadow-none hover:bg-gray-100 transition-all duration-300 cursor-pointer hover:scale-105 border-none">
+            <div className="bg-transparent dark:hover:bg-gray-800/80 p-2 rounded-full dark:shadow-none hover:bg-gray-100 transition-all duration-300 cursor-pointer hover:scale-105 border-none">
               <SettingsIcon
                 size={20}
                 className="text-blue-600 dark:text-blue-400 hover:rotate-90 duration-300 transition-all"
