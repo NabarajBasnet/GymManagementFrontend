@@ -25,6 +25,8 @@ export default function CheckInCard() {
     const [locationError, setLocationError] = useState(null);
 
     useEffect(() => {
+        new Notification("You checked in!", { body: "Welcome to the gym 💪" });
+
         window.navigator.permissions.query({ name: 'geolocation' })
             .then((permissionStatus) => {
                 console.log("Location permision state: ", permissionStatus.state)
@@ -34,6 +36,7 @@ export default function CheckInCard() {
             });
 
         if ('geolocation' in navigator) {
+
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;

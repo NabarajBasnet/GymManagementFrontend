@@ -80,6 +80,21 @@ const SmartAttendanceDashboard = () => {
             const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
             socket.emit('start-member-checkin-session', { orgOrBranchId })
             toast.success('Member Check In Session Started');
+
+            if (multiBranchSupport || onFreeTrail) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag?status=${true}`, {
+                    method: "PUT",
+                });
+            } else {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin?status=${true}`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify('true')
+                });
+            };
+
         } catch (error) {
             console.log('Error: ', error.message)
             toast.error(error.message);
@@ -91,6 +106,19 @@ const SmartAttendanceDashboard = () => {
         setSessionActive(false);
         const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
         socket.emit('close-member-checkin-session', { orgOrBranchId })
+        try {
+            if (multiBranchSupport || onFreeTrail) {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag?status=${false}`, {
+                    method: "PUT",
+                });
+            } else {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin?status=${false}`, {
+                    method: "PUT",
+                });
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+        }
     }
 
     return (
