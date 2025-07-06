@@ -26,12 +26,19 @@ export default function CheckInCard() {
         return () => clearInterval(timer);
     }, []);
 
-    const checkInReqMessage = `${loggedInMember?._id}-${(multiBranchSupport || onFreeTrail) ? loggedInMember?.organizationBranch?._id : loggedInMember?.organization?._id}`;
 
     const requestForCheckin = async () => {
         try {
-            socket.emit('request-checkin', checkInReqMessage);
+            const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? loggedInMember?.organizationBranch?._id : loggedInMember?.organization?._id;
+            const roomId = `gym-room-${orgOrBranchId}`;
+            const checkInReqMessage = `checkin_req-${loggedInMember?._id}-${orgOrBranchId}-${loggedInMember?.fullName}`;
+
+            socket.emit('request-checkin', {
+                roomId,
+                message: checkInReqMessage
+            });
         } catch (error) {
+
             setIsCheckingIn(false);
         }
     };
@@ -85,9 +92,9 @@ export default function CheckInCard() {
                             onClick={requestForCheckin}
                             disabled={isCheckingIn || checkInSuccess}
                             className={`w-full py-4 rounded-xl shadow-sm flex items-center justify-center space-x-2 transition-all
-                                ${checkInSuccess ? 'bg-emerald-100 text-emerald-700' : 
-                                  isCheckingIn ? 'bg-gray-200 text-gray-600' : 
-                                  'bg-emerald-500 hover:bg-emerald-600 text-white'}`}
+                                ${checkInSuccess ? 'bg-emerald-100 text-emerald-700' :
+                                    isCheckingIn ? 'bg-gray-200 text-gray-600' :
+                                        'bg-emerald-500 hover:bg-emerald-600 text-white'}`}
                         >
                             {checkInSuccess ? (
                                 <>
