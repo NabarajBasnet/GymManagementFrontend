@@ -45,34 +45,34 @@ const AllMembersAreaChart = () => {
 
   const getNewMembers = async () => {
     try {
-        const response = await fetch(`https://fitbinary.com/api/graphdata/newmembers`);
-        const data = await response.json();
-        return Array.isArray(data) ? data : (data?.newMembers || []);
+      const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
+      const data = await response.json();
+      return Array.isArray(data) ? data : (data?.newMembers || []);
     } catch (error) {
-        console.log("Error: ", error);
-        return [];
+      console.log("Error: ", error);
+      return [];
     }
   };
 
   const { data: newMembers = [] } = useQuery({
-      queryKey: ['newMembers'],
-      queryFn: getNewMembers
+    queryKey: ['newMembers'],
+    queryFn: getNewMembers
   });
 
   const getRenewedMembers = async () => {
-      try {
-          const response = await fetch(`https://fitbinary.com/api/graphdata/renewedmembers`);
-          const data = await response.json();
-          return Array.isArray(data) ? data : (data?.renewedMembers || []);
-      } catch (error) {
-          console.log("Error: ", error);
-          return [];
-      }
+    try {
+      const response = await fetch(`http://localhost:3000/api/graphdata/renewedmembers`);
+      const data = await response.json();
+      return Array.isArray(data) ? data : (data?.renewedMembers || []);
+    } catch (error) {
+      console.log("Error: ", error);
+      return [];
+    }
   };
 
   const { data: renewedMembers = [] } = useQuery({
-      queryKey: ['renewedMembers'],
-      queryFn: getRenewedMembers
+    queryKey: ['renewedMembers'],
+    queryFn: getRenewedMembers
   });
 
   const [timeRange, setTimeRange] = React.useState("12m");
@@ -80,10 +80,10 @@ const AllMembersAreaChart = () => {
   // Combine the data from both APIs
   const chartData = React.useMemo(() => {
     if (!newMembers.length && !renewedMembers.length) return [];
-    
+
     // Create a map to combine data by month
     const dataMap = new Map();
-    
+
     // Add new members data
     newMembers.forEach(item => {
       if (item.month && typeof item.value === 'number') {
@@ -94,26 +94,26 @@ const AllMembersAreaChart = () => {
         });
       }
     });
-    
+
     // Add renewed members data
     renewedMembers.forEach(item => {
       if (item.month && typeof item.value === 'number') {
-        const existing = dataMap.get(item.month) || { 
-          month: item.month, 
-          new_admission: 0, 
-          renewal: 0 
+        const existing = dataMap.get(item.month) || {
+          month: item.month,
+          new_admission: 0,
+          renewal: 0
         };
         existing.renewal = item.value;
         dataMap.set(item.month, existing);
       }
     });
-    
+
     // Convert to array and sort by month order
     const monthOrder = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
+
     return Array.from(dataMap.values()).sort((a, b) => {
       return monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month);
     });
@@ -121,28 +121,28 @@ const AllMembersAreaChart = () => {
 
   const filteredData = React.useMemo(() => {
     if (!chartData.length) return [];
-    
+
     const monthOrder = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
     ];
-    
+
     const currentMonth = new Date().getMonth(); // 0-based index
     let monthsToShow = 12;
-    
+
     if (timeRange === "6m") {
       monthsToShow = 6;
     } else if (timeRange === "3m") {
       monthsToShow = 3;
     }
-    
+
     // Get the months to show based on selection
     const relevantMonths = [];
     for (let i = monthsToShow - 1; i >= 0; i--) {
       const monthIndex = (currentMonth - i + 12) % 12;
       relevantMonths.push(monthOrder[monthIndex]);
     }
-    
+
     return chartData.filter(item => relevantMonths.includes(item.month));
   }, [chartData, timeRange]);
 
@@ -157,19 +157,19 @@ const AllMembersAreaChart = () => {
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[160px] rounded-lg sm:ml-auto"
+            className="w-[160px] dark:border-none dark:bg-gray-900 dark:hover:bg-gray-950 transition-color duration-300 rounded-lg sm:ml-auto"
             aria-label="Select a value"
           >
             <SelectValue placeholder="Last 12 months" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="12m" className="rounded-lg">
+          <SelectContent className="rounded-xl dark:bg-gray-900 dark:border-none">
+            <SelectItem value="12m" className="rounded-lg hover:bg-blue-600/30 cursor-pointer">
               Last 12 months
             </SelectItem>
-            <SelectItem value="6m" className="rounded-lg">
+            <SelectItem value="6m" className="rounded-lg hover:bg-blue-600/30 cursor-pointer">
               Last 6 months
             </SelectItem>
-            <SelectItem value="3m" className="rounded-lg">
+            <SelectItem value="3m" className="rounded-lg hover:bg-blue-600/30 cursor-pointer">
               Last 3 months
             </SelectItem>
           </SelectContent>

@@ -228,7 +228,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -825,7 +825,7 @@ const Header = () => {
       </div>
 
       {/* Date/Time for mobile */}
-      <div className="flex items-center md:hidden space-x-0 md:space-x-2">
+      <div className="flex items-center hidden space-x-0 md:space-x-2">
         <div className="flex items-center rounded-md px-0 py-2">
           <Calendar size={16} className="text-blue-600 mr-2" />
           <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">

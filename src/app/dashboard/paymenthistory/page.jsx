@@ -106,7 +106,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
+            const response = await fetch(`http://localhost:3000/api/org-members/by-branch`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -135,7 +135,7 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`https://fitbinary.com/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`http://localhost:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 toast.error("Failed to fetch payment history");
@@ -372,7 +372,7 @@ const PaymentHistory = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full px-4 py-4 md:py-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 shadow-sm sticky top-0 z-10">
+            <div className="w-full px-4 py-2 md:py-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>

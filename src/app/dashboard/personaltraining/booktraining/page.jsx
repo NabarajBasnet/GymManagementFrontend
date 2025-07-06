@@ -136,7 +136,7 @@ const PersonalTrainingBooking = () => {
   // Update the getTrainingDetails function
   const getTrainingDetails = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/${id}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
       const { personalTraining } = await response.json();
 
       if (response.ok && personalTraining) {
@@ -180,7 +180,7 @@ const PersonalTrainingBooking = () => {
 
   const getCurrentBranch = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/organizationbranch/by-system-user`);
+      const response = await fetch(`http://localhost:3000/api/organizationbranch/by-system-user`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -229,8 +229,8 @@ const PersonalTrainingBooking = () => {
 
     try {
       const url = isEditMode
-        ? `https://fitbinary.com/api/personaltraining/${editId}`
-        : 'https://fitbinary.com/api/personaltraining';
+        ? `http://localhost:3000/api/personaltraining/${editId}`
+        : 'http://localhost:3000/api/personaltraining';
 
       const method = isEditMode ? 'PATCH' : 'POST';
 
@@ -378,7 +378,7 @@ const PersonalTrainingBooking = () => {
   // Get all staffs
   const getAllTrainers = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
+      const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -397,7 +397,7 @@ const PersonalTrainingBooking = () => {
   // Get all members
   const getAllMembers = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/members`);
+      const response = await fetch(`http://localhost:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -416,7 +416,7 @@ const PersonalTrainingBooking = () => {
   // Get all packages
   const getAllPackages = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/packages`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -452,7 +452,7 @@ const PersonalTrainingBooking = () => {
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
     const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -471,7 +471,7 @@ const PersonalTrainingBooking = () => {
   // Delete personal training booking
   const deletePersonalTrainingBooking = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
         method: 'DELETE'
       });
       const responseBody = await response.json();
@@ -532,7 +532,7 @@ const PersonalTrainingBooking = () => {
   };
 
   return (
-    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 md:py-6 py-4'>
+    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 md:py-6 py-2'>
       {/* Breadcrumb with arrows */}
       <div className='w-full mb-4'>
         <Breadcrumb className="mb-4">
@@ -562,7 +562,7 @@ const PersonalTrainingBooking = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-4 py-6 border border-gray-200 dark:border-none shadow-sm rounded-md md:items-center gap-4">
+        <div className="w-full flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-4 py-6 border border-gray-200 dark:border-none shadow-sm rounded-md md:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold dark:text-gray-100">Personal Training Bookings</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -570,7 +570,7 @@ const PersonalTrainingBooking = () => {
             </p>
           </div>
           <Button
-            className="rounded-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+            className="w-full md:w-[200px] rounded-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
             onClick={() => setTabValue('Register Training')}
           >
             <FiPlus className="h-4 w-4 mr-2" />
@@ -965,10 +965,10 @@ const PersonalTrainingBooking = () => {
 
             <Card className="rounded-xl w-full lg:my-2 lg:w-9/12 dark:bg-gray-800 dark:border-none">
               <CardContent className="space-y-2">
-                <form onSubmit={handleSubmit(onSubmit)} className="px-2 space-y-4 py-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="px-0 space-y-4 py-6">
 
                   {/* First Row */}
-                  <div className='grid grid-cols-2 gap-4'>
+                  <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                     <div>
                       <div className='space-y-1.5'>
                         <Label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-200">Select Trainer</Label>

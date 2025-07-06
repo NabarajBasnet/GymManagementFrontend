@@ -106,7 +106,7 @@ const CreatePersonalTrainingPackages = () => {
         const { packagename, sessions, duration, price, description } = data;
         const packageData = { packagename, sessions, duration, price, description, packageStatus };
         try {
-            const baseURL = 'https://fitbinary.com/api/personaltraining/packages';
+            const baseURL = 'http://localhost:3000/api/personaltraining/packages';
             const response = await fetch(isEditing ? `${baseURL}/${packageId}` : baseURL, {
                 method: isEditing ? "PATCH" : "POST",
                 headers: {
@@ -132,7 +132,7 @@ const CreatePersonalTrainingPackages = () => {
     const getPackages = async ({ queryKey }) => {
         const [, currentPage] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -168,7 +168,7 @@ const CreatePersonalTrainingPackages = () => {
 
     const deletePackage = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/personaltraining/packages/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -190,7 +190,7 @@ const CreatePersonalTrainingPackages = () => {
 
     const toggleStatus = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/personaltraining/packages/toggle/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/toggle/${id}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -212,7 +212,7 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     return (
-        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-4 md:py-6'>
+        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-2 md:py-6'>
             {/* Breadcrumb with arrows */}
             <div className='w-full mb-4'>
                 <Breadcrumb className="mb-4">
@@ -251,7 +251,7 @@ const CreatePersonalTrainingPackages = () => {
                     </div>
                     <Button
                         onClick={() => setShowForm(true)}
-                        className="rounded-sm py-6"
+                        className="rounded-sm w-full md:w-[200px] py-6"
                     >
                         <FiPlus className="h-4 w-4 mr-2" />
                         Create Package
@@ -308,7 +308,7 @@ const CreatePersonalTrainingPackages = () => {
 
             {/* Package Form Modal */}
             {showForm && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-16 lg:px-32 z-50">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-4 lg:px-32 z-50">
                     <Card className="w-full dark:bg-gray-800 dark:border-none">
                         <CardHeader>
                             <CardTitle className="flex justify-between items-center dark:text-gray-100">

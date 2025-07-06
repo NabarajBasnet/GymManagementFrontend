@@ -65,7 +65,7 @@ const PaymentReceipts = () => {
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/receipt/v2/?page=${page}&limit=${limit}&receiptSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&receiptSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -88,7 +88,7 @@ const PaymentReceipts = () => {
 
     const deleteReceipt = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/receipt/V2/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/receipt/V2/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
@@ -139,7 +139,7 @@ const PaymentReceipts = () => {
     return (
         <div className="w-full px-4 py-4 md:py-6 bg-gray-100 dark:bg-gray-900 min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="rounded-sm dark:bg-gray-800 bg-white shadow-md">
+            <div className="rounded-sm dark:bg-gray-800 bg-white shadow-md px-4 py-2">
                 {/* Enhanced Breadcrumb with Icons */}
                 <div className="mb-4">
                     <Breadcrumb>
@@ -213,7 +213,7 @@ const PaymentReceipts = () => {
 
                     <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3 items-end">
                         {/* Enhanced Search with Floating Label */}
-                        <div className="relative flex-1 min-w-[280px]">
+                        <div className="relative flex-1 w-full md:min-w-[280px]">
                             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <Search className="h-4 w-4 text-gray-400" />
                             </div>
@@ -228,7 +228,7 @@ const PaymentReceipts = () => {
                         {/* Premium Button with Transition */}
                         <Button
                             disabled
-                            className="py-6 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-sm shadow-sm shadow-blue-500/25 hover:shadow-sm hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 whitespace-nowrap"
+                            className="w-full py-6 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-sm shadow-sm shadow-blue-500/25 hover:shadow-sm hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-100 whitespace-nowrap"
                         >
                             <Plus className="h-5 w-5 mr-2" />
                             New Receipt
