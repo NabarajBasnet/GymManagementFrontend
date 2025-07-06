@@ -9,7 +9,6 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -26,17 +25,17 @@ const socket = io.connect('http://localhost:5000');
 const SmartAttendanceDashboard = () => {
     const { user: loggedInUser } = useUser();
     const user = loggedInUser?.user;
-
-    // States
-    const [openMemberCheckInAlert, setMemberCheckInAlert] = useState(false);
-    const [memberName, setMemberName] = useState('')
-    const [memberId, setMemberId] = useState('')
-
     const features = user?.tenant?.subscription?.subscriptionFeatures
     const multiBranchSupport = features?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
     })
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
+
+    // States
+    const [sessionActive, setSessionActive] = useState(false)
+    const [openMemberCheckInAlert, setMemberCheckInAlert] = useState(false);
+    const [memberName, setMemberName] = useState('')
+    const [memberId, setMemberId] = useState('')
 
     useEffect(() => {
         const handleChatMessage = (data) => {
@@ -64,17 +63,35 @@ const SmartAttendanceDashboard = () => {
 
     const enableMemberCheckInFlag = async () => {
         try {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    console.log("Gym location lat:", lat);
+                    console.log("Gym location lng:", lng);
+                },
+                (error) => {
+                    console.error("Failed to get location:", error.message);
+                },
+                { enableHighAccuracy: true }
+            );
+
+            setSessionActive(true);
             const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
             socket.emit('start-member-checkin-session', { orgOrBranchId })
-            toast.success('Member checkin session started at room id: ', orgOrBranchId);
-
+            toast.success('Member Check In Session Started');
         } catch (error) {
             console.log('Error: ', error.message)
             toast.error(error.message);
         };
     };
 
-    const [sessionActive, setSessionActive] = useState(false)
+    const disableCheckInSession = async () => {
+        toast.success('Member Check In Session Closed');
+        setSessionActive(false);
+        const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
+        socket.emit('close-member-checkin-session', { orgOrBranchId })
+    }
 
     return (
         <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-6">
@@ -97,15 +114,15 @@ const SmartAttendanceDashboard = () => {
                 <div className="flex gap-3">
                     <Button
                         onClick={enableMemberCheckInFlag}
-                        disabled={user?.organizationBranch?.memberAttendanceAvailable}
+                        disabled={sessionActive}
                         className="flex-1 py-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                     >
                         <Play className="h-4 w-4 mr-2" />
                         {sessionActive ? "Session Running" : "Start Session"}
                     </Button>
                     <Button
-                        onClick={enableMemberCheckInFlag}
-                        disabled={!user?.organizationBranch?.memberAttendanceAvailable}
+                        onClick={disableCheckInSession}
+                        disabled={!sessionActive}
                         className="flex-1 py-6 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                     >
                         <Square className="h-4 w-4 mr-2" />
