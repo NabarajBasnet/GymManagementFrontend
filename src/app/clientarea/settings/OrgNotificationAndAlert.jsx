@@ -3,7 +3,6 @@
 import { Settings2Icon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { toast } from "sonner";
@@ -29,7 +28,7 @@ const OrganizationNotificationAndAlertSettings = () => {
             sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp
         };
         try {
-            const response = await fetch(`https://fitbinary.com/api/organization/notification-alert-setting`, {
+            const response = await fetch(`http://localhost:3000/api/organization/notification-alert-setting`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -80,8 +79,8 @@ const OrganizationNotificationAndAlertSettings = () => {
                 </div>
             </div>
 
-            <form className="space-y-8 px-2 md:px-4">
-                <Card>
+            <form className="space-y-8 px-2 md:px-4 pb-4">
+                <Card className='dark:bg-gray-900 dark:border-none rounded-xl'>
                     <CardHeader>
                         <CardTitle>Member Communications</CardTitle>
                         <CardDescription>
@@ -162,7 +161,7 @@ const OrganizationNotificationAndAlertSettings = () => {
                     </CardContent>
                 </Card>
 
-                <Card>
+                <Card className='dark:bg-gray-900 dark:border-none rounded-xl'>
                     <CardHeader>
                         <CardTitle>Notification Preferences</CardTitle>
                         <CardDescription>
