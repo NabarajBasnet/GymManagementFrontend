@@ -33,7 +33,7 @@ const FirstStep = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/organization/first-step`, {
+            const response = await fetch(`https://fitbinary.com/api/organization/first-step`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -57,7 +57,7 @@ const FirstStep = () => {
         setIsConnectingGmail(true);
 
         const CLIENT_ID = "751184591988-gbg1v35tlgk485e6145n9ir1jnrhsagr.apps.googleusercontent.com";
-        const REDIRECT_URI = 'http://localhost:3000:5000/oauth/callback';
+        const REDIRECT_URI = 'https://fitbinary.com:5000/oauth/callback';
 
         const scope = encodeURIComponent("https://www.googleapis.com/auth/gmail.send");
         const url = `https://accounts.google.com/o/oauth2/v2/auth?` +

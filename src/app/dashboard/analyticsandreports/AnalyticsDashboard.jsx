@@ -36,7 +36,7 @@ const AnalyticsDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/org-members/by-branch`);
+      const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -60,7 +60,7 @@ const AnalyticsDashboard = () => {
 
   const getNewMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+      const response = await fetch(`https://fitbinary.com/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -75,7 +75,7 @@ const AnalyticsDashboard = () => {
 
   const getNewMembersGrowthPercentage = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
+      const response = await fetch(`https://fitbinary.com/api/graphdata/newmembers`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -95,7 +95,7 @@ const AnalyticsDashboard = () => {
 
   const getMemberAttendance = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/graphdata/memberattendance")
+      const response = await fetch("https://fitbinary.com/api/graphdata/memberattendance")
       if (!response.ok) throw new Error("Network response was not ok")
       const data = await response.json()
       return data;
@@ -114,7 +114,7 @@ const AnalyticsDashboard = () => {
 
   const getActiveInactiveMembers = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/graphdata/activeinactivemembers")
+      const response = await fetch("https://fitbinary.com/api/graphdata/activeinactivemembers")
       if (!response.ok) throw new Error("Network response was not ok")
       const data = await response.json()
       return data;
