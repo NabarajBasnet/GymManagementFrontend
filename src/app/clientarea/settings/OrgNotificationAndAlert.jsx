@@ -213,10 +213,6 @@ const OrganizationNotificationAndAlertSettings = () => {
                         </div>
                     </CardContent>
                 </Card>
-
-                <div className="flex justify-end gap-4 pb-4">
-                    <Button type="submit">Save Settings</Button>
-                </div>
             </form>
         </div>
     );

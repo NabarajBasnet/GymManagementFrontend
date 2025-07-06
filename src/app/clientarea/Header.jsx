@@ -191,7 +191,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   };
 
   return (
-    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
+    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 px-2 md:px-0 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
       {loading ? (
         <Loader />
       ) : (
