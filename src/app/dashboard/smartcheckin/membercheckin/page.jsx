@@ -113,45 +113,86 @@ const SmartAttendanceDashboard = () => {
                     </Button>
                 </div>
 
-                <AlertDialog open={openMemberCheckInAlert}>
-                    <AlertDialogContent className="max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-xl">
-                        <AlertDialogHeader className="flex flex-col items-center text-center">
-                            <div className="mb-4 rounded-full bg-blue-50 p-3">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className="h-6 w-6 text-blue-600"
+                <AlertDialog open={openMemberCheckInAlert} className="rounded-2xl">
+                    <AlertDialogContent className="rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-0 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] backdrop-blur-sm overflow-hidden">
+                        <div className="relative">
+                            <AlertDialogHeader className="px-8 pt-6 pb-4">
+                                <div className="mb-4 flex justify-center">
+                                    <div className="relative">
+                                        <div className="absolute -inset-3 rounded-full bg-blue-100/50 dark:bg-blue-900/30 blur-sm" />
+                                        <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                width="24"
+                                                height="24"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                strokeWidth="2"
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                className="h-6 w-6 text-white"
+                                            >
+                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                                <circle cx="12" cy="7" r="4" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <AlertDialogTitle className="text-center text-2xl font-semibold text-gray-900 dark:text-white">
+                                    Check-In Authorization
+                                </AlertDialogTitle>
+                                <AlertDialogDescription className="mt-2 text-center text-gray-600 dark:text-gray-300">
+                                    <span className="font-medium text-indigo-600 dark:text-indigo-400">
+                                        {memberName || "A member"} is requesting to check in. Would you like to approve this request?
+                                    </span>
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                        </div>
+
+                        <AlertDialogFooter className="px-8 pb-6 pt-4">
+                            <div className="flex w-full gap-3">
+                                <AlertDialogCancel
+                                    onClick={() => setMemberCheckInAlert(false)}
+                                    className="flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                                 >
-                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                    <circle cx="9" cy="7" r="4" />
-                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                </svg>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                    Decline
+                                </AlertDialogCancel>
+
+                                <AlertDialogAction
+                                    className="flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    Authorize
+                                </AlertDialogAction>
                             </div>
-                            <AlertDialogTitle className="text-xl font-semibold text-gray-900">
-                                Member Check-In Request
-                            </AlertDialogTitle>
-                            <AlertDialogDescription className="mt-2 text-gray-600">
-                                {memberName || 'A member'} is requesting to check in. Would you like to approve this request?
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter className="mt-6 flex flex-row justify-end gap-3">
-                            <AlertDialogCancel
-                                onClick={() => setMemberCheckInAlert(false)}
-                                className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                            >
-                                Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                Approve Check-In
-                            </AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
