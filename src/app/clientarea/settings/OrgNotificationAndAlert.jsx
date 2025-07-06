@@ -1,7 +1,6 @@
 "use client";
 
 import { Settings2Icon } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -13,11 +12,9 @@ import { useEffect, useState } from "react";
 const OrganizationNotificationAndAlertSettings = () => {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
-
     const organization = loggedInTenant?.organization;
 
-    const { handleSubmit, reset } = useForm();
-
+    const [sendPortalLink, setSendPortalLink] = useState(true);
     const [paymentReminders, setPaymentReminders] = useState(false);
     const [invoiceAttachments, setInvoiceAttachments] = useState(false);
     const [membershipRenewal, setMembershipRenewal] = useState(false);
@@ -29,8 +26,7 @@ const OrganizationNotificationAndAlertSettings = () => {
 
     const onSubmit = async () => {
         const finalData = {
-            paymentReminders, invoiceAttachments, membershipRenewal, classReminders,
-            email, sms, inApp
+            sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp
         };
         try {
             const response = await fetch(`http://localhost:3000/api/organization/notification-alert-setting`, {
@@ -41,9 +37,7 @@ const OrganizationNotificationAndAlertSettings = () => {
                 body: JSON.stringify({ finalData })
             });
             const resBody = await response.json();
-            if (response.ok) {
-                toast.success(resBody.message);
-            } else {
+            if (!response.ok) {
                 toast.error(resBody.message);
             }
         } catch (error) {
@@ -54,9 +48,10 @@ const OrganizationNotificationAndAlertSettings = () => {
 
     useEffect(() => {
         onSubmit();
-    }, [paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp])
+    }, [sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp])
 
     useEffect(() => {
+        setSendPortalLink(organization?.sendPortalLink)
         setPaymentReminders(organization?.memberPaymentReminder)
         setInvoiceAttachments(organization?.sendInvoiceAttachments)
         setMembershipRenewal(organization?.membershipRenewalNotice)
@@ -85,7 +80,7 @@ const OrganizationNotificationAndAlertSettings = () => {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-8 px-2 md:px-4">
+            <form className="space-y-8 px-2 md:px-4">
                 <Card>
                     <CardHeader>
                         <CardTitle>Member Communications</CardTitle>
@@ -94,6 +89,20 @@ const OrganizationNotificationAndAlertSettings = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid gap-6">
+                        <div className="flex items-center justify-between space-x-4">
+                            <div className="space-y-1">
+                                <Label htmlFor="portal-link">Portal Link</Label>
+                                <p className="text-sm text-muted-foreground">
+                                    Send member portal link in their email
+                                </p>
+                            </div>
+                            <Switch
+                                id="sent-portallink"
+                                checked={sendPortalLink}
+                                onCheckedChange={() => setSendPortalLink(!sendPortalLink)}
+                            />
+                        </div>
+
                         <div className="flex items-center justify-between space-x-4">
                             <div className="space-y-1">
                                 <Label htmlFor="payment-reminders">Payment Reminders</Label>
