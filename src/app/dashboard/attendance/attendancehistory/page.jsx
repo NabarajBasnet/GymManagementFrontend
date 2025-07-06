@@ -206,8 +206,8 @@ const AttendanceHistory = () => {
     };
 
     return (
-        <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
-            <div className="mb-5 mt-1">
+        <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-2 md:py-6">
+            <div className="w-full mb-5 mt-1">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -226,7 +226,7 @@ const AttendanceHistory = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
-            <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 font-medium dark:border-gray-700">
+            <Card className="shadow-sm bg-white mb-4 dark:bg-gray-800 border-gray-200 font-medium dark:border-gray-700">
                 <CardHeader>
                     <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">Attendance History</CardTitle>
                     <CardDescription className="text-gray-500 dark:text-gray-400">
@@ -235,7 +235,7 @@ const AttendanceHistory = () => {
                 </CardHeader>
             </Card>
 
-            <div className="mb-6">
+            <div className="w-full mb-6">
                 <Tabs
                     value={membershipType}
                     onValueChange={setMembershipType}
@@ -258,7 +258,7 @@ const AttendanceHistory = () => {
                         </TabsTrigger>
                         <TabsTrigger
                             value="Staffs"
-                            className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
+                            className="w-full data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
                             onClick={() => {
                                 setMembershipType('Staffs');
                                 setId('');

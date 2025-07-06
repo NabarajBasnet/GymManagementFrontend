@@ -372,7 +372,7 @@ const PaymentHistory = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 shadow-sm sticky top-0 z-10">
+            <div className="w-full px-4 py-4 md:py-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>

@@ -210,7 +210,7 @@ const StaffAttendance = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 px-4 py-7'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 px-4 py-2 md:py-7'>
 
             {successfulAlert && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -438,19 +438,19 @@ const StaffAttendance = () => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory.length > 0 ? (
-                                            TemporaryAttendanceHistory.map((attendance) => (
-                                                <TableRow key={attendance._id}>
-                                                    <TableCell className="font-medium text-xs dark:text-gray-200">{attendance.staff._id}</TableCell>
-                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.staff.fullName}</TableCell>
-                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.role}</TableCell>
+                                        {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory?.length > 0 ? (
+                                            TemporaryAttendanceHistory?.map((attendance) => (
+                                                <TableRow key={attendance?._id}>
+                                                    <TableCell className="font-medium text-xs dark:text-gray-200">{attendance?.staff?._id}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance?.staff?.fullName}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance?.role}</TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">
-                                                        {attendance.checkIn ? new Date(attendance.checkIn).toLocaleTimeString() : 'N/A'}
+                                                        {attendance?.checkIn ? new Date(attendance?.checkIn).toLocaleTimeString() : 'N/A'}
                                                     </TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">
-                                                        {attendance.checkOut ? new Date(attendance.checkOut).toLocaleTimeString() : 'N/A'}
+                                                        {attendance?.checkOut ? new Date(attendance?.checkOut).toLocaleTimeString() : 'N/A'}
                                                     </TableCell>
-                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.remark}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance?.remark}</TableCell>
                                                 </TableRow>
                                             ))
                                         ) : (

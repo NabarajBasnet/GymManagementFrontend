@@ -483,7 +483,7 @@ const StaffManagement = () => {
       ) : (
         <div className="w-full">
           <div
-            className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6"
+            className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-4 md:py-6"
             onClick={() => {
               setShowAddressDetails(false);
               setShowShiftDetails(false);

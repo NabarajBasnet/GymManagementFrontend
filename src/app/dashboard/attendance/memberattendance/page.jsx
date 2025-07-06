@@ -305,7 +305,7 @@ const MemberAttendance = () => {
             )}
 
             {/* Breadcrumb and Header */}
-            <div className='w-full px-4 pt-6 pb-3 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
+            <div className='w-full px-4 py-2 md:py-7 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
                 <Breadcrumb className="mb-1">
                     <BreadcrumbList>
                         <BreadcrumbItem>

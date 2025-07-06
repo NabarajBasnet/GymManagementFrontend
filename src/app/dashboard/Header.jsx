@@ -548,7 +548,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 right-0 backdrop-blur-md dark:border-b border-gray-700 py-3 transition-all duration-500 z-40 
+      className={`fixed top-0 right-0 backdrop-blur-md dark:border-b border-gray-700 py-0 transition-all duration-500 z-40 
         ${isScrolled
           ? "bg-white shadow-md dark:bg-gray-900"
           : "bg-white dark:bg-gray-900"
@@ -557,7 +557,7 @@ const Header = () => {
           ? "md:w-[calc(100%-80px)]"
           : "md:w-[calc(100%-240px)]"
         } 
-        w-full flex justify-between px-2 py-3 md:px-4 items-center`}
+        w-full flex justify-between px-2 py-2 md:px-4 items-center`}
     >
       <div className="mx-4 flex items-center">
         <div className="flex items-center gap-2" ref={searchRef}>

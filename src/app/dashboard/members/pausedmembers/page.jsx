@@ -218,7 +218,7 @@ const PausedMembers = () => {
 
     return (
         <div className="w-full bg-gray-100 dark:bg-gray-900 min-h-screen">
-            <div className='w-full px-4 pt-6 pb-3' onClick={() => {
+            <div className='w-full px-4 py-2 md:py-6' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
             }

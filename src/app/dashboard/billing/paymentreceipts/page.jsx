@@ -137,9 +137,9 @@ const PaymentReceipts = () => {
     }
 
     return (
-        <div className="w-full py-6 bg-gray-100 dark:bg-gray-900 min-h-screen px-4 mx-auto">
+        <div className="w-full px-4 py-4 md:py-6 bg-gray-100 dark:bg-gray-900 min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="p-4 rounded-sm dark:bg-gray-800 bg-white shadow-md">
+            <div className="rounded-sm dark:bg-gray-800 bg-white shadow-md">
                 {/* Enhanced Breadcrumb with Icons */}
                 <div className="mb-4">
                     <Breadcrumb>

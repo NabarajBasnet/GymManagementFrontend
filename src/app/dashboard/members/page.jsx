@@ -221,7 +221,7 @@ const AllMembers = () => {
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900">
-      <div className="py-5 px-4">
+      <div className="py-2 md:py-6 px-4">
         {/* Breadcrumb navigation */}
         <Breadcrumb>
           <BreadcrumbList>

@@ -509,7 +509,7 @@ const NewMemberRegistrationForm = () => {
   }, [admissionPrice, selectedPlanDetails]);
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-4 md:pt-9">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-2 md:py-6">
       <div className="flex items-center gap-2 mb-3">
         <Breadcrumb>
           <BreadcrumbList>

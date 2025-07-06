@@ -266,7 +266,7 @@ const ScheduleManagement = () => {
     }
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen px-4 py-6'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen px-4 py-4 md:py-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
                 <div className='w-full mb-6'>

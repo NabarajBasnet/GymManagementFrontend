@@ -46,8 +46,8 @@ const ViewPlans = () => {
   const { membershipPlans } = data || {};
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 px-4 py-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-slate-50 dark:bg-gray-900 px-4 py-4 md:py-6">
+      <div className="w-full mx-auto">
         {/* Breadcrumb */}
         <nav className="flex items-center text-sm mb-6">
           <div className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer">
