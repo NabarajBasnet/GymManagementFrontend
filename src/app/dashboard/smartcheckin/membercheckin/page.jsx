@@ -27,12 +27,13 @@ import {
     Phone,
     CreditCard,
     Crown,
-    Loader2,
     Eye,
     EyeOff
 } from "lucide-react"
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
+import io from 'socket.io-client'
+const socket = io.connect('http://localhost:5000');
 
 const gymLocation = {
     lat: 27.7121,
@@ -56,11 +57,33 @@ function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
 const SmartAttendanceDashboard = () => {
     const { user: loggedInUser } = useUser();
     const user = loggedInUser?.user;
+
     const features = user?.tenant?.subscription?.subscriptionFeatures
     const multiBranchSupport = features?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
     })
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
+
+    useEffect(() => {
+        const handleChatMessage = (data) => {
+            console.log(data);
+            toast.success(data);
+        };
+
+        const handleRequestCheckin = (data) => {
+            console.log(data);
+            toast.success(data);
+        };
+
+        socket.on('chat message', handleChatMessage);
+        socket.on('request-checkin', handleRequestCheckin);
+
+        // Cleanup on unmount or re-render
+        return () => {
+            socket.off('chat message', handleChatMessage);
+            socket.off('request-checkin', handleRequestCheckin);
+        };
+    }, []);
 
     const enableMemberCheckInFlag = async () => {
         try {
@@ -71,15 +94,24 @@ const SmartAttendanceDashboard = () => {
                     method: "PUT",
                 });
                 resBody = await response.json();
-
+                if (response.ok) {
+                    toast.success(resBody.message);
+                    window.location.reload();
+                } else {
+                    toast.error(resBody.message);
+                };
             } else {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin`, {
                     method: "PUT",
                 });
                 resBody = await response.json();
-            }
-
-            consol.log(resBody);
+                if (response.ok) {
+                    toast.success(resBody.message);
+                    window.location.reload();
+                } else {
+                    toast.error(resBody.message);
+                };
+            };
         } catch (error) {
             console.log('Error: ', error.message)
             toast.error(error.message);
@@ -248,30 +280,30 @@ const SmartAttendanceDashboard = () => {
                                 <div className="flex items-center gap-3">
                                     <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">Session Status:</span>
                                     <Badge
-                                        variant={sessionActive ? "default" : "secondary"}
-                                        className={`flex items-center gap-1.5 px-3 py-1.5 transition-all duration-[2000] ${sessionActive
+                                        variant={user?.organizationBranch?.memberAttendanceAvailable ? "default" : "secondary"}
+                                        className={`flex items-center gap-1.5 px-3 py-1.5 transition-all duration-[2000] ${user?.organizationBranch?.memberAttendanceAvailable
                                             ? "bg-emerald-500 hover:bg-emerald-600 text-white animate-pulse"
                                             : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400"
                                             }`}
                                     >
-                                        {sessionActive ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                                        {sessionActive ? "Active" : "Inactive"}
+                                        {user?.organizationBranch?.memberAttendanceAvailable ? <CheckCircle className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                                        {user?.organizationBranch?.memberAttendanceAvailable ? "Active" : "Inactive"}
                                     </Badge>
                                 </div>
                             </div>
 
                             <div className="flex gap-3">
                                 <Button
-                                    onClick={startSession}
-                                    disabled={sessionActive}
+                                    onClick={enableMemberCheckInFlag}
+                                    disabled={user?.organizationBranch?.memberAttendanceAvailable}
                                     className="flex-1 py-6 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                                 >
                                     <Play className="h-4 w-4 mr-2" />
                                     {sessionActive ? "Session Running" : "Start Session"}
                                 </Button>
                                 <Button
-                                    onClick={stopSession}
-                                    disabled={!sessionActive}
+                                    onClick={enableMemberCheckInFlag}
+                                    disabled={!user?.organizationBranch?.memberAttendanceAvailable}
                                     className="flex-1 py-6 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-semibold rounded-sm transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                                 >
                                     <Square className="h-4 w-4 mr-2" />
