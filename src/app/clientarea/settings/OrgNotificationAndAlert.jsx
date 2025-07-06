@@ -52,6 +52,9 @@ const OrganizationNotificationAndAlertSettings = () => {
         };
     };
 
+    useEffect(() => {
+        onSubmit();
+    }, [paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp])
 
     useEffect(() => {
         setPaymentReminders(organization?.memberPaymentReminder)
@@ -202,14 +205,7 @@ const OrganizationNotificationAndAlertSettings = () => {
                     </CardContent>
                 </Card>
 
-                <div className="flex justify-end gap-4 py-4">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={() => reset()}
-                    >
-                        Reset
-                    </Button>
+                <div className="flex justify-end gap-4 pb-4">
                     <Button type="submit">Save Settings</Button>
                 </div>
             </form>
