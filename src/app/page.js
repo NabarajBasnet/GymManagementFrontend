@@ -13,6 +13,7 @@ import AboutSection from "@/components/Website/AboutSection/AboutSection";
 import FAQSection from "@/components/Website/FAQSection/FaqSection";
 import ContactSection from "@/components/Website/ContactSection/ContactSection";
 import BackToTop from "@/components/Website/BackToTop/BackToTop";
+import CookieConsent from "@/components/Website/CookiesConsent/CookiesConsent";
 
 const HeroSection = () => {
   return (
@@ -192,6 +193,7 @@ const HeroSection = () => {
       <AboutSection />
       <FAQSection />
       <ContactSection />
+      <CookieConsent />
       <BackToTop />
     </div>
   );

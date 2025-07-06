@@ -228,7 +228,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -292,28 +292,28 @@ const Header = () => {
             },
           ],
         },
-        {
-          icon: RiUserLocationFill,
-          title: "Smart Check-In",
-          link: "/dashboard/attendance/memberattendance",
-          subObj: [
-            {
-              icon: FaRegUser,
-              title: "Member Check-In",
-              link: "/dashboard/smartcheckin/membercheckin",
-            },
-            {
-              icon: FaUserCog,
-              title: "Staff Check-In",
-              link: "/dashboard/smartcheckin/staffcheckin",
-            },
-            {
-              icon: TbLiveViewFilled,
-              title: "Live Track",
-              link: "/dashboard/smartcheckin/livetrack",
-            },
-          ],
-        },
+        // {
+        //   icon: RiUserLocationFill,
+        //   title: "Smart Check-In",
+        //   link: "/dashboard/attendance/memberattendance",
+        //   subObj: [
+        //     {
+        //       icon: FaRegUser,
+        //       title: "Member Check-In",
+        //       link: "/dashboard/smartcheckin/membercheckin",
+        //     },
+        //     {
+        //       icon: FaUserCog,
+        //       title: "Staff Check-In",
+        //       link: "/dashboard/smartcheckin/staffcheckin",
+        //     },
+        //     {
+        //       icon: TbLiveViewFilled,
+        //       title: "Live Track",
+        //       link: "/dashboard/smartcheckin/livetrack",
+        //     },
+        //   ],
+        // },
       ],
     },
     // Member Management
@@ -404,43 +404,43 @@ const Header = () => {
             },
           ],
         },
-        {
-          icon: AiFillProduct,
-          title: "E-Com Store",
-          link: "/dashboard/ecomstore",
-          subObj: [
-            {
-              icon: AiFillProduct,
-              title: "Dashboard",
-              link: "/dashboard/ecomstore/dashboard",
-            },
-            {
-              icon: MdAdd,
-              title: "Add Products",
-              link: "/dashboard/ecomstore/addproducts",
-            },
-            {
-              icon: FaList,
-              title: "Products List",
-              link: "/dashboard/ecomstore/productslist",
-            },
-            {
-              icon: IoMdCart,
-              title: "Orders",
-              link: "/dashboard/ecomstore/orders",
-            },
-            {
-              icon: MdPayments,
-              title: "Payments",
-              link: "/dashboard/ecomstore/payments",
-            },
-            {
-              icon: FaChartLine,
-              title: "Reports",
-              link: "/dashboard/ecomstore/reports",
-            },
-          ]
-        },
+        // {
+        //   icon: AiFillProduct,
+        //   title: "E-Com Store",
+        //   link: "/dashboard/ecomstore",
+        //   subObj: [
+        //     {
+        //       icon: AiFillProduct,
+        //       title: "Dashboard",
+        //       link: "/dashboard/ecomstore/dashboard",
+        //     },
+        //     {
+        //       icon: MdAdd,
+        //       title: "Add Products",
+        //       link: "/dashboard/ecomstore/addproducts",
+        //     },
+        //     {
+        //       icon: FaList,
+        //       title: "Products List",
+        //       link: "/dashboard/ecomstore/productslist",
+        //     },
+        //     {
+        //       icon: IoMdCart,
+        //       title: "Orders",
+        //       link: "/dashboard/ecomstore/orders",
+        //     },
+        //     {
+        //       icon: MdPayments,
+        //       title: "Payments",
+        //       link: "/dashboard/ecomstore/payments",
+        //     },
+        //     {
+        //       icon: FaChartLine,
+        //       title: "Reports",
+        //       link: "/dashboard/ecomstore/reports",
+        //     },
+        //   ]
+        // },
         {
           icon: AiOutlineSchedule,
           title: "Class Schedules",

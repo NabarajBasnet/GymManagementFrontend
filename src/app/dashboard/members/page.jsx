@@ -101,7 +101,7 @@ const AllMembers = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/org-members/by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+        `https://fitbinary.com/api/org-members/by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
       );
       const resBody = await response.json();
       return resBody;
@@ -132,7 +132,7 @@ const AllMembers = () => {
   const sendQrInEmail = async (id) => {
     setEmailSending(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/send-qr`, {
+      const response = await fetch(`https://fitbinary.com/api/send-qr`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,12 +141,10 @@ const AllMembers = () => {
       });
       const responseBody = await response.json();
       if (response.status !== 200) {
-        hotToast.error(responseBody.message);
         sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
           setEmailSending(false);
-          hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
         }
       }
@@ -161,7 +159,7 @@ const AllMembers = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members/deleteMember/${id}`,
+        `https://fitbinary.com/api/members/deleteMember/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -173,12 +171,10 @@ const AllMembers = () => {
       const responseBody = await response.json();
       if (response.status !== 200) {
         setIsDeleting(false);
-        hotToast.error(responseBody.message);
         sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
           setIsDeleting(false);
-          hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
         }
         queryClient.invalidateQueries(["members"]);
@@ -186,7 +182,6 @@ const AllMembers = () => {
     } catch (error) {
       setIsDeleting(false);
       console.log("Error: ", error);
-      hotToast.success(error.message);
       sonnerToast.success(error.message);
     }
   };

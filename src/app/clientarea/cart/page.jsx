@@ -42,7 +42,7 @@ const TenantCartManagement = () => {
 
   const getCartItems = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/`, {
+      const response = await fetch(`https://fitbinary.com/api/cart/`, {
         credentials: "include",
       });
 
@@ -73,7 +73,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cart/remove-item`,
+        `https://fitbinary.com/api/cart/remove-item`,
         {
           method: "DELETE",
           headers: {
@@ -107,7 +107,7 @@ const TenantCartManagement = () => {
   const handleCreateOrder = async (item, subTotal) => {
     setOrdering(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/order/create`, {
+      const response = await fetch(`https://fitbinary.com/api/order/create`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({ item, subTotal }),
@@ -138,7 +138,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cart/update-item`,
+        `https://fitbinary.com/api/cart/update-item`,
         {
           method: "PUT",
           headers: {
@@ -174,7 +174,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:3000/api/cart/decrease-item`,
+        `https://fitbinary.com/api/cart/decrease-item`,
         {
           method: "PUT",
           headers: {

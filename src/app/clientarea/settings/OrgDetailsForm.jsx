@@ -98,7 +98,7 @@ const OrgDetailsForm = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch('http://localhost:3000/api/organization/register-organization', {
+            const response = await fetch('https://fitbinary.com/api/organization/register-organization', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

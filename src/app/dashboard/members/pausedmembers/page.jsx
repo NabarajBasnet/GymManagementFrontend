@@ -102,12 +102,13 @@ const PausedMembers = () => {
         const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/org-members/onhold-by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+                `https://fitbinary.com/api/org-members/onhold-by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;
         } catch (error) {
-            console.error('Error: ', error);
+            sonnerToast.error(error.message);
+            console.error('Error: ', error.message);
         }
     };
 
@@ -131,7 +132,7 @@ const PausedMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`https://fitbinary.com/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -140,26 +141,23 @@ const PausedMembers = () => {
             });
             const responseBody = await response.json();
             if (response.status !== 200) {
-                sonnerToast.error(responseBody.message);
                 hotToast.error(responseBody.message);
             }
             else {
                 if (response.status === 200) {
                     sonnerToast.success(responseBody.message);
-                    hotToast.success(responseBody.message);
                 }
             }
         } catch (error) {
             console.log('Error: ', error);
             sonnerToast.error(error.message);
-            hotToast.error(error.message);
         }
     };
 
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`https://fitbinary.com/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -171,14 +169,11 @@ const PausedMembers = () => {
             if (response.status !== 200) {
                 setIsDeleting(false);
                 sonnerToast.error(responseBody.message);
-                hotToast.error(responseBody.message);
             }
             else {
                 if (response.status === 200) {
                     setIsDeleting(false);
                     sonnerToast.success(responseBody.message);
-                    hotToast.success(responseBody.message);
-
                 }
                 setIsMemberDeleting(false);
                 setConfirmDeleteMember(false);
@@ -189,7 +184,6 @@ const PausedMembers = () => {
             setIsDeleting(false);
             console.log("Error: ", error);
             sonnerToast.error(responseBody.message);
-            hotToast.error(responseBody.message);
         };
     };
 
