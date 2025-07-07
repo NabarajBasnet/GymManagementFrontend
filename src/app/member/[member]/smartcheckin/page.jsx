@@ -31,21 +31,28 @@ export default function CheckInCard() {
         socket.emit('member-join-room', orgOrBranchId || '');
     }, [orgOrBranchId]);
 
-    socket.on("member-checkin-session-started", (incomingId) => {
-        console.log(incomingId)
-        if (incomingId === orgOrBranchId) {
-            console.log("Session started for my gym, reloading...");
-            setRefetchState(!refetchState);
-        }
+    useEffect(() => {
+        const handleSessionStart = (incomingId) => {
+            if (incomingId === orgOrBranchId) {
+                new Notification("The gym is open", { body: "Lets start repping those gains 💪" });
+                setRefetchState((prev) => !prev);
+            }
+        };
+        socket.on("member-checkin-session-started", handleSessionStart);
 
         return () => {
-            socket.off("member-checkin-session-started");
+            socket.off("member-checkin-session-started", handleSessionStart);
         };
-    });
+    }, [orgOrBranchId, memberLat, memberLng]);
 
     useEffect(() => {
-        new Notification("You checked in!", { body: "Welcome to the gym 💪" });
+        socket.on('checkin-session-disabled', (incomingId) => {
+            console.log('Closing incoming id: ', incomingId);
+            new Notification('Gym session closed')
+        })
+    }, [orgOrBranchId])
 
+    useEffect(() => {
         if ('geolocation' in navigator) {
 
             const watchId = navigator.geolocation.watchPosition(
@@ -88,6 +95,12 @@ export default function CheckInCard() {
             setIsCheckingIn(false);
         }
     };
+
+    // Get lat, lng of gym on lat, lng change of member
+    useEffect(() => {
+        setMemberLat(loggedInMember?.organizationBranch?.currentLat)
+        setMemberLng(loggedInMember?.organizationBranch?.currentLng)
+    }, [loggedInMember, memberLat, memberLng])
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
