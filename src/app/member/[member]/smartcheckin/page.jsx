@@ -2,13 +2,13 @@
 
 import { useMember } from "@/components/Providers/LoggedInMemberProvider";
 import { useState, useEffect } from "react";
-import { 
-    Clock, 
-    MapPin, 
-    CheckCircle, 
-    User, 
-    Phone, 
-    Mail, 
+import {
+    Clock,
+    MapPin,
+    CheckCircle,
+    User,
+    Phone,
+    Mail,
     Calendar,
     Timer,
     Building,
@@ -168,16 +168,16 @@ export default function CheckInCard() {
     let disableButton = distance >= radius;
 
     const formatTime = (date) => {
-        return date.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
             minute: '2-digit',
             second: '2-digit',
-            hour12: true 
+            hour12: true
         });
     };
 
     const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', { 
+        return date.toLocaleDateString('en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -218,6 +218,23 @@ export default function CheckInCard() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     {/* Left Column */}
                     <div className="lg:col-span-2 space-y-6">
+                        {/* Check-In Button */}
+                        <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
+                            <div className="p-6">
+                                <Button
+                                    onClick={requestForCheckin}
+                                    disabled={disableButton}
+                                    className={`w-full text-white py-6 rounded-xl text-lg font-semibold transition-all duration-300 ${disableButton
+                                        ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed'
+                                        : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
+                                        }`}
+                                >
+                                    <CheckCircle className="w-6 h-6 mr-2" />
+                                    {disableButton ? 'Too Far to Check In' : 'Check In Now'}
+                                </Button>
+                            </div>
+                        </Card>
+
                         {/* Member Profile Card */}
                         <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
                             <div className="p-6">
@@ -307,23 +324,6 @@ export default function CheckInCard() {
 
                     {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Check-In Button */}
-                        <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
-                            <div className="p-6">
-                                <Button
-                                    onClick={requestForCheckin}
-                                    disabled={disableButton}
-                                    className={`w-full py-6 rounded-xl text-lg font-semibold transition-all duration-300 ${
-                                        disableButton 
-                                            ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed' 
-                                            : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
-                                    }`}
-                                >
-                                    <CheckCircle className="w-6 h-6 mr-2" />
-                                    {disableButton ? 'Too Far to Check In' : 'Check In Now'}
-                                </Button>
-                            </div>
-                        </Card>
 
                         {/* Location Status Card */}
                         <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
@@ -369,29 +369,6 @@ export default function CheckInCard() {
                                             <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
                                             <span className="text-sm text-green-600 dark:text-green-400">You're within check-in range!</span>
                                         </div>
-                                    )}
-                                </div>
-                            </div>
-                        </Card>
-
-                        {/* Connection Status */}
-                        <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
-                            <div className="p-6">
-                                <div className="flex items-center space-x-3 mb-4">
-                                    <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-2 rounded-full">
-                                        <Wifi className="w-5 h-5 text-white" />
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Connection</h3>
-                                </div>
-                                <div className="text-center">
-                                    <div className="flex items-center justify-center space-x-2 text-green-600 dark:text-green-400">
-                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                        <span className="text-sm font-medium">Connected</span>
-                                    </div>
-                                    {loggedInMember?.organizationBranch?.name && (
-                                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                            {loggedInMember.organizationBranch.name}
-                                        </p>
                                     )}
                                 </div>
                             </div>
