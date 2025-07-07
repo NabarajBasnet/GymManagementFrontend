@@ -20,7 +20,7 @@ import {
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
 import io from 'socket.io-client'
-const socket = io.connect('http://localhost:5000');
+const socket = io.connect('https://fitbinary.com');
 
 const SmartAttendanceDashboard = () => {
     const { user: loggedInUser } = useUser();
