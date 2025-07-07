@@ -6,7 +6,6 @@ import { FaClock, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import { toast } from "sonner";
-
 const socket = io.connect('http://localhost:5000');
 
 export default function CheckInCard() {
@@ -17,23 +16,35 @@ export default function CheckInCard() {
         return feature.toString() === 'Multi Branch Support'
     });
     const onFreeTrail = loggedInMember?.tenant?.freeTrailStatus === 'Active';
+    const orgOrBranchId = (multiBranchSupport || onFreeTrail)
+        ? loggedInMember?.organizationBranch?._id
+        : loggedInMember?.organization?._id;
 
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [checkInSuccess, setCheckInSuccess] = useState(false);
     const [memberLat, setMemberLat] = useState(null);
     const [memberLng, setMemberLng] = useState(null);
     const [locationError, setLocationError] = useState(null);
+    const [refetchState, setRefetchState] = useState(false);
+
+    useEffect(() => {
+        socket.emit('member-join-room', orgOrBranchId || '');
+    }, [orgOrBranchId]);
+
+    socket.on("member-checkin-session-started", (incomingId) => {
+        console.log(incomingId)
+        if (incomingId === orgOrBranchId) {
+            console.log("Session started for my gym, reloading...");
+            setRefetchState(!refetchState);
+        }
+
+        return () => {
+            socket.off("member-checkin-session-started");
+        };
+    });
 
     useEffect(() => {
         new Notification("You checked in!", { body: "Welcome to the gym 💪" });
-
-        window.navigator.permissions.query({ name: 'geolocation' })
-            .then((permissionStatus) => {
-                console.log("Location permision state: ", permissionStatus.state)
-            })
-            .catch((error) => {
-                console.log("Failed to check permissions: ", error)
-            });
 
         if ('geolocation' in navigator) {
 
@@ -43,19 +54,15 @@ export default function CheckInCard() {
                     setMemberLat(latitude)
                     setMemberLng(longitude)
                     setLocationError(null);
-                    console.log('Latitude: ', latitude);
-                    console.log('Longitude: ', longitude);
                 },
                 (error) => {
                     console.log('Geolocation error: ', error.message);
                     setLocationError(error.message)
-                    toast.error(error.message);
                 }, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
                 timeout: 1000
-            }
-            )
+            })
 
             // Cleanup watcher on unmount
             return () => {
@@ -78,7 +85,6 @@ export default function CheckInCard() {
                 message: checkInReqMessage
             });
         } catch (error) {
-
             setIsCheckingIn(false);
         }
     };
@@ -86,7 +92,7 @@ export default function CheckInCard() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
             <div className="w-full max-w-md">
-
+                <h1>{refetchState ? 'Active' : "Inactive"}</h1>
                 {/* Main Check-In Card */}
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                     {/* Header */}
@@ -139,6 +145,7 @@ export default function CheckInCard() {
 
                         {/* Tag Location Button */}
                         <motion.button
+                            onClick={() => setRefetchState(!refetchState)}
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             className="w-full py-4 bg-white border border-blue-100 rounded-xl shadow-sm flex items-center justify-center space-x-2 text-blue-600 hover:bg-blue-50 transition-all"

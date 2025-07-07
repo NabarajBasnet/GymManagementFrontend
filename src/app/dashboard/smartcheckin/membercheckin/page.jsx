@@ -36,6 +36,8 @@ const SmartAttendanceDashboard = () => {
     const [openMemberCheckInAlert, setMemberCheckInAlert] = useState(false);
     const [memberName, setMemberName] = useState('')
     const [memberId, setMemberId] = useState('')
+    const [currentLat, setCurrentLat] = useState(null);
+    const [currentLng, setCurrentLng] = useState(null);
 
     useEffect(() => {
         const handleChatMessage = (data) => {
@@ -67,8 +69,8 @@ const SmartAttendanceDashboard = () => {
                 (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
-                    console.log("Gym location lat:", lat);
-                    console.log("Gym location lng:", lng);
+                    setCurrentLat(lat);
+                    setCurrentLng(lng);
                 },
                 (error) => {
                     console.error("Failed to get location:", error.message);
@@ -84,6 +86,10 @@ const SmartAttendanceDashboard = () => {
             if (multiBranchSupport || onFreeTrail) {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag?status=${true}`, {
                     method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ currentLat, currentLng })
                 });
             } else {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin?status=${true}`, {
@@ -91,7 +97,7 @@ const SmartAttendanceDashboard = () => {
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify('true')
+                    body: JSON.stringify({ currentLat, currentLng })
                 });
             };
 
