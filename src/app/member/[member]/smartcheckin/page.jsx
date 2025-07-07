@@ -6,8 +6,8 @@ import { FaClock, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import { toast } from "sonner";
-const socket = io('https://fitbinary.com:8000', {
-  transports: ['websocket'],
+const socket = io('https://fitbinary.com', {
+    transports: ['websocket'],
 });
 
 export default function CheckInCard() {
