@@ -21,7 +21,7 @@ import RevenewDashboard from "./RevenewDashboard";
 const AnalyticsAndReports = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-            <div className="px-4 py-4 md:py-6">
+            <div className="p-4 md:pt-8">
                 {/* Header Section */}
                 <div className="mb-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
