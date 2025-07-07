@@ -279,7 +279,7 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 dark:bg-gray-800 md:py-6 py-4 px-4">
+        <div className="w-full bg-gray-100 dark:bg-gray-800 md:pt-8 p-4">
 
             <div className="w-full space-y-4">
                 {/* Enhanced Breadcrumb */}

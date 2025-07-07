@@ -208,7 +208,7 @@ const StaffDetails = ({ staffId }) => {
         <div className="w-full">
             <div className='w-full bg-gray-100'
                 onClick={() => setToast(false)}>
-                <Breadcrumb className='px-6 py-4 md:py-6'>
+                <Breadcrumb className='p-4 md:pt-8'>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink href="/dashboard" className='font-medium text-gray-600'>Home</BreadcrumbLink>

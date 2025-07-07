@@ -312,7 +312,7 @@ const PaymentInvoice = () => {
     };
 
     return (
-        <div className="w-full px-4 py-4 md:py-6 bg-gray-100 dark:bg-gray-900 min-h-screen mx-auto">
+        <div className="w-full p-4 md:pt-8 bg-gray-100 dark:bg-gray-900 min-h-screen mx-auto">
 
             {resendingInvoice && <ResendingInvoiceToMember />}
 

@@ -206,7 +206,7 @@ const AttendanceHistory = () => {
     };
 
     return (
-        <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-2 md:py-6">
+        <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:py-7">
             <div className="w-full mb-5 mt-1">
                 <Breadcrumb>
                     <BreadcrumbList>

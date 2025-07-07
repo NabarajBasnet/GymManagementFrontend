@@ -212,7 +212,7 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     return (
-        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-2 md:py-6'>
+        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:pt-8'>
             {/* Breadcrumb with arrows */}
             <div className='w-full mb-4'>
                 <Breadcrumb className="mb-4">

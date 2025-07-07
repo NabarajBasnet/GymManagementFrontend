@@ -185,7 +185,7 @@ const MemberTransfer = () => {
   const isTransferReady = selectedMember && selectedBranchId && memberCurrentBranch !== destinationBranch;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 px-4 py-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800 p-4 md:pt-8">
       <div className="w-full mx-auto">
         {/* Breadcrumb */}
         <div className="mb-8">

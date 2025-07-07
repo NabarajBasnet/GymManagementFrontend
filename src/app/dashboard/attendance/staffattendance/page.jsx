@@ -210,7 +210,7 @@ const StaffAttendance = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 px-4 py-2 md:py-7'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 p-4 md:pt-8'>
 
             {successfulAlert && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">

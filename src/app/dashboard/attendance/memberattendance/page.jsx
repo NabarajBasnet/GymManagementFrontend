@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react"
+import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react";
 import {
     Alert,
     AlertDescription,
@@ -30,7 +30,6 @@ import {
 } from "@/components/ui/table";
 import {
     Breadcrumb,
-    BreadcrumbEllipsis,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
@@ -48,8 +47,8 @@ import {
     FaSpinner,
 } from 'react-icons/fa';
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { MdError, MdClose, MdDone } from "react-icons/md";
-import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, ChevronRight } from 'lucide-react';
+import { MdClose } from "react-icons/md";
+import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import '../../../globals.css';
 
 const MemberAttendance = () => {
@@ -344,8 +343,8 @@ const MemberAttendance = () => {
             )}
 
             {/* Breadcrumb and Header */}
-            <div className='w-full px-4 py-2 md:py-7 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
-                <Breadcrumb className="mb-1">
+            <div className='w-full p-4 md:pt-9 border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
+                <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Dashboard</BreadcrumbLink>

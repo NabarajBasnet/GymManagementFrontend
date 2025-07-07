@@ -32,13 +32,13 @@ export default function ClientLayout({ children }) {
               } flex flex-col min-h-screen`}
             >
               {/* Header with fixed height */}
-              <header className="mt-14">
+              <header className="mt-12">
                 <Header />
               </header>
 
               {/* Scrollable content area */}
               <main className="flex-1 overflow-x-auto bg-white dark:bg-gray-900">
-                <div className="w-full mb-1">{children}</div>
+                <div className="w-full mb-0">{children}</div>
               </main>
 
               {/* Fixed footer at the bottom */}

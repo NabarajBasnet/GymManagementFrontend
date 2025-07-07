@@ -287,7 +287,7 @@ const StaffTaskManagement = () => {
 
     return (
         <div className="w-full bg-gray-100 dark:bg-gray-900">
-            <div className="w-full px-4 py-4 md:py-6">
+            <div className="w-full p-4 md:pt-8">
                 {/* Header Section */}
                 <Breadcrumb className="w-full sm:w-auto overflow-x-auto mb-4">
                     <BreadcrumbList className="flex-nowrap">

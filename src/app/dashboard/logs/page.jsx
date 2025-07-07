@@ -215,7 +215,7 @@ const Logs = () => {
     <div className="w-full bg-gray-50 dark:bg-gray-950">
       {/* Header Section */}
       <div className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto p-4 md:pt-8">
           <div className="py-6 lg:py-8">
             {/* Breadcrumb */}
             <div className="mb-8">

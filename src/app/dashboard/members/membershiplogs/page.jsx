@@ -190,7 +190,7 @@ const MembershipLogs = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full bg-gray-50 p-6 border-b shadow-sm sticky top-0 z-10">
+            <div className="w-full bg-gray-50 md:pt-8 p-4 border-b shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>
