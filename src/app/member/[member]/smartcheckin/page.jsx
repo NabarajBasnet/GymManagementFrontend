@@ -98,12 +98,6 @@ export default function CheckInCard() {
         }
     };
 
-    // Get lat, lng of gym on lat, lng change of member
-    useEffect(() => {
-        setMemberLat(loggedInMember?.organizationBranch?.currentLat)
-        setMemberLng(loggedInMember?.organizationBranch?.currentLng)
-    }, [loggedInMember, memberLat, memberLng])
-
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
             <div className="w-full max-w-md">
