@@ -6,7 +6,7 @@ import { FaClock, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import { toast } from "sonner";
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:5000', {
     transports: ['websocket'],
 });
 
@@ -28,6 +28,12 @@ export default function CheckInCard() {
     const [memberLng, setMemberLng] = useState(null);
     const [locationError, setLocationError] = useState(null);
     const [refetchState, setRefetchState] = useState(false);
+
+    const [organizationLat, setOrganizationLat] = useState(null);
+    const [organizationLng, setOrganizationLng] = useState(null);
+
+    console.log(organizationLat);
+    console.log(organizationLng);
 
     useEffect(() => {
         socket.emit('member-join-room', orgOrBranchId || '');
@@ -98,10 +104,46 @@ export default function CheckInCard() {
         }
     };
 
+    // Get organization position with dependency member lat, lng
+    useEffect(() => {
+        if (loggedInMember?.organizationBranch?.currentLat && loggedInMember?.organizationBranch?.currentLng) {
+            setOrganizationLat(loggedInMember.organizationBranch.currentLat);
+            setOrganizationLng(loggedInMember.organizationBranch.currentLng);
+        }
+    }, [memberLat, memberLng, loggedInMember]);
+
+    const getDistanceFromLatLonInMeteer = (Lat1, Lon1, Lat2, Lon2) => {
+        const R = 6371000; // Earth radius in meters
+        const dLat = deg2rad(Lat2 - Lat1);
+        const dLon = deg2rad(Lon2 - Lon2);
+
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(deg2rad(Lat1)) * Math.cos(deg2rad(Lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c; // in meters
+        console.log('Disatnce: ', distance);
+        return distance
+    }
+
+    // Only calculate distance when all values are available
+    const distance = organizationLat && organizationLng && memberLat && memberLng
+        ? getDistanceFromLatLonInMeteer(organizationLat, organizationLng, memberLat, memberLng)
+        : null;
+
+    // Fix the deg2rad function (it's correct but just for completeness)
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+
+    const radius = 50;
+
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 px-4 py-8">
-            <div className="w-full max-w-md">
-                <h1>{refetchState ? 'Active' : "Inactive"}</h1>
+        <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-8">
+            <div className="w-full max-w-md dark:bg-gray-900">
                 {/* Main Check-In Card */}
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                     {/* Header */}
@@ -183,8 +225,14 @@ export default function CheckInCard() {
                                 <p style={{ color: "red" }}>{locationError}</p>
                             ) : (
                                 <>
-                                    <p>Latitude: {memberLat}</p>
-                                    <p>Longitude: {memberLng}</p>
+                                    <p className="text-black">Latitude: {memberLat || "Loading..."}</p>
+                                    <p className="text-black">Longitude: {memberLng || "Loading..."}</p>
+                                    <p className="text-black">
+                                        Distance: {distance !== null ? `${distance.toFixed(2)} Meter` : "Calculating..."}
+                                    </p>
+                                    {distance !== null && distance > radius && (
+                                        <p style={{ color: "red" }}>You're too far from the gym location!</p>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -193,4 +241,4 @@ export default function CheckInCard() {
             </div>
         </div>
     );
-}
+};

@@ -31,7 +31,7 @@ const LockerLogs = () => {
         const [, page, limit, search, action] = queryKey;
         try {
             const res = await fetch(
-                `https://fitbinary.com/api/locker-logs?page=${page}&limit=${limit}&search=${search}&action=${action}`
+                `http://localhost:3000/api/locker-logs?page=${page}&limit=${limit}&search=${search}&action=${action}`
             );
             const resBody = await res.json();
             return resBody;

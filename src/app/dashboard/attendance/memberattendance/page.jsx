@@ -1,12 +1,16 @@
 'use client';
 
+import { AlertCircleIcon, CheckCircle2Icon } from "lucide-react"
+import {
+    Alert,
+    AlertDescription,
+    AlertTitle,
+} from "@/components/ui/alert";
 import { toast as sonnerToast } from 'sonner';
 import { MdHome } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-
-// UI Components
 import Badge from '@mui/material/Badge';
 import {
     Card,
@@ -38,8 +42,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Pagination from '@/components/ui/CustomPagination';
 import Loader from "@/components/Loader/Loader";
-
-// Icons
 import {
     FaExclamationTriangle,
     FaPlayCircle,
@@ -48,8 +50,6 @@ import {
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdError, MdClose, MdDone } from "react-icons/md";
 import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, ChevronRight } from 'lucide-react';
-
-// Styles
 import '../../../globals.css';
 
 const MemberAttendance = () => {
@@ -63,6 +63,9 @@ const MemberAttendance = () => {
     const [textareaColor, setTextAreaColor] = useState('');
     const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
     const [activating, setActivating] = useState(false);
+    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+    const [showErrorAlert, setShowErrorAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
 
     const {
         formState: { errors }
@@ -76,10 +79,21 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
-            return await response.json();
+            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                setAlertMessage('Failed to load attendance history');
+                setShowErrorAlert(true);
+                setTimeout(() => setShowErrorAlert(false), 7000);
+            }
+
+            return data;
         } catch (error) {
             console.log('Error: ', error);
+            setAlertMessage(error.message);
+            setShowErrorAlert(true);
+            setTimeout(() => setShowErrorAlert(false), 7000);
             sonnerToast.error(error.message)
         }
     };
@@ -93,7 +107,7 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -106,27 +120,42 @@ const MemberAttendance = () => {
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
                 sonnerToast.error(responseBody.message)
                 setTextAreaColor('text-red-500');
+                setAlertMessage(responseBody.message);
+                setShowErrorAlert(true);
+                setTimeout(() => setShowErrorAlert(false), 5000);
             }
 
             if (response.status === 200) {
                 setTextAreaColor('text-green-600');
                 sonnerToast.success(responseBody.message);
+                setAlertMessage(responseBody.message);
+                setShowSuccessAlert(true);
+                setTimeout(() => setShowSuccessAlert(false), 5000);
             }
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
                 setMembershipHoldToggle(true);
                 setTextAreaColor('text-yellow-600');
+                setAlertMessage(responseBody.message);
+                setShowErrorAlert(true);
+                setTimeout(() => setShowErrorAlert(false), 5000);
             }
 
             if (response.status !== 403 && response.status !== 200) {
                 sonnerToast.error(responseBody.message);
                 setTextAreaColor('text-red-600');
+                setAlertMessage(responseBody.message);
+                setShowErrorAlert(true);
+                setTimeout(() => setShowErrorAlert(false), 5000);
             }
             return response;
         } catch (error) {
             console.log('Error: ', error);
             setTextAreaColor('text-red-600');
             sonnerToast.error(error.message);
+            setAlertMessage(error.message);
+            setShowErrorAlert(true);
+            setTimeout(() => setShowErrorAlert(false), 5000);
         }
     };
 
@@ -146,7 +175,7 @@ const MemberAttendance = () => {
         const membershipHoldData = { status: 'Active' };
 
         try {
-            const response = await fetch(`https://fitbinary.com/api/members/resume-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -158,12 +187,22 @@ const MemberAttendance = () => {
             if (response.status === 200) {
                 sonnerToast.success(responseBody.message);
                 setMembershipHoldToggle(false);
+                setAlertMessage(responseBody.message);
+                setShowSuccessAlert(true);
+                setTimeout(() => setShowSuccessAlert(false), 5000);
+            } else {
+                setAlertMessage(responseBody.message || 'Failed to activate membership');
+                setShowErrorAlert(true);
+                setTimeout(() => setShowErrorAlert(false), 5000);
             }
 
             queryClient.invalidateQueries(['members']);
         } catch (error) {
             console.error("Error:", error);
             sonnerToast.error(error.message);
+            setAlertMessage(error.message);
+            setShowErrorAlert(true);
+            setTimeout(() => setShowErrorAlert(false), 5000);
         } finally {
             setActivating(false);
         }
@@ -321,6 +360,7 @@ const MemberAttendance = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
+
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl md:text-lg text-slate-900 dark:text-gray-200 font-medium">Member Attendance</h1>
                     <Button
@@ -383,6 +423,27 @@ const MemberAttendance = () => {
                                     <p className="mt-1 text-sm text-red-600">
                                         {errors.memberId.message}
                                     </p>
+                                )}
+                            </div>
+
+                            <div className="z-50 space-y-4 mb-4 w-full max-w-xl">
+                                {showSuccessAlert && (
+                                    <Alert className="animate-fade-in-up bg-green-600 shadow-lg">
+                                        <CheckCircle2Icon className="h-5 w-5 text-white" />
+                                        <AlertTitle className='text-white'>Success!</AlertTitle>
+                                        <AlertDescription className='text-white'>
+                                            {alertMessage}
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                                {showErrorAlert && (
+                                    <Alert className="animate-fade-in-up bg-red-600 shadow-lg">
+                                        <AlertCircleIcon className="h-5 w-5 text-white" />
+                                        <AlertTitle className='text-white'>Error</AlertTitle>
+                                        <AlertDescription className='text-white'>
+                                            {alertMessage}
+                                        </AlertDescription>
+                                    </Alert>
                                 )}
                             </div>
 

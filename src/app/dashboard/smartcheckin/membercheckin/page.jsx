@@ -20,7 +20,7 @@ import {
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
 import io from 'socket.io-client'
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:5000', {
     transports: ['websocket'],
 });
 
