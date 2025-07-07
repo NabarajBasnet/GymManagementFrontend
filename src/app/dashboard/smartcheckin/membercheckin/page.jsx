@@ -130,7 +130,7 @@ const SmartAttendanceDashboard = () => {
     }
 
     return (
-        <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-6">
+        <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 p-4 md:pt-8">
             <div className="w-full mx-auto">
                 {/* Header */}
                 <div className="mb-8">

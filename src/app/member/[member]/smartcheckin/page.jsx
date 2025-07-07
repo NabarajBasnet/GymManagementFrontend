@@ -6,6 +6,7 @@ import { FaClock, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { motion } from "framer-motion";
 import io from 'socket.io-client';
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 const socket = io('http://localhost:5000', {
     transports: ['websocket'],
 });
@@ -31,9 +32,6 @@ export default function CheckInCard() {
 
     const [organizationLat, setOrganizationLat] = useState(null);
     const [organizationLng, setOrganizationLng] = useState(null);
-
-    console.log(organizationLat);
-    console.log(organizationLng);
 
     useEffect(() => {
         socket.emit('member-join-room', orgOrBranchId || '');
@@ -141,6 +139,8 @@ export default function CheckInCard() {
 
     const radius = 50;
 
+    const tooFar = distance >= radius
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4 py-8">
             <div className="w-full max-w-md dark:bg-gray-900">
@@ -157,35 +157,14 @@ export default function CheckInCard() {
                     {/* Content */}
                     <div className="p-6 space-y-6">
                         {/* Check In Button */}
-                        <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
+                        <Button
                             onClick={requestForCheckin}
-                            disabled={isCheckingIn || checkInSuccess}
-                            className={`w-full py-4 rounded-xl shadow-sm flex items-center justify-center space-x-2 transition-all
-                                ${checkInSuccess ? 'bg-emerald-100 text-emerald-700' :
-                                    isCheckingIn ? 'bg-gray-200 text-gray-600' :
-                                        'bg-emerald-500 hover:bg-emerald-600 text-white'}`}
+                            disabled={tooFar}
+                            className='w-full py-7 bg-emerald-500 hover:bg-emerald-600 rounded-xl text-white text-lg'
                         >
-                            {checkInSuccess ? (
-                                <>
-                                    <FaCheckCircle className="text-xl" />
-                                    <span className="font-semibold">Checked In Successfully</span>
-                                </>
-                            ) : isCheckingIn ? (
-                                <>
-                                    <div className="w-5 h-5 border-2 border-gray-500 border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="font-semibold">Processing...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="p-1 bg-white/20 rounded-full">
-                                        <FaCheckCircle className="text-lg" />
-                                    </div>
-                                    <span className="font-semibold">Check In Now</span>
-                                </>
-                            )}
-                        </motion.button>
+                            <FaCheckCircle className="text-lg" />
+                            Check In Now
+                        </Button>
 
                         {/* Divider */}
                         <div className="relative flex items-center">
@@ -193,19 +172,6 @@ export default function CheckInCard() {
                             <span className="flex-shrink mx-4 text-gray-400 text-sm">OR</span>
                             <div className="flex-grow border-t border-gray-200"></div>
                         </div>
-
-                        {/* Tag Location Button */}
-                        <motion.button
-                            onClick={() => setRefetchState(!refetchState)}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            className="w-full py-4 bg-white border border-blue-100 rounded-xl shadow-sm flex items-center justify-center space-x-2 text-blue-600 hover:bg-blue-50 transition-all"
-                        >
-                            <div className="p-1 bg-blue-100/50 rounded-full">
-                                <FaMapMarkerAlt className="text-lg" />
-                            </div>
-                            <span className="font-semibold">Tag My Location</span>
-                        </motion.button>
 
                         {/* User Info */}
                         <div className="pt-4 border-t border-gray-100">
