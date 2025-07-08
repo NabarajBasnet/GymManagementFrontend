@@ -186,7 +186,7 @@ const SmartAttendanceDashboard = () => {
             <div className="max-w-7xl mx-auto">
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-6 overflow-hidden">
-                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-md p-6">
+                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-6">
                                 <div className="relative">
@@ -428,8 +428,8 @@ const SmartAttendanceDashboard = () => {
                 </div>
 
                 {/* Attendance History */}
-                <div className="mt-8">
-                    <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
+                <div className="mt-6">
+                    <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
                         <div className="bg-gradient-to-r from-slate-700 to-slate-900 p-6">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4">
