@@ -7,7 +7,7 @@ import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
 import { useQuery } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
-import { QrCode, Search, User, Calendar, Timer } from 'lucide-react';
+import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -64,6 +64,13 @@ const SmartAttendanceDashboard = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [locationPermission, setLocationPermissionState] = useState('');
+    const [responseData, setResponseData] = useState(null);
+    const [responseMessage, setResponseMessage] = useState(null);
+    const [textareaColor, setTextAreaColor] = useState('');
+
+    console.log(responseData)
+    console.log(responseMessage)
+
     console.log(locationPermission)
 
     navigator.permissions.query({ name: 'geolocation' })
@@ -114,9 +121,11 @@ const SmartAttendanceDashboard = () => {
             });
 
             const responseBody = await response.json();
-
+            setResponseData(responseBody);
+            setResponseMessage(responseBody.message)
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
                 toast.error(responseBody.message);
+                setTextAreaColor('text-red-500');
                 const message = {
                     message: responseBody.message,
                     status: response.status
@@ -125,6 +134,7 @@ const SmartAttendanceDashboard = () => {
             }
 
             if (response.status === 200) {
+                setTextAreaColor('text-green-600');
                 toast.success(responseBody.message);
                 const message = {
                     message: responseBody.message,
@@ -135,6 +145,7 @@ const SmartAttendanceDashboard = () => {
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
                 setMembershipHoldToggle(true);
+                setTextAreaColor('text-yellow-600');
                 const message = {
                     message: responseBody.message,
                     status: response.status
@@ -145,6 +156,7 @@ const SmartAttendanceDashboard = () => {
 
             if (response.status !== 403 && response.status !== 200) {
                 toast.error(responseBody.message);
+                setTextAreaColor('text-red-600');
                 const message = {
                     message: responseBody.message,
                     status: response.status
@@ -153,6 +165,7 @@ const SmartAttendanceDashboard = () => {
             }
             return response;
         } catch (error) {
+            setTextAreaColor('text-red-600');
             console.log('Error: ', error);
             const message = {
                 message: responseBody.message,
@@ -482,27 +495,37 @@ const SmartAttendanceDashboard = () => {
                                 </div>
 
                                 {/* QR Code Scanner Area */}
-                                <div className="space-y-4">
-                                    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                                <div>
+                                    <Label className="text-sm font-medium text-gray-700 mb-2 block dark:text-gray-200">
                                         Attendance Message
-                                    </h3>
-                                    <div className="relative bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 rounded-xl p-6 border border-slate-200 dark:border-slate-600">
-                                        <div className="flex flex-col items-center justify-center text-center space-y-4">
-                                            <div className="relative">
-                                                <div className="absolute -inset-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full blur opacity-20"></div>
-                                                <div className="relative p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full">
-                                                    <QrCode className="h-8 w-8 text-white" />
+                                    </Label>
+                                    <div className={`relative bg-gray-50 dark:bg-slate-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4`}>
+                                        {responseMessage && (
+                                            <div className={`flex items-start ${textareaColor}`}>
+                                                <div className="flex-shrink-0 mt-0.5">
+                                                    {textareaColor === 'text-green-600' ? (
+                                                        <CheckCircle className="h-5 w-5 text-green-600" />
+                                                    ) : textareaColor === 'text-red-600' ? (
+                                                        <AlertCircle className="h-5 w-5 text-red-600" />
+                                                    ) : textareaColor === 'text-yellow-600' ? (
+                                                        <FaExclamationTriangle className="h-5 w-5 text-yellow-600" />
+                                                    ) : (
+                                                        <Info className="h-5 w-5 text-slate-600" />
+                                                    )}
+                                                </div>
+                                                <div className="ml-3">
+                                                    <p className="text-sm font-medium">
+                                                        {responseMessage || "No message available"}
+                                                    </p>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <p className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-1">
-                                                    Ready to Scan
-                                                </p>
-                                                <p className="text-xs text-slate-500 dark:text-slate-400">
-                                                    Scan a membership QR code to display information
-                                                </p>
+                                        )}
+                                        {!responseMessage && (
+                                            <div className="flex flex-col items-center justify-center py-4 text-center text-gray-500">
+                                                <QrCode className="h-8 w-8 mb-2 opacity-50" />
+                                                <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
                             </CardContent>
