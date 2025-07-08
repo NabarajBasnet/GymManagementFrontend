@@ -1,5 +1,17 @@
 "use client";
 
+import { BiLoaderCircle } from "react-icons/bi";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
     Accordion,
     AccordionContent,
@@ -30,6 +42,7 @@ import io from 'socket.io-client';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import Loader from "@/components/Loader/Loader";
 
 const socket = io('http://localhost:5000', {
     transports: ['websocket'],
@@ -54,6 +67,7 @@ export default function CheckInCard() {
     const [memberLng, setMemberLng] = useState(null);
     const [locationError, setLocationError] = useState(null);
     const [refetchState, setRefetchState] = useState(false);
+    const [checkInRequested, setCheckInRequested] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
 
     const [organizationLat, setOrganizationLat] = useState(null);
@@ -131,8 +145,10 @@ export default function CheckInCard() {
                 roomId,
                 message: checkInReqMessage
             });
+            setCheckInRequested(true);
         } catch (error) {
             setIsCheckingIn(false);
+            setCheckInRequested(false);
         }
     };
 
@@ -196,6 +212,33 @@ export default function CheckInCard() {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="max-w-4xl mx-auto">
                 {/* Header Card with Time */}
+                <AlertDialog open={checkInRequested}>
+                    <AlertDialogContent className="dark:bg-slate-800 bg-white dark:border-none border-none shadow-xl rounded-xl max-w-md text-sm">
+                        <AlertDialogHeader className="space-y-1">
+                            <div className="flex items-center gap-2 text-primary">
+                                <BiLoaderCircle className="animate-spin w-5 h-5" />
+                                <AlertDialogTitle className="text-base font-semibold">
+                                    Sending Check-In Request
+                                </AlertDialogTitle>
+                            </div>
+                            <AlertDialogDescription className="text-muted-foreground">
+                                Your attendance check-in request has been sent. Please wait for the response from gym.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <div className="flex items-center justify-center pt-4">
+                            <div className="flex flex-col items-center gap-1">
+                                <BiLoaderCircle className="w-8 h-8 animate-spin text-primary" />
+                                <p className="text-xs text-muted-foreground">Awaiting response...</p>
+                            </div>
+                        </div>
+
+                        <AlertDialogFooter>
+                            {/* Optional footer button or message */}
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
                 <Card className="mb-6 bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
                     <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 p-6 text-white rounded-t-lg">
                         <div className="flex items-center justify-between">

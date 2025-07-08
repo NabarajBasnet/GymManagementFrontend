@@ -183,7 +183,7 @@ const SmartAttendanceDashboard = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full mx-auto">
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-6 overflow-hidden">
                     <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-6">
@@ -197,7 +197,7 @@ const SmartAttendanceDashboard = () => {
                                 </div>
                                 <div>
                                     <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-white dark:via-blue-400 dark:to-indigo-400">
-                                        Smart Attendance System
+                                        Member Attendance
                                     </h1>
                                     <p className="text-slate-600 dark:text-slate-300 font-medium mt-2">
                                         Real-time member check-ins with geolocation validation
@@ -563,7 +563,7 @@ const SmartAttendanceDashboard = () => {
 
                 {/* Check-In Authorization Dialog */}
                 <AlertDialog open={openMemberCheckInAlert} onOpenChange={setMemberCheckInAlert}>
-                    <AlertDialogContent className="max-w-md rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-0 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] backdrop-blur-sm overflow-hidden">
+                    <AlertDialogContent className="max-w-xl rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-0 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] backdrop-blur-sm overflow-hidden">
                         <div className="relative">
                             <AlertDialogHeader className="px-8 pt-6 pb-4">
                                 <div className="mb-4 flex justify-center">
