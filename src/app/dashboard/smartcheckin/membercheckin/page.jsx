@@ -45,6 +45,8 @@ const SmartAttendanceDashboard = () => {
         return feature.toString() === 'Multi Branch Support'
     })
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
+    const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
+    console.log(orgOrBranchId)
 
     // States
     const [sessionActive, setSessionActive] = useState(false)
@@ -82,6 +84,16 @@ const SmartAttendanceDashboard = () => {
             socket.off('request-checkin', handleRequestCheckin);
         };
     }, []);
+
+    const acceptCheckInReq = async () => {
+        socket.on('checkin-req-accept', (incomingId) => {
+            console.log(incomingId)
+        })
+    }
+
+    const rejectCheckInReq = async () => {
+        socket.emit('checkin-req-rejected', {orgOrBranchId})
+    }
 
     const enableMemberCheckInFlag = async () => {
         try {
@@ -472,12 +484,7 @@ const SmartAttendanceDashboard = () => {
 
                             {/* Attendance Records */}
                             {isAttendanceHistory ? (
-                                <div className="flex justify-center items-center p-16">
-                                    <div className="text-center">
-                                        <Loader />
-                                        <p className="text-slate-500 dark:text-slate-400 mt-4">Loading attendance records...</p>
-                                    </div>
-                                </div>
+                                <Loader />
                             ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
                                 <div className="space-y-3">
                                     {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
@@ -588,7 +595,9 @@ const SmartAttendanceDashboard = () => {
 
                         <AlertDialogFooter className="px-8 pb-6 pt-4">
                             <div className="flex w-full gap-3">
-                                <AlertDialogCancel className="flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                                <AlertDialogCancel
+                                    onClick={() => rejectCheckInReq()}
+                                    className="flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -607,31 +616,7 @@ const SmartAttendanceDashboard = () => {
                                 </AlertDialogCancel>
 
                                 <AlertDialogAction
-                                    onClick={async () => {
-                                        try {
-                                            // Implement authorization logic here
-                                            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attendance/authorize-checkin`, {
-                                                method: 'POST',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({
-                                                    memberId,
-                                                    authorizedBy: user._id
-                                                })
-                                            });
-
-                                            if (response.ok) {
-                                                toast.success('Check-in authorized successfully');
-                                            } else {
-                                                throw new Error('Failed to authorize check-in');
-                                            }
-                                        } catch (error) {
-                                            toast.error(error.message);
-                                        } finally {
-                                            setMemberCheckInAlert(false);
-                                        }
-                                    }}
+                                    onClick={() => acceptCheckInReq()}
                                     className="flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                                 >
                                     <svg

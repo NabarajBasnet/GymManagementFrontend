@@ -3,8 +3,6 @@
 import { BiLoaderCircle } from "react-icons/bi";
 import {
     AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
     AlertDialogFooter,
@@ -42,7 +40,7 @@ import io from 'socket.io-client';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import Loader from "@/components/Loader/Loader";
+import { MdClose } from "react-icons/md";
 
 const socket = io('http://localhost:5000', {
     transports: ['websocket'],
@@ -51,7 +49,6 @@ const socket = io('http://localhost:5000', {
 export default function CheckInCard() {
     const { member } = useMember();
     const loggedInMember = member?.loggedInMember;
-    console.log(loggedInMember);
     const tenantFeatures = loggedInMember?.tenant?.subscription?.subscriptionFeatures;
     const multiBranchSupport = tenantFeatures?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
@@ -60,7 +57,7 @@ export default function CheckInCard() {
     const orgOrBranchId = (multiBranchSupport || onFreeTrail)
         ? loggedInMember?.organizationBranch?._id
         : loggedInMember?.organization?._id;
-
+    console.log(orgOrBranchId);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [checkInSuccess, setCheckInSuccess] = useState(false);
     const [memberLat, setMemberLat] = useState(null);
@@ -87,6 +84,7 @@ export default function CheckInCard() {
 
     useEffect(() => {
         const handleSessionStart = (incomingId) => {
+            console.log(incomingId, orgOrBranchId)
             if (incomingId === orgOrBranchId) {
                 new Notification("The gym is open", { body: "Lets start repping those gains 💪" });
                 setRefetchState((prev) => !prev);
@@ -105,6 +103,22 @@ export default function CheckInCard() {
             new Notification('Gym session closed')
         })
     }, [orgOrBranchId])
+
+    useEffect(() => {
+        if (!orgOrBranchId) return;
+        const handleDeclinedReq = (incomingId) => {
+            console.log(incomingId, orgOrBranchId)
+            if (incomingId.toString() === orgOrBranchId.toString()) {
+                console.log('Incoming id: ', incomingId)
+                setCheckInRequested(false);
+                new Notification('Request Rejected')
+            }
+        }
+
+        socket.on('checkin-req-declined', handleDeclinedReq);
+
+        return () => socket.off('checkin-req-declined', handleDeclinedReq)
+    }, [orgOrBranchId]);
 
     useEffect(() => {
         if ('geolocation' in navigator) {
@@ -190,30 +204,30 @@ export default function CheckInCard() {
 
     let disableButton = distance >= radius;
 
-    const formatTime = (date) => {
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-    };
+    // const formatTime = (date) => {
+    //     return date.toLocaleTimeString('en-US', {
+    //         hour: '2-digit',
+    //         minute: '2-digit',
+    //         second: '2-digit',
+    //         hour12: true
+    //     });
+    // };
 
-    const formatDate = (date) => {
-        return date.toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-    };
+    // const formatDate = (date) => {
+    //     return date.toLocaleDateString('en-US', {
+    //         weekday: 'long',
+    //         year: 'numeric',
+    //         month: 'long',
+    //         day: 'numeric'
+    //     });
+    // };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="max-w-4xl mx-auto">
                 {/* Header Card with Time */}
                 <AlertDialog open={checkInRequested}>
-                    <AlertDialogContent className="dark:bg-slate-800 bg-white dark:border-none border-none shadow-xl rounded-xl max-w-md text-sm">
+                    <AlertDialogContent className="dark:bg-slate-800 bg-white dark:border-none border-none shadow-xl rounded-xl w-md md:max-w-md text-sm">
                         <AlertDialogHeader className="space-y-1">
                             <div className="flex items-center gap-2 text-primary">
                                 <BiLoaderCircle className="animate-spin w-5 h-5" />
@@ -258,8 +272,8 @@ export default function CheckInCard() {
                                     <Clock className="w-4 h-4" />
                                     <span className="text-sm font-medium">Current Time</span>
                                 </div>
-                                <div className="text-xl font-bold">{formatTime(currentTime)}</div>
-                                <div className="text-xs text-white/80">{formatDate(currentTime)}</div>
+                                {/* <div className="text-xl font-bold">{formatTime(currentTime)}</div> */}
+                                {/* <div className="text-xs text-white/80">{formatDate(currentTime)}</div> */}
                             </div>
                         </div>
                     </div>
