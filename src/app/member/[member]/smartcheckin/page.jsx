@@ -253,9 +253,12 @@ export default function CheckInCard() {
                         <AlertDialogHeader className="space-y-1">
                             <div className="flex items-center gap-2 text-primary">
                                 <BiLoaderCircle className="animate-spin w-5 h-5" />
-                                <AlertDialogTitle className="text-base font-semibold">
-                                    Sending Check-In Request
+                                <AlertDialogTitle className="w-full flex justify-between items-center text-base font-semibold">
+                                    <span>
+                                        Sending Check-In Request
+                                    </span>
                                     <MdClose
+                                        className="cursor-pointer"
                                         onClick={() => setCheckInRequested(false)}
                                     />
                                 </AlertDialogTitle>

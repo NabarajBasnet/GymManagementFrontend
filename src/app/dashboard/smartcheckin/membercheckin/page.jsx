@@ -126,7 +126,6 @@ const SmartAttendanceDashboard = () => {
     };
 
     const acceptCheckInReq = async () => {
-        console.log('To validate member id: ', memberId)
         handleMemberValidation(memberId)
     }
 
