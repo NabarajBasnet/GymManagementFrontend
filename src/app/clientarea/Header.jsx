@@ -143,7 +143,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   const logOutTenant = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/tenant/auth/logout`,
+        `https://fitbinary.com/api/tenant/auth/logout`,
         {
           method: "POST",
           headers: {

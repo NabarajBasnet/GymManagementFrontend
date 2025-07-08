@@ -80,7 +80,7 @@ const TenantManagement = () => {
 
   const getAllTenants = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/tenant");
+      const response = await fetch("https://fitbinary.com/api/tenant");
       const data = await response.json();
       return data;
     } catch (error) {
