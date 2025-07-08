@@ -14,7 +14,7 @@ import Loader from '@/components/Loader/Loader';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
 import { MdClose } from "react-icons/md";
-import { QrCode, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { Activity, QrCode, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -25,16 +25,11 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useEffect, useState } from "react";
-import {
-    Activity,
-    Play,
-    Square,
-    UserCircle2Icon
-} from "lucide-react";
+import { useEffect, useState, useRef } from "react";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
+import { TbReload } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -225,11 +220,9 @@ const SmartAttendanceDashboard = () => {
 
                     const resBody = await response.json();
 
-                    if (response.ok) {
-                        toast.success(resBody.message || 'Session Started');
-                    } else {
+                    if (!response.ok) {
                         toast.error(resBody.message || "Failed to update location");
-                    }
+                    };
                 },
                 (error) => {
                     console.error("Failed to get location:", error.message);
@@ -324,6 +317,22 @@ const SmartAttendanceDashboard = () => {
             setActivating(false);
         }
     };
+
+    // Authorize focus
+    const authorizeBtnRef = useRef(null);
+
+    useEffect(() => {
+        authorizeBtnRef.current?.focus();
+
+        const handleKeyDown = (e) => {
+            if (e.key === "Enter") {
+                acceptCheckInReq();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
@@ -457,7 +466,7 @@ const SmartAttendanceDashboard = () => {
                     {/* Session Control Panel */}
                     <div className="space-y-4">
                         <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3">
+                            <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600 p-3">
                                 <div className="flex items-center space-x-4">
                                     <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                                         <PiChartLineUpBold className="h-6 w-6 text-white" />
@@ -466,6 +475,12 @@ const SmartAttendanceDashboard = () => {
                                         <h2 className="text-xl font-bold text-white">Session Control Center</h2>
                                         <p className="text-blue-100 mt-1">Manage member check-in sessions</p>
                                     </div>
+                                </div>
+                                <div>
+                                    <Button onClick={() => window.location.reload()}>
+                                        <TbReload />
+                                        Reload
+                                    </Button>
                                 </div>
                             </div>
 
@@ -656,10 +671,7 @@ const SmartAttendanceDashboard = () => {
                                             </div>
                                         )}
                                         {!responseMessage && (
-                                            <div className="flex flex-col items-center justify-center py-4 text-center text-gray-500">
-                                                <QrCode className="h-8 w-8 mb-2 opacity-50" />
-                                                <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
-                                            </div>
+                                            <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
                                         )}
                                     </div>
                                 </div>
@@ -826,7 +838,9 @@ const SmartAttendanceDashboard = () => {
                             <div className="flex w-full gap-3">
                                 <AlertDialogCancel
                                     onClick={() => rejectCheckInReq()}
-                                    className="flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900">
+                                    className="flex-1 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-3 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                                >
+                                    {/* Decline icon */}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
@@ -845,9 +859,11 @@ const SmartAttendanceDashboard = () => {
                                 </AlertDialogCancel>
 
                                 <AlertDialogAction
+                                    ref={authorizeBtnRef}
                                     onClick={() => acceptCheckInReq()}
                                     className="flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                                 >
+                                    {/* Authorize icon */}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         width="16"
