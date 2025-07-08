@@ -75,6 +75,21 @@ export default function CheckInCard() {
     const [organizationLat, setOrganizationLat] = useState(null);
     const [organizationLng, setOrganizationLng] = useState(null);
 
+    // Helper function to format date and time
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        return new Date(dateString).toLocaleDateString('en-GB');
+    };
+
+    const formatTime = (date) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    };
+
     // Update current time every second
     useEffect(() => {
         const timer = setInterval(() => {
@@ -317,8 +332,8 @@ export default function CheckInCard() {
                                     <Clock className="w-4 h-4" />
                                     <span className="text-sm font-medium">Current Time</span>
                                 </div>
-                                {/* <div className="text-xl font-bold">{formatTime(currentTime)}</div> */}
-                                {/* <div className="text-xs text-white/80">{formatDate(currentTime)}</div> */}
+                                <div className="text-xl font-bold">{formatTime(currentTime)}</div>
+                                <div className="text-xs text-white/80">{formatDate(currentTime)}</div>
                             </div>
                         </div>
                     </div>

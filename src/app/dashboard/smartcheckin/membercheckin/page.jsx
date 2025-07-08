@@ -16,7 +16,7 @@ import Loader from '@/components/Loader/Loader';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
 import { MdClose } from "react-icons/md";
-import { Activity, QrCode, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { Activity, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -39,7 +39,7 @@ import { Input } from "@/components/ui/input";
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5000', {
-    transports: ['websocket'], // or ['websocket', 'polling']
+    transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
