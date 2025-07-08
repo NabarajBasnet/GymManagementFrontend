@@ -1,12 +1,19 @@
 'use client';
 
+import {
+    FaExclamationTriangle,
+    FaPlayCircle,
+    FaSpinner,
+} from 'react-icons/fa';
 import { MdLocationPin } from "react-icons/md";
 import { IoIosWifi } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
+import { MdClose } from "react-icons/md";
 import { QrCode, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import {
     AlertDialog,
@@ -52,13 +59,14 @@ const SmartAttendanceDashboard = () => {
     const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
 
     // States
+    const queryClient = useQueryClient();
     const [sessionActive, setSessionActive] = useState(false)
     const [openMemberCheckInAlert, setMemberCheckInAlert] = useState(false);
     const [memberName, setMemberName] = useState('')
     const [memberId, setMemberId] = useState('')
     const [currentLat, setCurrentLat] = useState(null);
     const [currentLng, setCurrentLng] = useState(null);
-
+    const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,8 +75,9 @@ const SmartAttendanceDashboard = () => {
     const [responseData, setResponseData] = useState(null);
     const [responseMessage, setResponseMessage] = useState(null);
     const [textareaColor, setTextAreaColor] = useState('');
+    const [activating, setActivating] = useState(false);
 
-   // Helper function to format dates
+    // Helper function to format dates
     const formatDate = (dateString) => {
         if (!dateString) return "";
         return new Date(dateString).toLocaleDateString('en-GB');
@@ -145,6 +154,7 @@ const SmartAttendanceDashboard = () => {
             };
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
+                setMembershipHoldToggle(true);
                 setMembershipHoldToggle(true);
                 setTextAreaColor('text-yellow-600');
                 const message = {
@@ -285,14 +295,137 @@ const SmartAttendanceDashboard = () => {
         });
     };
 
+    const activateMembership = async () => {
+        setActivating(true);
+        const membershipHoldData = { status: 'Active' };
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membershipHoldData)
+            });
+
+            const responseBody = await response.json();
+            if (response.status === 200) {
+                toast.success(responseBody.message);
+                setMembershipHoldToggle(false);
+            } else {
+                toast.error(responseBody.message)
+            }
+
+            queryClient.invalidateQueries(['members']);
+        } catch (error) {
+            console.error("Error:", error);
+            toast.error(error.message);
+        } finally {
+            setActivating(false);
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="w-full mx-auto">
+
+                {/* Membership Hold Modal */}
+                {membershipHoldToggle && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMembershipHoldToggle(false)}></div>
+                        <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg relative z-10 animate-scale-in-center">
+                            {/* Modal Header */}
+                            <div className="flex items-center justify-between mb-6">
+                                <div className="flex items-center space-x-3">
+                                    <div className="p-2 bg-amber-100 rounded-full">
+                                        <FaExclamationTriangle className="w-6 h-6 text-amber-600" />
+                                    </div>
+                                    <h2 className="text-xl font-bold text-gray-900">Membership On Hold</h2>
+                                </div>
+                                <button
+                                    onClick={() => setMembershipHoldToggle(false)}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    <MdClose className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            {/* Modal Body */}
+                            <div className="mb-6">
+                                <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 mb-4">
+                                    <div className="flex items-start">
+                                        <div className="flex-shrink-0">
+                                            <IoMdInformationCircleOutline className="w-5 h-5 text-amber-600 mt-0.5" />
+                                        </div>
+                                        <div className="ml-3">
+                                            <p className="text-amber-700 font-medium">
+                                                This membership has been paused for {responseData?.member?.pausedDays || 0} days.
+                                            </p>
+                                            <p className="text-amber-600 text-sm mt-1">
+                                                Reactivating will restore full access immediately.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="p-4 rounded-lg bg-gray-50 border border-gray-200">
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="space-y-1">
+                                            <p className="text-xs text-gray-500 font-medium">MEMBER</p>
+                                            <p className="font-medium">{responseData?.member?.fullName || "N/A"}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-xs text-gray-500 font-medium">MEMBERSHIP TYPE</p>
+                                            <p className="font-medium">{responseData?.member?.membershipType || "N/A"}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-xs text-gray-500 font-medium">START DATE</p>
+                                            <p className="font-medium">{formatDate(responseData?.member?.membershipDate)}</p>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-xs text-gray-500 font-medium">EXPIRATION DATE</p>
+                                            <p className="font-medium">{formatDate(responseData?.member?.membershipExpireDate)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Modal Footer */}
+                            <div className="flex justify-end gap-3">
+                                <Button
+                                    onClick={() => setMembershipHoldToggle(false)}
+                                    variant="outline"
+                                    className="px-4 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 text-gray-700 border-gray-300 hover:bg-gray-100 transition-colors"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={activateMembership}
+                                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white transition-colors flex items-center gap-2"
+                                    disabled={activating}
+                                >
+                                    {activating ? (
+                                        <>
+                                            <FaSpinner className="animate-spin w-4 h-4" />
+                                            Processing...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaPlayCircle className="w-4 h-4" />
+                                            Activate Membership
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-4 overflow-hidden">
-                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-6">
+                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-4">
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-6">
+                            <div className="flex items-center space-x-4">
                                 <div className="relative">
                                     <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-20"></div>
                                     <div className="relative p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl">
@@ -300,7 +433,7 @@ const SmartAttendanceDashboard = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-white dark:via-blue-400 dark:to-indigo-400">
+                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-white dark:via-blue-400 dark:to-indigo-400">
                                         Member Attendance
                                     </h1>
                                     <p className="text-slate-600 dark:text-slate-300 font-medium mt-2">
@@ -340,7 +473,7 @@ const SmartAttendanceDashboard = () => {
                                 <div className="grid grid-cols-1 gap-2">
                                     {/* Current Location Card */}
                                     <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg">
+                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
                                             <div className="flex items-center space-x-3 mb-4">
                                                 <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
                                                     <IoLocationOutline className="h-5 w-5 text-white" />
@@ -368,7 +501,7 @@ const SmartAttendanceDashboard = () => {
 
                                     {/* Detection Range Card */}
                                     <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg">
+                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
                                             <div className="flex items-center space-x-3 mb-4">
                                                 <div className="p-2 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg">
                                                     <IoIosWifi className="h-5 w-5 text-white" />
@@ -385,7 +518,7 @@ const SmartAttendanceDashboard = () => {
                                     </div>
 
                                     <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg">
+                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
                                             <div className="flex items-center space-x-3 mb-4">
                                                 <div className="p-2 bg-gradient-to-r from-blue-500 to-sky-600 rounded-lg">
                                                     <MdLocationPin className="h-5 w-5 text-white" />
@@ -444,7 +577,7 @@ const SmartAttendanceDashboard = () => {
 
                             <CardContent className="p-3 space-y-4">
                                 {/* Personal Details */}
-                                <div className="space-y-4">
+                                <div className="space-y-2">
                                     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                         Personal Details
                                     </h3>
