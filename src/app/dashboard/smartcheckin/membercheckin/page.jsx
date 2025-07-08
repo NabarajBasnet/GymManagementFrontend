@@ -80,20 +80,24 @@ const SmartAttendanceDashboard = () => {
         return new Date(dateString).toLocaleDateString('en-GB');
     };
 
-    navigator.permissions.query({ name: 'geolocation' })
-        .then((permissionStatus) => {
-            console.log('Geolocation permission state:', permissionStatus.state);
-            setLocationPermissionState(permissionStatus.state);
+    useEffect(() => {
+        // Check if we're in the browser before using navigator
+        if (typeof window !== 'undefined') {
+            navigator.permissions?.query?.({ name: 'geolocation' })
+                .then((permissionStatus) => {
+                    console.log('Geolocation permission state:', permissionStatus.state);
+                    setLocationPermissionState(permissionStatus.state);
 
-            // You can also listen to changes:
-            permissionStatus.onchange = () => {
-                setLocationPermissionState(permissionStatus.state);
-                console.log('Geolocation permission changed to:', permissionStatus.state);
-            };
-        })
-        .catch((err) => {
-            console.error('Permission check failed:', err);
-        });
+                    permissionStatus.onchange = () => {
+                        setLocationPermissionState(permissionStatus.state);
+                        console.log('Geolocation permission changed to:', permissionStatus.state);
+                    };
+                })
+                .catch((err) => {
+                    console.error('Permission check failed:', err);
+                });
+        }
+    }, []);
 
     useEffect(() => {
         const handleChatMessage = (data) => {
