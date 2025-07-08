@@ -683,9 +683,9 @@ const SmartAttendanceDashboard = () => {
                 </div>
 
                 {/* Attendance History */}
-                <div className="mt-6">
+                <div className="mt-4">
                     <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                        <div className="bg-gradient-to-r from-slate-700 to-slate-900 p-6">
+                        <div className="bg-gradient-to-r from-slate-700 to-slate-900 p-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-x-4">
                                     <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
@@ -704,9 +704,9 @@ const SmartAttendanceDashboard = () => {
                             </div>
                         </div>
 
-                        <CardContent className="p-6">
+                        <CardContent className="p-4">
                             {/* Enhanced Search */}
-                            <div className="mb-6">
+                            <div className="mb-4">
                                 <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
                                     Search Attendance Records
                                 </Label>
@@ -720,7 +720,7 @@ const SmartAttendanceDashboard = () => {
                                         placeholder="Search by name or member ID..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                        className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -733,7 +733,7 @@ const SmartAttendanceDashboard = () => {
                                     {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
                                         <div
                                             key={attendance._id}
-                                            className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-xl p-6 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
+                                            className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
                                         >
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center space-x-4">
