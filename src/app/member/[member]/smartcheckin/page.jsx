@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/accordion";
 import { useMember } from "@/components/Providers/LoggedInMemberProvider";
 import { useState, useEffect } from "react";
+import { PiHandTapBold } from "react-icons/pi";
 import {
     Clock,
     MapPin,
@@ -222,7 +223,7 @@ export default function CheckInCard() {
                 </Card>
 
                 <Card className='px-6 mb-6 bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl'>
-                    <Accordion type="single" collapsible className="w-full border-none" defaultValue="item-1">
+                    <Accordion type="single" collapsible className="w-full border-none">
                         <AccordionItem value="item-1" className='border-none'>
                             <AccordionTrigger>📍 How Smart Location-Based Check-In Works</AccordionTrigger>
                             <AccordionContent className="flex flex-col gap-3 text-muted-foreground text-sm leading-relaxed">
@@ -262,16 +263,17 @@ export default function CheckInCard() {
                 <div className="grid grid-cols-1 gap-6">
                     {/* Check-In Button */}
                     <Card className="bg-white/80 dark:bg-slate-800/90 backdrop-blur-sm border-0 dark:border-none shadow-xl">
-                        <div className="p-6">
+                        <h1 className="text-center text-primary pt-4 text-xl font-medium">Tap to request Check In</h1>
+                        <div className="w-full flex justify-center items-center p-6">
                             <Button
                                 onClick={requestForCheckin}
                                 disabled={disableButton}
-                                className={`w-full text-white py-7 rounded-xl text-lg font-semibold transition-all duration-300 ${disableButton
+                                className={`max-w-xl flex flex-col items-center justify-center text-white py-10 rounded-xl text-lg font-semibold transition-all duration-300 ${disableButton
                                     ? 'bg-gray-400 hover:bg-gray-500 cursor-not-allowed'
                                     : 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 shadow-lg hover:shadow-xl transform hover:-translate-y-1'
                                     }`}
                             >
-                                <CheckCircle className="w-6 h-6 mr-2" />
+                                <PiHandTapBold className="w-10 h-10" />
                                 {disableButton ? 'Too Far to Check In' : 'Request Check In'}
                             </Button>
                         </div>
