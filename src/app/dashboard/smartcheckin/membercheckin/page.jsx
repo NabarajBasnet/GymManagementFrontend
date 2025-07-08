@@ -100,7 +100,10 @@ const SmartAttendanceDashboard = () => {
 
             if (response.status === 200) {
                 toast.success(responseBody.message);
-                const message = responseBody.message
+                const message = {
+                    message: responseBody.message,
+                    status: response.status
+                };
                 socket.emit('check-in-req-successful', { message })
             };
 
@@ -125,8 +128,6 @@ const SmartAttendanceDashboard = () => {
     const acceptCheckInReq = async () => {
         console.log('To validate member id: ', memberId)
         handleMemberValidation(memberId)
-        socket.on('checkin-req-accept', (incomingId) => {
-        })
     }
 
     const rejectCheckInReq = async () => {

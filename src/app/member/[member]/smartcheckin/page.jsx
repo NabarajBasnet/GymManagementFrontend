@@ -83,7 +83,6 @@ export default function CheckInCard() {
 
     useEffect(() => {
         const handleSessionStart = (incomingId) => {
-            console.log(incomingId, orgOrBranchId)
             if (incomingId === orgOrBranchId) {
                 setRefetchState((prev) => !prev);
             }
@@ -97,7 +96,6 @@ export default function CheckInCard() {
 
     useEffect(() => {
         socket.on('checkin-session-disabled', (incomingId) => {
-            console.log('Closing incoming id: ', incomingId);
         })
     }, [orgOrBranchId])
 
@@ -174,6 +172,21 @@ export default function CheckInCard() {
             setCheckInRequested(false);
         }
     };
+
+    // Handle successful check in response
+    useEffect(() => {
+        const handleSuccessFulResponse = (data) => {
+            const { message, status } = data;
+            if (status === 200) {
+                toast.success(message);
+                setCheckInRequested(false);
+            }
+        };
+
+        socket.on('checkin-req-successful', handleSuccessFulResponse);
+
+        return () => socket.off('checkin-req-successful', handleSuccessFulResponse);
+    }, [orgOrBranchId]);
 
     // Get organization position with dependency member lat, lng
     useEffect(() => {
