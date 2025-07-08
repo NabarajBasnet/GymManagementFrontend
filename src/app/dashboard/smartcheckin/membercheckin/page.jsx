@@ -46,9 +46,7 @@ const SmartAttendanceDashboard = () => {
     const { user: loggedInUser } = useUser();
     const user = loggedInUser?.user;
     const features = user?.tenant?.subscription?.subscriptionFeatures
-    const multiBranchSupport = features?.find((feature) => {
-        return feature.toString() === 'Multi Branch Support'
-    });
+    const multiBranchSupport = features?.some(feature => feature.toString() === 'Multi Branch Support');
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
     const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
 
@@ -158,46 +156,59 @@ const SmartAttendanceDashboard = () => {
     const enableMemberCheckInFlag = async () => {
         try {
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     const lat = position.coords.latitude;
                     const lng = position.coords.longitude;
+
                     setCurrentLat(lat);
                     setCurrentLng(lng);
+                    setSessionActive(true);
+
+                    const orgOrBranchId = (multiBranchSupport || onFreeTrail)
+                        ? user?.organizationBranch?._id
+                        : user?.organization?._id;
+
+                    socket.emit('start-member-checkin-session', { orgOrBranchId });
+                    const apiUrl = (multiBranchSupport || onFreeTrail)
+                        ? `http://localhost:3000/api/organizationbranch/toggle-membercheckin-flag`
+                        : `http://localhost:3000/api/organization/toggle-member-checkin`;
+
+                    const response = await fetch(apiUrl, {
+                        method: "PUT",
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ currentLat: lat, currentLng: lng })
+                    });
+
+                    const resBody = await response.json();
+
+                    if (response.ok) {
+                        toast.success(resBody.message || 'Session Started');
+                    } else {
+                        toast.error(resBody.message || "Failed to update location");
+                    }
                 },
                 (error) => {
                     console.error("Failed to get location:", error.message);
+                    toast.error("Location permission denied or error occurred");
                 },
                 { enableHighAccuracy: true }
             );
 
-            setSessionActive(true);
-            const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
-            socket.emit('start-member-checkin-session', { orgOrBranchId })
-            toast.success('Member Check In Session Started');
-
-            if (multiBranchSupport || onFreeTrail) {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag?status=${true}`, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ currentLat, currentLng })
-                });
-            } else {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin?status=${true}`, {
-                    method: "PUT",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ currentLat, currentLng })
-                });
-            };
-
         } catch (error) {
-            console.log('Error: ', error.message)
+            console.log('Error:', error.message);
             toast.error(error.message);
-        };
+        }
     };
+
+    useEffect(() => {
+        const run = async () => {
+            await enableMemberCheckInFlag();
+        };
+
+        run();
+    }, [orgOrBranchId]);
 
     const disableCheckInSession = async () => {
         toast.success('Member Check In Session Closed');
@@ -315,7 +326,7 @@ const SmartAttendanceDashboard = () => {
 
                             <CardContent className="p-6">
                                 <div className="grid grid-cols-1 gap-4 mb-6">
-                                    <Button
+                                    {/* <Button
                                         onClick={enableMemberCheckInFlag}
                                         disabled={sessionActive}
                                         className="group relative h-16 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl overflow-hidden"
@@ -328,7 +339,7 @@ const SmartAttendanceDashboard = () => {
                                         {sessionActive && (
                                             <div className="absolute top-2 right-2 w-3 h-3 bg-white rounded-full animate-pulse"></div>
                                         )}
-                                    </Button>
+                                    </Button> */}
 
                                     <Button
                                         onClick={disableCheckInSession}
