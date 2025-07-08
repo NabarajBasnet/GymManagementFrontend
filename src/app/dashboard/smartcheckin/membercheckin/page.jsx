@@ -31,9 +31,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
+
 const socket = io('http://localhost:5000', {
-    transports: ['websocket'],
+    transports: ['websocket'], // or ['websocket', 'polling']
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000,
 });
 
 const SmartAttendanceDashboard = () => {
@@ -95,7 +101,11 @@ const SmartAttendanceDashboard = () => {
 
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
                 toast.error(responseBody.message);
-                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+                const message = {
+                    message: responseBody.message,
+                    status: response.status
+                };
+                socket.emit('check-in-req-error', { message })
             }
 
             if (response.status === 200) {
@@ -109,18 +119,30 @@ const SmartAttendanceDashboard = () => {
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
                 setMembershipHoldToggle(true);
-                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+                const message = {
+                    message: responseBody.message,
+                    status: response.status
+                };
+                socket.emit('check-in-req-error', { message })
                 toast.error(responseBody.message);
             }
 
             if (response.status !== 403 && response.status !== 200) {
                 toast.error(responseBody.message);
-                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+                const message = {
+                    message: responseBody.message,
+                    status: response.status
+                };
+                socket.emit('check-in-req-error', { message })
             }
             return response;
         } catch (error) {
             console.log('Error: ', error);
-            socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+            const message = {
+                message: responseBody.message,
+                status: response.status
+            };
+            socket.emit('check-in-req-error', { message })
             toast.error(error.message);
         }
     };

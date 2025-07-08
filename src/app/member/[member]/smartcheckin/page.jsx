@@ -36,14 +36,20 @@ import {
     AlertCircle,
     Users
 } from "lucide-react";
-import io from 'socket.io-client';
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { MdClose } from "react-icons/md";
 
+import { io } from 'socket.io-client';
+
 const socket = io('http://localhost:5000', {
-    transports: ['websocket'],
+    transports: ['websocket'], // or ['websocket', 'polling']
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000,
 });
 
 export default function CheckInCard() {
@@ -183,9 +189,24 @@ export default function CheckInCard() {
             }
         };
 
-        socket.on('checkin-req-successful', handleSuccessFulResponse);
+        socket.on('checkin-req-unsuccessful', handleSuccessFulResponse);
 
-        return () => socket.off('checkin-req-successful', handleSuccessFulResponse);
+        return () => socket.off('checkin-req-unsuccessful', handleSuccessFulResponse);
+    }, [orgOrBranchId]);
+
+    // Handle unsuccessful check in response
+    useEffect(() => {
+        const handleErrorResponse = (data) => {
+            const { message, status } = data;
+            if (status !== 200) {
+                toast.error(message);
+                setCheckInRequested(false);
+            }
+        };
+
+        socket.on('checkin-req-unsuccessful', handleErrorResponse);
+
+        return () => socket.off('checkin-req-unsuccessful', handleErrorResponse);
     }, [orgOrBranchId]);
 
     // Get organization position with dependency member lat, lng
