@@ -57,7 +57,6 @@ export default function CheckInCard() {
     const orgOrBranchId = (multiBranchSupport || onFreeTrail)
         ? loggedInMember?.organizationBranch?._id
         : loggedInMember?.organization?._id;
-    console.log(orgOrBranchId);
     const [isCheckingIn, setIsCheckingIn] = useState(false);
     const [checkInSuccess, setCheckInSuccess] = useState(false);
     const [memberLat, setMemberLat] = useState(null);
@@ -86,7 +85,6 @@ export default function CheckInCard() {
         const handleSessionStart = (incomingId) => {
             console.log(incomingId, orgOrBranchId)
             if (incomingId === orgOrBranchId) {
-                new Notification("The gym is open", { body: "Lets start repping those gains 💪" });
                 setRefetchState((prev) => !prev);
             }
         };
@@ -100,18 +98,29 @@ export default function CheckInCard() {
     useEffect(() => {
         socket.on('checkin-session-disabled', (incomingId) => {
             console.log('Closing incoming id: ', incomingId);
-            new Notification('Gym session closed')
         })
     }, [orgOrBranchId])
 
     useEffect(() => {
+        if ('Notification' in window && Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    }, []);
+
+    useEffect(() => {
         if (!orgOrBranchId) return;
         const handleDeclinedReq = (incomingId) => {
-            console.log(incomingId, orgOrBranchId)
             if (incomingId.toString() === orgOrBranchId.toString()) {
-                console.log('Incoming id: ', incomingId)
                 setCheckInRequested(false);
-                new Notification('Request Rejected')
+                if (Notification.permission === 'granted') {
+                    toast.error("Request was rejected.");
+                    new Notification('Request Rejected', {
+                        body: 'Your check-in request was declined by the gym.'
+                    });
+                } else {
+                    toast.error("Request was rejected.");
+                    console.log("Notification not shown: permission not granted.");
+                }
             }
         }
 
@@ -233,6 +242,9 @@ export default function CheckInCard() {
                                 <BiLoaderCircle className="animate-spin w-5 h-5" />
                                 <AlertDialogTitle className="text-base font-semibold">
                                     Sending Check-In Request
+                                    <MdClose
+                                        onClick={() => setCheckInRequested(false)}
+                                    />
                                 </AlertDialogTitle>
                             </div>
                             <AlertDialogDescription className="text-muted-foreground">

@@ -4,10 +4,9 @@ import { IoIosWifi } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
-import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
-import { LuUsers } from "react-icons/lu";
+import { QrCode, Search, User, Calendar, Timer } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -43,10 +42,9 @@ const SmartAttendanceDashboard = () => {
     const features = user?.tenant?.subscription?.subscriptionFeatures
     const multiBranchSupport = features?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
-    })
+    });
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
     const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
-    console.log(orgOrBranchId)
 
     // States
     const [sessionActive, setSessionActive] = useState(false)
@@ -67,7 +65,6 @@ const SmartAttendanceDashboard = () => {
         };
 
         const handleRequestCheckin = (data) => {
-            console.log("Request message: ", data);
             if (data.split('-')[0] === 'checkin_req') {
                 setMemberCheckInAlert(true);
                 setMemberName(data.split('-')[3]);
@@ -85,14 +82,55 @@ const SmartAttendanceDashboard = () => {
         };
     }, []);
 
+    const handleMemberValidation = async (memberId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ memberId }),
+            });
+
+            const responseBody = await response.json();
+
+            if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
+                toast.error(responseBody.message);
+                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+            }
+
+            if (response.status === 200) {
+                toast.success(responseBody.message);
+                const message = responseBody.message
+                socket.emit('check-in-req-successful', { message })
+            };
+
+            if (response.status === 403 && responseBody.member?.status === 'OnHold') {
+                setMembershipHoldToggle(true);
+                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+                toast.error(responseBody.message);
+            }
+
+            if (response.status !== 403 && response.status !== 200) {
+                toast.error(responseBody.message);
+                socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+            }
+            return response;
+        } catch (error) {
+            console.log('Error: ', error);
+            socket.emit('check-in-req-error', { orgOrBranchId, memberId })
+            toast.error(error.message);
+        }
+    };
+
     const acceptCheckInReq = async () => {
+        console.log('To validate member id: ', memberId)
+        handleMemberValidation(memberId)
         socket.on('checkin-req-accept', (incomingId) => {
-            console.log(incomingId)
         })
     }
 
     const rejectCheckInReq = async () => {
-        socket.emit('checkin-req-rejected', {orgOrBranchId})
+        socket.emit('checkin-req-rejected', { orgOrBranchId })
     }
 
     const enableMemberCheckInFlag = async () => {
@@ -192,6 +230,15 @@ const SmartAttendanceDashboard = () => {
     });
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
+
+    const formatTime = (date) => {
+        return new Date(date).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        });
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
