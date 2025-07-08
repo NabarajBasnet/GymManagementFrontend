@@ -7,7 +7,7 @@ import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
 import { useQuery } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
-import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { QrCode, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -68,10 +68,11 @@ const SmartAttendanceDashboard = () => {
     const [responseMessage, setResponseMessage] = useState(null);
     const [textareaColor, setTextAreaColor] = useState('');
 
-    console.log(responseData);
-    console.log(responseMessage)
-
-    console.log(locationPermission)
+   // Helper function to format dates
+    const formatDate = (dateString) => {
+        if (!dateString) return "";
+        return new Date(dateString).toLocaleDateString('en-GB');
+    };
 
     navigator.permissions.query({ name: 'geolocation' })
         .then((permissionStatus) => {
@@ -121,7 +122,6 @@ const SmartAttendanceDashboard = () => {
             });
 
             const responseBody = await response.json();
-            console.log(responseBody)
             setResponseData(responseBody);
             setResponseMessage(responseBody.message);
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
@@ -289,7 +289,7 @@ const SmartAttendanceDashboard = () => {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="w-full mx-auto">
                 {/* Modern Header with Glassmorphism Effect */}
-                <div className="relative mb-6 overflow-hidden">
+                <div className="relative mb-4 overflow-hidden">
                     <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-6">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-6">
@@ -320,11 +320,11 @@ const SmartAttendanceDashboard = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {/* Session Control Panel */}
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                         <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+                            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3">
                                 <div className="flex items-center space-x-4">
                                     <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                                         <PiChartLineUpBold className="h-6 w-6 text-white" />
@@ -336,7 +336,7 @@ const SmartAttendanceDashboard = () => {
                                 </div>
                             </div>
 
-                            <CardContent className="p-6">
+                            <CardContent className="p-3">
                                 <div className="grid grid-cols-1 gap-2">
                                     {/* Current Location Card */}
                                     <div className="relative group">
@@ -428,9 +428,9 @@ const SmartAttendanceDashboard = () => {
                     </div>
 
                     {/* Member Information Panel */}
-                    <div className="">
+                    <div>
                         <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden h-fit">
-                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6">
+                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-3">
                                 <div className="flex items-center space-x-4">
                                     <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
                                         <User className="h-6 w-6 text-white" />
@@ -442,20 +442,20 @@ const SmartAttendanceDashboard = () => {
                                 </div>
                             </div>
 
-                            <CardContent className="p-6 space-y-6">
+                            <CardContent className="p-3 space-y-4">
                                 {/* Personal Details */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                         Personal Details
                                     </h3>
-                                    <div className="space-y-3">
-                                        <div>
+                                    <div className="flex items-center space-x-3">
+                                        <div className="w-full">
                                             <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Full Name</Label>
                                             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
                                                 {responseData?.member?.fullName || 'Member Name'}
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="w-full">
                                             <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Category</Label>
                                             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
                                                 {responseData?.membershipType || 'Type'}
@@ -465,7 +465,7 @@ const SmartAttendanceDashboard = () => {
                                 </div>
 
                                 {/* Membership Details */}
-                                <div className="space-y-4">
+                                <div className="space-y-2">
                                     <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
                                         Membership Details
                                     </h3>
@@ -482,14 +482,14 @@ const SmartAttendanceDashboard = () => {
                                                 <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Start Date</Label>
                                                 <Input
                                                     className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                    value={new Date(responseData?.member?.membershipRenewDate).toISOString().split("T")[0] || 'Start Date'}
+                                                    value={formatDate(responseData?.member?.membershipRenewDate)}
                                                 />
                                             </div>
                                             <div>
                                                 <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Expire Date</Label>
                                                 <Input
                                                     className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                    value={new Date(responseData?.membershipExpireDate).toISOString().split("T")[0] || 'Expire Date'}
+                                                    value={formatDate(responseData?.membershipExpireDate)}
                                                 />
                                             </div>
                                         </div>
