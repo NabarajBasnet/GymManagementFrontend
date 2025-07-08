@@ -273,7 +273,7 @@ export default function CheckInCard() {
                     <AlertDialogContent className="dark:bg-slate-800 bg-white dark:border-none border-none shadow-xl rounded-xl w-md md:max-w-md text-sm">
                         <AlertDialogHeader className="space-y-1">
                             <div className="flex items-center gap-2 text-primary">
-                                <BiLoaderCircle className="animate-spin w-5 h-5" />
+                                <BiLoaderCircle className="w-5 h-5" />
                                 <AlertDialogTitle className="w-full flex justify-between items-center text-base font-semibold">
                                     <span>
                                         Sending Check-In Request
@@ -295,10 +295,6 @@ export default function CheckInCard() {
                                 <p className="text-xs text-muted-foreground">Awaiting response...</p>
                             </div>
                         </div>
-
-                        <AlertDialogFooter>
-                            {/* Optional footer button or message */}
-                        </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
 

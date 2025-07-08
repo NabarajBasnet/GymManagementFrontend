@@ -1,5 +1,6 @@
 'use client';
 
+import { MdLocationPin } from "react-icons/md";
 import { IoIosWifi } from "react-icons/io";
 import { IoLocationOutline } from "react-icons/io5";
 import { PiChartLineUpBold } from "react-icons/pi";
@@ -62,6 +63,23 @@ const SmartAttendanceDashboard = () => {
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+    const [locationPermission, setLocationPermissionState] = useState('');
+    console.log(locationPermission)
+
+    navigator.permissions.query({ name: 'geolocation' })
+        .then((permissionStatus) => {
+            console.log('Geolocation permission state:', permissionStatus.state);
+            setLocationPermissionState(permissionStatus.state);
+
+            // You can also listen to changes:
+            permissionStatus.onchange = () => {
+                setLocationPermissionState(permissionStatus.state);
+                console.log('Geolocation permission changed to:', permissionStatus.state);
+            };
+        })
+        .catch((err) => {
+            console.error('Permission check failed:', err);
+        });
 
     useEffect(() => {
         const handleChatMessage = (data) => {
@@ -210,26 +228,6 @@ const SmartAttendanceDashboard = () => {
         run();
     }, [orgOrBranchId]);
 
-    const disableCheckInSession = async () => {
-        toast.success('Member Check In Session Closed');
-        setSessionActive(false);
-        const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? user?.organizationBranch?._id : user?.organization?._id
-        socket.emit('close-member-checkin-session', { orgOrBranchId })
-        try {
-            if (multiBranchSupport || onFreeTrail) {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organizationbranch/toggle-membercheckin-flag?status=${false}`, {
-                    method: "PUT",
-                });
-            } else {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/toggle-member-checkin?status=${false}`, {
-                    method: "PUT",
-                });
-            };
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    }
-
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => clearTimeout(handler);
@@ -325,35 +323,6 @@ const SmartAttendanceDashboard = () => {
                             </div>
 
                             <CardContent className="p-6">
-                                <div className="grid grid-cols-1 gap-4 mb-6">
-                                    {/* <Button
-                                        onClick={enableMemberCheckInFlag}
-                                        disabled={sessionActive}
-                                        className="group relative h-16 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        <div className="relative flex items-center justify-center space-x-3">
-                                            <Play className="h-5 w-5" />
-                                            <span>{sessionActive ? "Session Running" : "Start Session"}</span>
-                                        </div>
-                                        {sessionActive && (
-                                            <div className="absolute top-2 right-2 w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                                        )}
-                                    </Button> */}
-
-                                    <Button
-                                        onClick={disableCheckInSession}
-                                        disabled={!sessionActive}
-                                        className="group relative h-16 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-semibold rounded-2xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                        <div className="relative flex items-center justify-center space-x-3">
-                                            <Square className="h-5 w-5" />
-                                            <span>Stop Session</span>
-                                        </div>
-                                    </Button>
-                                </div>
-
                                 <div className="grid grid-cols-1 gap-2">
                                     {/* Current Location Card */}
                                     <div className="relative group">
@@ -404,16 +373,38 @@ const SmartAttendanceDashboard = () => {
                                     <div className="relative group">
                                         <div className="relative bg-white dark:bg-slate-900 rounded-xl p-6 shadow-lg">
                                             <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg">
-                                                    <IoIosWifi className="h-5 w-5 text-white" />
+                                                <div className="p-2 bg-gradient-to-r from-blue-500 to-sky-600 rounded-lg">
+                                                    <MdLocationPin className="h-5 w-5 text-white" />
                                                 </div>
                                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Detection Range
+                                                    Location Permission
                                                 </h3>
                                             </div>
                                             <div className="text-center">
-                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">50</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400">meters</div>
+                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
+                                                    {locationPermission === 'granted' && 'Enabled'}
+                                                    {locationPermission === 'prompt' && 'Not Asked'}
+                                                    {locationPermission === 'denied' && 'Disabled'}
+                                                </div>
+                                                {locationPermission === 'denied' && (
+                                                    <p className="text-xs text-red-500">
+                                                        Location access is blocked. Please enable it in your browser settings.
+                                                    </p>
+                                                )}
+
+                                                {locationPermission === 'prompt' && (
+                                                    <button
+                                                        className="text-xs text-blue-600 underline"
+                                                        onClick={() => {
+                                                            navigator.geolocation.getCurrentPosition(
+                                                                (pos) => console.log("Got location:", pos),
+                                                                (err) => console.error("Location error:", err)
+                                                            );
+                                                        }}
+                                                    >
+                                                        Click here to allow location access
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
