@@ -68,7 +68,7 @@ const SmartAttendanceDashboard = () => {
     const [responseMessage, setResponseMessage] = useState(null);
     const [textareaColor, setTextAreaColor] = useState('');
 
-    console.log(responseData)
+    console.log(responseData);
     console.log(responseMessage)
 
     console.log(locationPermission)
@@ -121,8 +121,9 @@ const SmartAttendanceDashboard = () => {
             });
 
             const responseBody = await response.json();
+            console.log(responseBody)
             setResponseData(responseBody);
-            setResponseMessage(responseBody.message)
+            setResponseMessage(responseBody.message);
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
                 toast.error(responseBody.message);
                 setTextAreaColor('text-red-500');
@@ -451,13 +452,13 @@ const SmartAttendanceDashboard = () => {
                                         <div>
                                             <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Full Name</Label>
                                             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
-                                                Name
+                                                {responseData?.member?.fullName || 'Member Name'}
                                             </div>
                                         </div>
                                         <div>
                                             <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Category</Label>
                                             <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
-                                                Type
+                                                {responseData?.membershipType || 'Type'}
                                             </div>
                                         </div>
                                     </div>
@@ -473,7 +474,7 @@ const SmartAttendanceDashboard = () => {
                                             <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Membership Option</Label>
                                             <Input
                                                 className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                value={'validationResult?.member?.membershipOption' || "—"}
+                                                value={responseData?.member?.membership?.servicesIncluded || "—"}
                                             />
                                         </div>
                                         <div className="grid grid-cols-2 gap-3">
@@ -481,13 +482,14 @@ const SmartAttendanceDashboard = () => {
                                                 <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Start Date</Label>
                                                 <Input
                                                     className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                    value={'Date'}
+                                                    value={new Date(responseData?.member?.membershipRenewDate).toISOString().split("T")[0] || 'Start Date'}
                                                 />
                                             </div>
                                             <div>
                                                 <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Expire Date</Label>
                                                 <Input
                                                     className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
+                                                    value={new Date(responseData?.membershipExpireDate).toISOString().split("T")[0] || 'Expire Date'}
                                                 />
                                             </div>
                                         </div>
