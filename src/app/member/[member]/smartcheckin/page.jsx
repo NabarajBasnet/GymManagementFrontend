@@ -139,18 +139,18 @@ export default function CheckInCard() {
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    setMemberLat(latitude)
-                    setMemberLng(longitude)
+                    setMemberLat(latitude);
+                    setMemberLng(longitude);
                     setLocationError(null);
                 },
                 (error) => {
                     console.log('Geolocation error: ', error.message);
-                    setLocationError(error.message)
+                    setLocationError(error.message);
                 }, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
                 timeout: 1000
-            })
+            });
 
             // Cleanup watcher on unmount
             return () => {
@@ -189,9 +189,9 @@ export default function CheckInCard() {
             }
         };
 
-        socket.on('checkin-req-unsuccessful', handleSuccessFulResponse);
+        socket.on('checkin-req-successful', handleSuccessFulResponse);
 
-        return () => socket.off('checkin-req-unsuccessful', handleSuccessFulResponse);
+        return () => socket.off('checkin-req-successful', handleSuccessFulResponse);
     }, [orgOrBranchId]);
 
     // Handle unsuccessful check in response

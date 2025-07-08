@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
