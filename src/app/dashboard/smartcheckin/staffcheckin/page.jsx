@@ -420,14 +420,6 @@ const SmartStaffCheckin = () => {
                                                         </span>
                                                     </div>
                                                 </div>
-                                                <div className="mt-4">
-                                                    <div className="h-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
-                                                            style={{ width: currentLat ? '100%' : '0%' }}
-                                                        ></div>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -447,14 +439,6 @@ const SmartStaffCheckin = () => {
                                                 <div className="text-center">
                                                     <div className="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">50</div>
                                                     <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">meters radius</div>
-                                                </div>
-                                                <div className="mt-4">
-                                                    <div className="h-2 bg-gradient-to-r from-cyan-100 to-blue-100 dark:from-cyan-900/50 dark:to-blue-900/50 rounded-full overflow-hidden">
-                                                        <div
-                                                            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                                                            style={{ width: '100%' }}
-                                                        ></div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -501,17 +485,6 @@ const SmartStaffCheckin = () => {
                                                             Click here to allow location access
                                                         </button>
                                                     )}
-                                                </div>
-                                                <div className="mt-4">
-                                                    <div className="h-2 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 rounded-full overflow-hidden">
-                                                        <div
-                                                            className={`h-full ${locationPermission === 'granted' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
-                                                                    locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
-                                                                        'bg-gradient-to-r from-amber-500 to-yellow-500'
-                                                                }`}
-                                                            style={{ width: locationPermission === 'granted' ? '100%' : locationPermission === 'denied' ? '30%' : '60%' }}
-                                                        ></div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
