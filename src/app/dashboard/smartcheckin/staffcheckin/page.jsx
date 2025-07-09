@@ -2,11 +2,6 @@
 
 import { IoClose, IoLocationOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
-import {
-    FaExclamationTriangle,
-    FaPlayCircle,
-    FaSpinner,
-} from 'react-icons/fa';
 import { MdLocationPin, MdClose } from "react-icons/md";
 import { IoIosWifi } from "react-icons/io";
 import { IoMdInformationCircleOutline } from "react-icons/io";
@@ -374,7 +369,8 @@ const SmartStaffCheckin = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* Cards */}
+                <div className="grid grid-cols-1 my-4 gap-4">
                     {/* Session Control Panel */}
                     <div className="space-y-4">
                         <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
@@ -397,227 +393,263 @@ const SmartStaffCheckin = () => {
                             </div>
 
                             <CardContent className="p-3">
-                                <div className="grid grid-cols-1 gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     {/* Current Location Card */}
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
+                                    <div className="flex flex-col h-full">
+                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
                                             <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
+                                                <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
                                                     <IoLocationOutline className="h-5 w-5 text-white" />
                                                 </div>
                                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
                                                     Current Location
                                                 </h3>
                                             </div>
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between">
-                                                    <span className="text-xs text-slate-500 dark:text-slate-400">Latitude:</span>
-                                                    <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                        {currentLat ? currentLat.toFixed(6) : "--"}
-                                                    </span>
+                                            <div className="space-y-2 flex-1 flex flex-col justify-between">
+                                                <div className="space-y-2">
+                                                    <div className="flex justify-between">
+                                                        <span className="text-xs text-slate-500 dark:text-slate-400">Latitude:</span>
+                                                        <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
+                                                            {currentLat ? currentLat.toFixed(6) : "--"}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between">
+                                                        <span className="text-xs text-slate-500 dark:text-slate-400">Longitude:</span>
+                                                        <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
+                                                            {currentLng ? currentLng.toFixed(6) : "--"}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-xs text-slate-500 dark:text-slate-400">Longitude:</span>
-                                                    <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                        {currentLng ? currentLng.toFixed(6) : "--"}
-                                                    </span>
+                                                <div className="mt-4">
+                                                    <div className="h-2 bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/50 dark:to-pink-900/50 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500"
+                                                            style={{ width: currentLat ? '100%' : '0%' }}
+                                                        ></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Detection Range Card */}
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
+                                    <div className="flex flex-col h-full">
+                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
                                             <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg">
+                                                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg">
                                                     <IoIosWifi className="h-5 w-5 text-white" />
                                                 </div>
                                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
                                                     Detection Range
                                                 </h3>
                                             </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">50</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400">meters</div>
+                                            <div className="flex-1 flex flex-col justify-between">
+                                                <div className="text-center">
+                                                    <div className="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">50</div>
+                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">meters radius</div>
+                                                </div>
+                                                <div className="mt-4">
+                                                    <div className="h-2 bg-gradient-to-r from-cyan-100 to-blue-100 dark:from-cyan-900/50 dark:to-blue-900/50 rounded-full overflow-hidden">
+                                                        <div
+                                                            className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
+                                                            style={{ width: '100%' }}
+                                                        ></div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
+                                    {/* Location Permission Card */}
+                                    <div className="flex flex-col h-full">
+                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
                                             <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-blue-500 to-sky-600 rounded-lg">
+                                                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
                                                     <MdLocationPin className="h-5 w-5 text-white" />
                                                 </div>
                                                 <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
                                                     Location Permission
                                                 </h3>
                                             </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-                                                    {locationPermission === 'granted' && 'Enabled'}
-                                                    {locationPermission === 'prompt' && 'Not Asked'}
-                                                    {locationPermission === 'denied' && 'Disabled'}
-                                                </div>
-                                                {locationPermission === 'denied' && (
-                                                    <p className="text-xs text-red-500">
-                                                        Location access is blocked. Please enable it in your browser settings.
-                                                    </p>
-                                                )}
-
-                                                {locationPermission === 'prompt' && (
-                                                    <button
-                                                        className="text-xs text-blue-600 underline"
-                                                        onClick={() => {
-                                                            navigator.geolocation.getCurrentPosition(
-                                                                (pos) => console.log("Got location:", pos),
-                                                                (err) => console.error("Location error:", err)
-                                                            );
-                                                        }}
-                                                    >
-                                                        Click here to allow location access
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Attendance History */}
-                    <div>
-                        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                            <div className="bg-gradient-to-r from-blue-600 to-sky-500 p-3">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-4">
-                                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                            <Calendar className="h-6 w-6 text-white" />
-                                        </div>
-                                        <div>
-                                            <h2 className="text-xl font-bold text-white">Attendance History</h2>
-                                            <p className="text-slate-200 mt-1">Track member check-ins and activity</p>
-                                        </div>
-                                    </div>
-                                    <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                                        <span className="text-sm font-medium text-white">
-                                            {totalAttendance || 0} total records
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <CardContent className="p-4">
-                                {/* Enhanced Search */}
-                                <div className="mb-4">
-                                    <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
-                                        Search Attendance Records
-                                    </Label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                            <Search className="h-5 w-5 text-slate-400" />
-                                        </div>
-                                        <Input
-                                            id="search"
-                                            type="text"
-                                            placeholder="Search by staff name..."
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                            className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Attendance Records */}
-                                {isAttendanceHistory ? (
-                                    <Loader />
-                                ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
-                                    <div className="space-y-3">
-                                        {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
-                                            <div
-                                                key={attendance._id}
-                                                className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
-                                            >
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center space-x-4">
-                                                        <div className="relative">
-                                                            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full blur opacity-20"></div>
-                                                            <div className="relative w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                                                                <span className="text-white font-bold text-sm">
-                                                                    {attendance.fullName?.charAt(0) || 'M'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-                                                                {attendance.fullName}
-                                                            </h3>
-                                                            <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                                ID: {attendance.memberId}
-                                                            </p>
-                                                        </div>
+                                            <div className="flex-1 flex flex-col justify-between">
+                                                <div className="text-center">
+                                                    <div className={`text-3xl font-bold ${locationPermission === 'granted' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
+                                                            locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
+                                                                'bg-gradient-to-r from-amber-500 to-yellow-500'
+                                                        } bg-clip-text text-transparent`}>
+                                                        {locationPermission === 'granted' && 'Enabled'}
+                                                        {locationPermission === 'prompt' && 'Pending'}
+                                                        {locationPermission === 'denied' && 'Disabled'}
                                                     </div>
-                                                    <div className="flex items-center space-x-6">
-                                                        <div className="text-center">
-                                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                                {attendance.membershipOption}
-                                                            </div>
-                                                        </div>
-                                                        <div className="text-right">
-                                                            <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
-                                                                <Timer className="h-4 w-4 mr-2" />
-                                                                {formatTime ? formatTime(attendance.checkInTime) : attendance.checkInTime}
-                                                            </div>
-                                                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                                                Check-in time
-                                                            </div>
-                                                        </div>
+                                                </div>
+                                                <div className="mt-2">
+                                                    {locationPermission === 'denied' && (
+                                                        <p className="text-xs text-red-500 text-center">
+                                                            Location access is blocked. Please enable it in your browser settings.
+                                                        </p>
+                                                    )}
+                                                    {locationPermission === 'prompt' && (
+                                                        <button
+                                                            className="text-xs text-blue-600 dark:text-blue-400 underline w-full text-center block"
+                                                            onClick={() => {
+                                                                navigator.geolocation.getCurrentPosition(
+                                                                    (pos) => console.log("Got location:", pos),
+                                                                    (err) => console.error("Location error:", err)
+                                                                );
+                                                            }}
+                                                        >
+                                                            Click here to allow location access
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <div className="mt-4">
+                                                    <div className="h-2 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 rounded-full overflow-hidden">
+                                                        <div
+                                                            className={`h-full ${locationPermission === 'granted' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
+                                                                    locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
+                                                                        'bg-gradient-to-r from-amber-500 to-yellow-500'
+                                                                }`}
+                                                            style={{ width: locationPermission === 'granted' ? '100%' : locationPermission === 'denied' ? '30%' : '60%' }}
+                                                        ></div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-16">
-                                        <div className="relative mb-6">
-                                            <div className="absolute -inset-4 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full blur opacity-20"></div>
-                                            <div className="relative w-16 h-16 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
-                                                <Search className="h-8 w-8 text-white" />
-                                            </div>
                                         </div>
-                                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                                            No attendance records found
-                                        </h3>
-                                        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                                            {debouncedSearchQuery
-                                                ? "No records match your search criteria. Try adjusting your search terms."
-                                                : "Attendance records will appear here once members start checking in"}
-                                        </p>
                                     </div>
-                                )}
-
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <div className="mt-8">
-                                        <Pagination
-                                            total={totalPages}
-                                            page={currentPage}
-                                            onChange={setCurrentPage}
-                                            withEdges={true}
-                                            siblings={1}
-                                            boundaries={1}
-                                            className="justify-center"
-                                        />
-                                    </div>
-                                )}
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
                 </div>
 
+                {/* Attendance History */}
+                <div>
+                    <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
+                        <div className="bg-gradient-to-r from-blue-600 to-sky-500 p-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-4">
+                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                                        <Calendar className="h-6 w-6 text-white" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-xl font-bold text-white">Attendance History</h2>
+                                        <p className="text-slate-200 mt-1">Track member check-ins and activity</p>
+                                    </div>
+                                </div>
+                                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+                                    <span className="text-sm font-medium text-white">
+                                        {totalAttendance || 0} total records
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
+                        <CardContent className="p-4">
+                            {/* Enhanced Search */}
+                            <div className="mb-4">
+                                <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
+                                    Search Attendance Records
+                                </Label>
+                                <div className="relative">
+                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                        <Search className="h-5 w-5 text-slate-400" />
+                                    </div>
+                                    <Input
+                                        id="search"
+                                        type="text"
+                                        placeholder="Search by staff name..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Attendance Records */}
+                            {isAttendanceHistory ? (
+                                <Loader />
+                            ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
+                                <div className="space-y-3">
+                                    {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
+                                        <div
+                                            key={attendance._id}
+                                            className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center space-x-4">
+                                                    <div className="relative">
+                                                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full blur opacity-20"></div>
+                                                        <div className="relative w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
+                                                            <span className="text-white font-bold text-sm">
+                                                                {attendance.fullName?.charAt(0) || 'M'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                                                            {attendance.fullName}
+                                                        </h3>
+                                                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                                                            ID: {attendance.memberId}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center space-x-6">
+                                                    <div className="text-center">
+                                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                            {attendance.membershipOption}
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
+                                                            <Timer className="h-4 w-4 mr-2" />
+                                                            {formatTime ? formatTime(attendance.checkInTime) : attendance.checkInTime}
+                                                        </div>
+                                                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                            Check-in time
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="text-center py-16">
+                                    <div className="relative mb-6">
+                                        <div className="absolute -inset-4 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full blur opacity-20"></div>
+                                        <div className="relative w-16 h-16 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
+                                            <Search className="h-8 w-8 text-white" />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                                        No attendance records found
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                                        {debouncedSearchQuery
+                                            ? "No records match your search criteria. Try adjusting your search terms."
+                                            : "Attendance records will appear here once members start checking in"}
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* Pagination */}
+                            {totalPages > 1 && (
+                                <div className="mt-8">
+                                    <Pagination
+                                        total={totalPages}
+                                        page={currentPage}
+                                        onChange={setCurrentPage}
+                                        withEdges={true}
+                                        siblings={1}
+                                        boundaries={1}
+                                        className="justify-center"
+                                    />
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
 
                 {/* Check-In Authorization Dialog */}
                 <AlertDialog open={openMemberCheckInAlert} onOpenChange={setMemberCheckInAlert}>

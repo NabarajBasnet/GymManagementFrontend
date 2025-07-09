@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer, Home } from 'lucide-react';
+import { X, QrCode, RefreshCw, Search, Home } from 'lucide-react';
 import {
     FaCheckCircle,
 } from 'react-icons/fa';
@@ -86,7 +86,6 @@ const StaffAttendance = () => {
             });
 
             const responseBody = await response.json();
-            console.log(responseBody);
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
                 return;
