@@ -1,7 +1,5 @@
 'use client';
 
-import { PiChartLineUpBold } from "react-icons/pi";
-import { motion } from 'framer-motion';
 import {
     Table,
     TableBody,
@@ -13,13 +11,12 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { IoLocationOutline } from "react-icons/io5";
-import { MdLocationPin, MdClose } from "react-icons/md";
+import { MdLocationPin } from "react-icons/md";
 import { IoIosWifi } from "react-icons/io";
-import { IoMdInformationCircleOutline } from "react-icons/io";
 import Loader from '@/components/Loader/Loader';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
-import { Activity, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, X, QrCode, RefreshCw, Home } from 'lucide-react';
+import { Activity, Search, User, Calendar, Timer, CheckCircle, X, QrCode, RefreshCw } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,15 +27,13 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { toast } from "sonner";
 import { Card, CardContent } from "@/components/ui/card";
-import { TbReload } from "react-icons/tb";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-
 import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:5000', {
@@ -53,50 +48,42 @@ const socket = io('http://localhost:5000', {
 const SmartStaffCheckin = () => {
     const { user: loggedInUser } = useUser();
     const user = loggedInUser?.user;
-    const features = user?.tenant?.subscription?.subscriptionFeatures
+    const features = user?.tenant?.subscription?.subscriptionFeatures;
     const multiBranchSupport = features?.some(feature => feature.toString() === 'Multi Branch Support');
     const onFreeTrail = user?.tenant?.freeTrailStatus === 'Active';
     const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
 
     // States
-    const [sessionActive, setSessionActive] = useState(false)
-    const [openStaffCheckInAlert, setStaffCheckInAlert] = useState(false);
+    const [sessionActive, setSessionActive] = useState(false);
     const [staffName, setStaffName] = useState('');
-    const [staffId, setStaffId] = useState('')
+    const [staffId, setStaffId] = useState('');
     const [currentLat, setCurrentLat] = useState(null);
     const [currentLng, setCurrentLng] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [locationPermission, setLocationPermissionState] = useState('');
     const [confirmCheckInState, setConfirmCheckInState] = useState(false);
     const [confirmCheckOutState, setConfirmCheckOutState] = useState(false);
 
+    const limit = 6;
+
     useEffect(() => {
-        // Check if we're in the browser before using navigator
         if (typeof window !== 'undefined') {
             navigator.permissions?.query?.({ name: 'geolocation' })
                 .then((permissionStatus) => {
-                    console.log('Geolocation permission state:', permissionStatus.state);
                     setLocationPermissionState(permissionStatus.state);
-
                     permissionStatus.onchange = () => {
                         setLocationPermissionState(permissionStatus.state);
-                        console.log('Geolocation permission changed to:', permissionStatus.state);
                     };
                 })
-                .catch((err) => {
-                    console.error('Permission check failed:', err);
-                });
+                .catch(console.error);
         }
     }, []);
 
-    // Organization join room on load
     useEffect(() => {
-        if (!orgOrBranchId) {
-            return;
-        }
+        if (!orgOrBranchId) return;
+
         const roomId = `gym-room-${orgOrBranchId}`;
         socket.emit("gym-join-room", { roomId });
 
@@ -105,100 +92,79 @@ const SmartStaffCheckin = () => {
                 setStaffName(data.split('-')[3]);
                 setStaffId(data.split('-')[1]);
                 const currentTime = new Date();
+
                 if (data.split('-')[1].length >= 24 && currentTime) {
                     const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
                         method: "POST",
-                        headers: {
-                            'Content-Type': "application/json"
-                        },
+                        headers: { 'Content-Type': "application/json" },
                         body: JSON.stringify({ iv: data.split('-')[1], currentTime })
                     });
 
                     const responseData = await response.json();
-
-                    if (responseData.checkedIn) {
-                        setConfirmCheckOutState(true);
-                    } else {
-                        setConfirmCheckInState(true);
-                    }
+                    responseData.checkedIn ? setConfirmCheckOutState(true) : setConfirmCheckInState(true);
                 }
-            };
+            }
         };
 
         socket.on('staff-request-checkin', handleRequestCheckin);
-
-        // Cleanup on unmount or re-render
-        return () => {
-            socket.off('staff-request-checkin', handleRequestCheckin);
-        };
+        return () => socket.off('staff-request-checkin', handleRequestCheckin);
     }, [orgOrBranchId]);
 
-    // Check in staff
     const checkInStaff = async () => {
         try {
             const currentDateTime = new Date();
             const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
-                headers: {
-                    'Content-Type': "application/json"
-                },
+                headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
             });
 
             const responseStatus = response.status;
-
             const responseBody = await response.json();
+
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
-                const emitMessage = {
+                socket.emit('staff-checkin-req-unsuccessful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkin-req-unsuccessful', emitMessage);
+                });
                 return;
-            };
+            }
 
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
-                const emitMessage = {
+                socket.emit('staff-checkin-req-successful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkin-req-successful', emitMessage);
+                });
                 toast.success(responseBody.message);
                 window.location.reload();
             } else {
                 toast.error(responseBody.message);
-                const emitMessage = {
+                socket.emit('staff-checkin-req-unsuccessful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkin-req-unsuccessful', emitMessage);
+                });
             }
         } catch (error) {
-            console.log("Error: ", error);
-            const emitMessage = {
-                status: responseStatus,
+            console.error("Error:", error);
+            socket.emit('staff-checkin-req-unsuccessful', {
+                status: 500,
                 id: orgOrBranchId,
                 message: error.message
-            }
-            socket.emit('staff-checkin-req-unsuccessful', emitMessage);
-        };
+            });
+        }
     };
 
-    // Check out staff
     const checkoutStaff = async () => {
         const currentDateTime = new Date();
         try {
             const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
                 method: "POST",
-                headers: {
-                    'Content-Type': "application/json",
-                    'Accept': 'application/json'
-                },
+                headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
             });
 
@@ -206,93 +172,75 @@ const SmartStaffCheckin = () => {
             const responseBody = await response.json();
 
             if (!response.ok) {
-                const emitMessage = {
+                socket.emit('staff-checkout-req-unsuccessful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkout-req-unsuccessful', emitMessage);
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                throw new Error(`HTTP error! status: ${response.status}`);
+                });
+                throw new Error(responseBody.message || "Checkout failed");
             }
 
             if (responseBody.success) {
-                const emitMessage = {
+                socket.emit('staff-checkout-req-successful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkout-req-successful', emitMessage);
+                });
                 setConfirmCheckOutState(false);
                 toast.success(responseBody.message);
                 setTimeout(() => window.location.reload(), 1000);
             } else {
-                const emitMessage = {
+                socket.emit('staff-checkout-req-unsuccessful', {
                     status: responseStatus,
                     id: orgOrBranchId,
                     message: responseBody.message
-                }
-                socket.emit('staff-checkout-req-unsuccessful', emitMessage);
-                toast.error(responseBody.message || "Checkout failed");
+                });
+                toast.error(responseBody.message);
             }
         } catch (error) {
-            const emitMessage = {
-                status: responseStatus,
+            console.error("Error:", error);
+            socket.emit('staff-checkout-req-unsuccessful', {
+                status: 500,
                 id: orgOrBranchId,
                 message: error.message
-            }
-            socket.emit('staff-checkout-req-unsuccessful', emitMessage);
-            console.log("Error: ", error)
+            });
             toast.error("Failed to checkout staff. Please try again.");
         }
     };
 
-    const rejectCheckInReq = async () => {
+    const rejectCheckInReq = () => {
         setConfirmCheckInState(false);
-        socket.emit('staff-checkin-req-declined', { orgOrBranchId })
+        socket.emit('staff-checkin-req-declined', { orgOrBranchId });
+    };
+
+    const handleCancelCheckOut = () => {
+        setConfirmCheckOutState(false);
+        socket.emit('staff-checkout-req-declined', { orgOrBranchId });
     };
 
     const startStaffCheckInSession = async () => {
         try {
             navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-
-                    setCurrentLat(lat);
-                    setCurrentLng(lng);
+                (position) => {
+                    setCurrentLat(position.coords.latitude);
+                    setCurrentLng(position.coords.longitude);
                     setSessionActive(true);
-
-                    const orgOrBranchId = (multiBranchSupport || onFreeTrail)
-                        ? user?.organizationBranch?._id
-                        : user?.organization?._id;
-
                     socket.emit('start-staff-checkin-session', { orgOrBranchId });
                 },
                 (error) => {
-                    console.error("Failed to get location:", error.message);
+                    console.error("Location error:", error);
                     toast.error("Location permission denied or error occurred");
                 },
                 { enableHighAccuracy: true }
             );
-
         } catch (error) {
-            console.log('Error:', error.message);
+            console.error('Error:', error);
             toast.error(error.message);
         }
     };
 
-    const handleCancelCheckOut = () => {
-        setConfirmCheckOutState(false)
-        socket.emit('staff-checkout-req-declined', { orgOrBranchId })
-    }
-
     useEffect(() => {
-        const run = async () => {
-            await startStaffCheckInSession();
-        };
-        run();
+        startStaffCheckInSession();
     }, [orgOrBranchId]);
 
     useEffect(() => {
@@ -303,13 +251,15 @@ const SmartStaffCheckin = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
-            const data = await response.json();
-            return data;
+            const response = await fetch(
+                `http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+            );
+            return await response.json();
         } catch (error) {
-            console.log('Error: ', error);
-            toast.error(error.message)
-        };
+            console.error('Error:', error);
+            toast.error(error.message);
+            return { temporaryStaffAttendanceHistories: [], todaysTotalStaffAttendance: 0, totalPages: 0 };
+        }
     };
 
     const { data, isLoading } = useQuery({
@@ -317,398 +267,331 @@ const SmartStaffCheckin = () => {
         queryFn: getTemporaryAttendanceHistory,
     });
 
-    const { temporaryStaffAttendanceHistories,
-        todaysTotalStaffAttendance,
-        totalPages,
-    } = data || {};
+    const { temporaryStaffAttendanceHistories = [], todaysTotalStaffAttendance = 0, totalPages = 0 } = data || {};
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
-            <div className="w-full mx-auto">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
+            <div className="max-w-screen-2xl mx-auto space-y-6">
 
-                {confirmCheckInState && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
-                            className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
-                        >
-                            <div className="flex items-center justify-between border-b pb-3">
-                                <h1 className="flex items-center font-semibold text-gray-800">
-                                    <QrCode className="text-blue-600 text-lg mr-2" />
-                                    Confirm check-in request from {staffName || "staff"}?
-                                </h1>
-                                <Button
-                                    className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
-                                    onClick={() => setConfirmCheckInState(false)}
-                                >
-                                    <X className="text-gray-600 text-lg" />
-                                </Button>
-                            </div>
-
-                            <p className="text-gray-600 text-sm mt-3">
-                                Are you sure you want to continue check-in?
-                            </p>
-
-                            <div className="flex justify-end space-x-3 mt-4">
-                                <Button
-                                    onClick={() => {
-                                        rejectCheckInReq()
-                                        setConfirmCheckInState(false)
-                                    }}
-                                    className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
-                                    onClick={() => {
-                                        checkInStaff(staffId, new Date())
-                                    }}
-                                >
-                                    Continue
-                                </Button>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-
-                {confirmCheckOutState && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.9 }}
-                            transition={{ duration: 0.2 }}
-                            className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
-                        >
-                            <div className="flex items-center justify-between border-b pb-3">
-                                <h1 className="flex items-center font-semibold text-gray-800">
-                                    <QrCode className="text-blue-600 text-lg mr-2" />
-                                    Confirm Check-Out
-                                </h1>
-                                <Button
-                                    className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
-                                    onClick={() => setConfirmCheckOutState(false)}
-                                >
-                                    <X className="text-gray-600 text-lg" />
-                                </Button>
-                            </div>
-
-                            <p className="text-gray-600 text-sm mt-3">
-                                {staffName || 'Staff'} have already checkedin, Do you want to checkout?
-                            </p>
-
-                            <div className="flex justify-end space-x-3 mt-4">
-                                <Button
-                                    onClick={() => handleCancelCheckOut()}
-                                    className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg"
-                                    onClick={() => checkoutStaff(staffId, new Date())}
-                                >
-                                    Continue
-                                </Button>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-
-                {/* Modern Header with Glassmorphism Effect */}
-                <div className="relative mb-4 overflow-hidden">
-                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-4">
-                                <div className="relative">
-                                    <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-20"></div>
-                                    <div className="relative p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl">
-                                        <Activity className="h-8 w-8 text-white" />
+                {/* Check-in/out Dialogs */}
+                <AlertDialog open={confirmCheckInState} onOpenChange={setConfirmCheckInState}>
+                    <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <AlertDialogHeader>
+                            {/* Header with gradient background */}
+                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 px-6 py-5 border-b border-gray-100 dark:border-gray-600">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-xl flex items-center justify-center">
+                                        <QrCode className="w-6 h-6 text-green-600 dark:text-green-400" />
+                                    </div>
+                                    <div>
+                                        <AlertDialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            Confirm Check-In Request
+                                        </AlertDialogTitle>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                            From {staffName || "staff"}
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Content area */}
+                            <div className="px-6 py-6">
+                                <AlertDialogDescription className="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                                    Are you sure you want to continue with the check-in process?
+                                </AlertDialogDescription>
+
+                                {/* Visual confirmation indicator */}
+                                <div className="mt-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                                        <span className="text-sm text-green-700 dark:text-green-300 font-medium">
+                                            Ready to check in
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 gap-3">
+                            <AlertDialogCancel
+                                onClick={rejectCheckInReq}
+                                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:border-gray-600 font-medium py-2.5 px-4 rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={checkInStaff}
+                                className="flex-1 bg-green-600 hover:bg-green-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm"
+                            >
+                                Continue Check-In
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                <AlertDialog open={confirmCheckOutState} onOpenChange={setConfirmCheckOutState}>
+                    <AlertDialogContent className="max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <AlertDialogHeader>
+                            {/* Header with gradient background */}
+                            <div className="bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-700 px-6 py-5 border-b border-gray-100 dark:border-gray-600">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-xl flex items-center justify-center">
+                                        <QrCode className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+                                    </div>
+                                    <div>
+                                        <AlertDialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                                            Confirm Check-Out
+                                        </AlertDialogTitle>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                            End session for {staffName || 'Staff'}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Content area */}
+                            <div className="px-6 py-6">
+                                <AlertDialogDescription className="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                                    {staffName || 'Staff'} is currently checked in. Do you want to proceed with checkout?
+                                </AlertDialogDescription>
+
+                                {/* Visual status indicator */}
+                                <div className="mt-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 bg-orange-500 rounded-full animate-pulse" />
+                                        <span className="text-sm text-orange-700 dark:text-orange-300 font-medium">
+                                            Currently checked in
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 gap-3">
+                            <AlertDialogCancel
+                                onClick={handleCancelCheckOut}
+                                className="flex-1 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-200 dark:border-gray-600 font-medium py-2.5 px-4 rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={checkoutStaff}
+                                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-sm"
+                            >
+                                Continue Check-Out
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Header Section */}
+                <Card className="border border-gray-200 dark:border-none dark:bg-gray-950 shadow-sm mt-2 md:mt-6">
+                    <div className="p-6">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg">
+                                    <Activity className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                                </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-white dark:via-blue-400 dark:to-indigo-400">
-                                        Staff Attendance
-                                    </h1>
-                                    <p className="text-slate-600 dark:text-slate-300 font-medium mt-2">
+                                    <h1 className="text-2xl font-semibold">Staff Attendance System</h1>
+                                    <p className="text-gray-600 dark:text-gray-400">
                                         Real-time staff check-ins with geolocation validation
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-4">
-                                <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${sessionActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
-                                    <div className={`w-2 h-2 rounded-full ${sessionActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
-                                    <span className="text-sm font-medium">
-                                        {sessionActive ? 'Session Active' : 'Session Inactive'}
-                                    </span>
+                            <div className="flex items-center gap-4">
+                                <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${sessionActive
+                                    ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                    : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
+                                    <div className={`w-2 h-2 rounded-full ${sessionActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
+                                    {sessionActive ? 'Session Active' : 'Session Inactive'}
                                 </div>
+                                <Button variant="outline" size="sm" className='dark:bg-gray-900 rounded-sm py-5 dark:border-none' onClick={() => window.location.reload()}>
+                                    <RefreshCw className="w-4 h-4 mr-2" />
+                                    Refresh
+                                </Button>
                             </div>
                         </div>
                     </div>
-                </div>
+                </Card>
 
-                {/* Cards */}
-                <div className="grid grid-cols-1 my-4 gap-4">
-                    {/* Session Control Panel */}
-                    <div className="space-y-4">
-                        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                            <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600 p-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <PiChartLineUpBold className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Session Control Center</h2>
-                                        <p className="text-blue-100 mt-1">Manage staff check-in sessions</p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <Button onClick={() => window.location.reload()}>
-                                        <TbReload />
-                                        Reload
-                                    </Button>
-                                </div>
-                            </div>
-
-                            <CardContent className="p-3">
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {/* Current Location Card */}
-                                    <div className="flex flex-col h-full">
-                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg">
-                                                    <IoLocationOutline className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Current Location
-                                                </h3>
-                                            </div>
-                                            <div className="space-y-2 flex-1 flex flex-col justify-between">
-                                                <div className="space-y-2">
-                                                    <div className="flex justify-between">
-                                                        <span className="text-xs text-slate-500 dark:text-slate-400">Latitude:</span>
-                                                        <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                            {currentLat ? currentLat.toFixed(6) : "--"}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-xs text-slate-500 dark:text-slate-400">Longitude:</span>
-                                                        <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                            {currentLng ? currentLng.toFixed(6) : "--"}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Detection Range Card */}
-                                    <div className="flex flex-col h-full">
-                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg">
-                                                    <IoIosWifi className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Detection Range
-                                                </h3>
-                                            </div>
-                                            <div className="flex-1 flex flex-col justify-between">
-                                                <div className="text-center">
-                                                    <div className="text-3xl font-bold bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">50</div>
-                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">meters radius</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Location Permission Card */}
-                                    <div className="flex flex-col h-full">
-                                        <div className="flex-1 bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg flex flex-col h-full">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg">
-                                                    <MdLocationPin className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Location Permission
-                                                </h3>
-                                            </div>
-                                            <div className="flex-1 flex flex-col justify-between">
-                                                <div className="text-center">
-                                                    <div className={`text-3xl font-bold ${locationPermission === 'granted' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
-                                                        locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
-                                                            'bg-gradient-to-r from-amber-500 to-yellow-500'
-                                                        } bg-clip-text text-transparent`}>
-                                                        {locationPermission === 'granted' && 'Enabled'}
-                                                        {locationPermission === 'prompt' && 'Pending'}
-                                                        {locationPermission === 'denied' && 'Disabled'}
-                                                    </div>
-                                                </div>
-                                                <div className="mt-2">
-                                                    {locationPermission === 'denied' && (
-                                                        <p className="text-xs text-red-500 text-center">
-                                                            Location access is blocked. Please enable it in your browser settings.
-                                                        </p>
-                                                    )}
-                                                    {locationPermission === 'prompt' && (
-                                                        <button
-                                                            className="text-xs text-blue-600 dark:text-blue-400 underline w-full text-center block"
-                                                            onClick={() => {
-                                                                navigator.geolocation.getCurrentPosition(
-                                                                    (pos) => console.log("Got location:", pos),
-                                                                    (err) => console.error("Location error:", err)
-                                                                );
-                                                            }}
-                                                        >
-                                                            Click here to allow location access
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-
-                {/* Attendance History */}
-                <div>
-                    <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                        <div className="bg-gradient-to-r from-blue-600 to-sky-500 p-3">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <Calendar className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Attendance History</h2>
-                                        <p className="text-slate-200 mt-1">Track member check-ins and activity</p>
-                                    </div>
-                                </div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                                    <span className="text-sm font-medium text-white">
-                                        {todaysTotalStaffAttendance || 0} total records
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
+                {/* Dashboard Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Location Card */}
+                    <Card className="border border-gray-200 dark:border-none dark:bg-gray-950">
                         <CardContent className="p-4">
-                            {/* Enhanced Search */}
-                            <div className="mb-4">
-                                <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
-                                    Search Attendance Records
-                                </Label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Search className="h-5 w-5 text-slate-400" />
-                                    </div>
-                                    <Input
-                                        id="search"
-                                        type="text"
-                                        placeholder="Search by staff name..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
-                                    />
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg">
+                                    <IoLocationOutline className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <h3 className="font-medium">Current Location</h3>
+                            </div>
+                            <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500 dark:text-gray-400">Latitude:</span>
+                                    <span className="font-mono">
+                                        {currentLat ? currentLat.toFixed(6) : "--"}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="text-gray-500 dark:text-gray-400">Longitude:</span>
+                                    <span className="font-mono">
+                                        {currentLng ? currentLng.toFixed(6) : "--"}
+                                    </span>
                                 </div>
                             </div>
+                        </CardContent>
+                    </Card>
 
-                            {/* Attendance Records */}
-                            {isLoading ? (
-                                <Loader />
-                            ) : temporaryStaffAttendanceHistories?.length > 0 ? (
-                                <div className="space-y-3">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-[100px] dark:text-gray-200">Staff Id</TableHead>
-                                                <TableHead className="dark:text-gray-200">Name</TableHead>
-                                                <TableHead className="dark:text-gray-200">Role</TableHead>
-                                                <TableHead className="dark:text-gray-200">Check In</TableHead>
-                                                <TableHead className="dark:text-gray-200">Check Out</TableHead>
-                                                <TableHead className="dark:text-gray-200">Remark</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {Array.isArray(temporaryStaffAttendanceHistories) && temporaryStaffAttendanceHistories?.length > 0 ? (
-                                                temporaryStaffAttendanceHistories?.map((attendance) => (
-                                                    <TableRow key={attendance?._id}>
-                                                        <TableCell className="font-medium text-xs dark:text-gray-200">{attendance?.staff?._id}</TableCell>
-                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.staff?.fullName}</TableCell>
-                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.role}</TableCell>
-                                                        <TableCell className="text-sm dark:text-gray-200">
-                                                            {attendance?.checkIn ? new Date(attendance?.checkIn).toLocaleTimeString() : 'N/A'}
-                                                        </TableCell>
-                                                        <TableCell className="text-sm dark:text-gray-200">
-                                                            {attendance?.checkOut ? new Date(attendance?.checkOut).toLocaleTimeString() : 'N/A'}
-                                                        </TableCell>
-                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.remark}</TableCell>
-                                                    </TableRow>
-                                                ))
-                                            ) : (
-                                                <TableRow>
-                                                    <TableCell colSpan={7} align="center" className="dark:text-gray-200">
-                                                        Showing 0 out of 0 entries
-                                                    </TableCell>
-                                                </TableRow>
-                                            )}
-                                        </TableBody>
-                                        <TableFooter>
-                                            <TableRow>
-                                                <TableCell colSpan={1} className="dark:text-gray-200">Total Entries</TableCell>
-                                                <TableCell className="text-right dark:text-gray-200">{todaysTotalStaffAttendance || 0}</TableCell>
-                                            </TableRow>
-                                        </TableFooter>
-                                    </Table>
+                    {/* Range Card */}
+                    <Card className="border border-gray-200 dark:border-none dark:bg-gray-950">
+                        <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg">
+                                    <IoIosWifi className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                                 </div>
-                            ) : (
-                                <div className="text-center py-16">
-                                    <div className="relative mb-6">
-                                        <div className="absolute -inset-4 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full blur opacity-20"></div>
-                                        <div className="relative w-16 h-16 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
-                                            <Search className="h-8 w-8 text-white" />
-                                        </div>
-                                    </div>
-                                    <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                                        No attendance records found
-                                    </h3>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                                        {debouncedSearchQuery
-                                            ? "No records match your search criteria. Try adjusting your search terms."
-                                            : "Attendance records will appear here once members start checking in"}
+                                <h3 className="font-medium">Detection Range</h3>
+                            </div>
+                            <div className="text-center">
+                                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">50m</div>
+                                <div className="text-sm text-gray-500 dark:text-gray-400">radius</div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Permission Card */}
+                    <Card className="border border-gray-200 dark:border-none dark:bg-gray-950">
+                        <CardContent className="p-4">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-lg">
+                                    <MdLocationPin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <h3 className="font-medium">Location Permission</h3>
+                            </div>
+                            <div>
+                                <div className={`text-sm font-medium ${locationPermission === 'granted' ? 'text-green-600 dark:text-green-400' :
+                                    locationPermission === 'denied' ? 'text-red-600 dark:text-red-400' :
+                                        'text-amber-600 dark:text-amber-400'
+                                    }`}>
+                                    {locationPermission === 'granted' && 'Enabled'}
+                                    {locationPermission === 'prompt' && 'Pending'}
+                                    {locationPermission === 'denied' && 'Disabled'}
+                                </div>
+                                {locationPermission === 'denied' && (
+                                    <p className="text-xs text-red-500 mt-1">
+                                        Location access is blocked. Enable in browser settings.
                                     </p>
-                                </div>
-                            )}
-
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <div className="mt-8">
-                                    <Pagination
-                                        total={totalPages}
-                                        page={currentPage}
-                                        onChange={setCurrentPage}
-                                        withEdges={true}
-                                        siblings={1}
-                                        boundaries={1}
-                                        className="justify-center"
-                                    />
-                                </div>
-                            )}
+                                )}
+                                {locationPermission === 'prompt' && (
+                                    <button
+                                        className="text-xs text-blue-600 dark:text-blue-400 underline mt-1"
+                                        onClick={() => navigator.geolocation.getCurrentPosition(
+                                            () => { },
+                                            console.error
+                                        )}
+                                    >
+                                        Click to allow location access
+                                    </button>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
 
+                {/* Attendance History */}
+                <Card className="border border-gray-200 dark:border-none dark:bg-gray-950">
+                    <div className="p-6">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+                            <div className="flex items-center gap-4">
+                                <div className="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg">
+                                    <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-semibold">Attendance History</h2>
+                                    <p className="text-gray-600 dark:text-gray-400">Track staff check-ins and activity</p>
+                                </div>
+                            </div>
+                            <div className="bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full text-sm">
+                                {todaysTotalStaffAttendance} total records
+                            </div>
+                        </div>
+
+                        {/* Search */}
+                        <div className="mb-6">
+                            <Label htmlFor="search" className="mb-2 block">Search Records</Label>
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Search className="h-4 w-4 text-gray-400" />
+                                </div>
+                                <Input
+                                    id="search"
+                                    placeholder="Search by staff name..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="pl-10 dark:border-none rounded-sm bg-white dark:bg-gray-900"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Table */}
+                        {isLoading ? (
+                            <Loader />
+                        ) : temporaryStaffAttendanceHistories.length > 0 ? (
+                            <div className="border dark:border-none rounded-lg overflow-hidden">
+                                <Table>
+                                    <TableHeader className="bg-gray-100 dark:bg-gray-800">
+                                        <TableRow>
+                                            <TableHead>Staff ID</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Role</TableHead>
+                                            <TableHead>Check In</TableHead>
+                                            <TableHead>Check Out</TableHead>
+                                            <TableHead>Remark</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {temporaryStaffAttendanceHistories.map((attendance) => (
+                                            <TableRow key={attendance._id}>
+                                                <TableCell className="font-medium text-sm">{attendance.staff?._id}</TableCell>
+                                                <TableCell>{attendance.staff?.fullName}</TableCell>
+                                                <TableCell>{attendance.role}</TableCell>
+                                                <TableCell>
+                                                    {attendance.checkIn ? new Date(attendance.checkIn).toLocaleTimeString() : 'N/A'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {attendance.checkOut ? new Date(attendance.checkOut).toLocaleTimeString() : 'N/A'}
+                                                </TableCell>
+                                                <TableCell>{attendance.remark}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                        ) : (
+                            <div className="text-center py-12">
+                                <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+                                    <Search className="w-6 h-6 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-medium mb-2">No attendance records found</h3>
+                                <p className="text-gray-500 dark:text-gray-400">
+                                    {debouncedSearchQuery
+                                        ? "No records match your search"
+                                        : "Records will appear here once staff start checking in"}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Pagination */}
+                        {totalPages > 1 && (
+                            <div className="mt-6">
+                                <Pagination
+                                    total={totalPages}
+                                    page={currentPage}
+                                    onChange={setCurrentPage}
+                                    className="justify-center"
+                                />
+                            </div>
+                        )}
+                    </div>
+                </Card>
             </div>
         </div>
     );

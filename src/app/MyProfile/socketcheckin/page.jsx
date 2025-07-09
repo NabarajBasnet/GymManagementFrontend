@@ -269,29 +269,79 @@ export default function CheckInCard() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-6">
             <div className="max-w-4xl mx-auto space-y-6">
                 {/* Loading Dialog */}
+
                 <AlertDialog open={checkInRequested}>
-                    <AlertDialogContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg w-full max-w-md">
-                        <AlertDialogHeader className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <BiLoaderCircle className="w-5 h-5 text-blue-600 animate-spin" />
-                                <AlertDialogTitle className="flex-1 text-gray-900 dark:text-white font-medium">
-                                    Sending Check-In/Out Request
-                                </AlertDialogTitle>
-                                <MdClose
-                                    className="text-gray-400 hover:text-gray-500 cursor-pointer"
-                                    onClick={() => setCheckInRequested(false)}
-                                />
+                    <AlertDialogContent className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                        <AlertDialogHeader>
+                            {/* Header with gradient background */}
+                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 px-6 py-5 border-b border-gray-100 dark:border-gray-600">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative">
+                                            <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                                <BiLoaderCircle className="w-5 h-5 animate-spin text-blue-600 dark:text-blue-400" />
+                                            </div>
+                                            <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 rounded-full animate-pulse" />
+                                        </div>
+                                        <div>
+                                            <AlertDialogTitle className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                Processing Check-In
+                                            </AlertDialogTitle>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                                                Please wait a moment
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => setCheckInRequested(false)}
+                                        className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors group"
+                                    >
+                                        <MdClose className="w-5 h-5 text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300" />
+                                    </button>
+                                </div>
                             </div>
-                            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
-                                Your attendance check-in/out request has been sent. Please wait for the response.
-                            </AlertDialogDescription>
+
+                            {/* Content area */}
+                            <div className="px-6 py-6">
+                                <AlertDialogDescription className="text-gray-600 dark:text-gray-300 text-center leading-relaxed">
+                                    Your attendance check-in request has been sent to the gym.
+                                    We'll notify you once it's processed.
+                                </AlertDialogDescription>
+
+                                {/* Loading animation */}
+                                <div className="flex flex-col items-center gap-4 py-8">
+                                    <div className="relative">
+                                        <div className="w-16 h-16 border-4 border-blue-100 dark:border-blue-900/30 rounded-full" />
+                                        <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-600 dark:border-blue-400 rounded-full border-t-transparent animate-spin" />
+                                    </div>
+
+                                    {/* Progress dots */}
+                                    <div className="flex gap-2">
+                                        {[0, 1, 2].map((i) => (
+                                            <div
+                                                key={i}
+                                                className="w-2 h-2 bg-blue-600 dark:bg-blue-400 rounded-full animate-pulse"
+                                                style={{ animationDelay: `${i * 0.2}s` }}
+                                            />
+                                        ))}
+                                    </div>
+
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                        Connecting to gym system...
+                                    </p>
+                                </div>
+
+                                {/* Status indicator */}
+                                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                                        <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">
+                                            Request sent successfully
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                         </AlertDialogHeader>
-                        <div className="py-4 flex justify-center">
-                            <div className="flex flex-col items-center space-y-2">
-                                <BiLoaderCircle className="w-8 h-8 animate-spin text-blue-600" />
-                                <p className="text-sm text-gray-500 dark:text-gray-400">Awaiting response...</p>
-                            </div>
-                        </div>
                     </AlertDialogContent>
                 </AlertDialog>
 
