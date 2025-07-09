@@ -125,7 +125,6 @@ const SmartStaffCheckin = () => {
                     });
 
                     const responseData = await response.json();
-                    console.log(responseData);
 
                     if (responseData.checkedIn) {
                         setConfirmCheckOutState(true);
@@ -155,24 +154,31 @@ const SmartStaffCheckin = () => {
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
             });
 
+            const responseStatus = response.status;
+
             const responseBody = await response.json();
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
-                socket.emit('staff-checkin-req-unsuccessful', orgOrBranchId);
+                const emitMessage = `${responseStatus, orgOrBranchId}`
+                socket.emit('staff-checkin-req-unsuccessful', emitMessage);
                 return;
             };
 
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
-                socket.emit('staff-checkin-req-successful', orgOrBranchId);
+                const emitMessage = `${responseStatus}-${orgOrBranchId}`
+                console.log(emitMessage)
+                socket.emit('staff-checkin-req-successful', emitMessage);
                 toast.success(responseBody.message);
             } else {
                 toast.error(responseBody.message);
-                socket.emit('staff-checkin-req-successful', orgOrBranchId);
+                const emitMessage = `${responseStatus}-${orgOrBranchId}`
+                socket.emit('staff-checkin-req-successful', emitMessage);
             }
         } catch (error) {
             console.log("Error: ", error);
-            socket.emit('staff-checkin-req-successful', orgOrBranchId);
+            const emitMessage = `${responseStatus}-${orgOrBranchId}`
+            socket.emit('staff-checkin-req-successful', emitMessage);
         };
     };
 
@@ -265,9 +271,6 @@ const SmartStaffCheckin = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const data = await response.json();
-            if (!response.ok) {
-                toast.error(data.message || 'Internal server error');
-            }
             return data;
         } catch (error) {
             console.log('Error: ', error);

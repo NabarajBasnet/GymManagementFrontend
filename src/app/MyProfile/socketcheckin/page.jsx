@@ -213,11 +213,12 @@ export default function CheckInCard() {
         }
     };
 
-    // Handle successful check in response
+    // Handle successful staff check in response
     useEffect(() => {
         const handleSuccessFulResponse = (data) => {
+            console.log('Data: ', data);
             const { message, status } = data;
-            if (status === 200) {
+            if (data.split('-')[0] === 200) {
                 toast.success(message);
                 setCheckInRequested(false);
             }
