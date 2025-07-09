@@ -49,7 +49,6 @@ const socket = io('http://localhost:5000', {
 export default function CheckInCard() {
     const { staff } = useStaff();
     const loggedInStaff = staff?.loggedInStaff;
-    console.log(loggedInStaff);
     const tenantFeatures = loggedInStaff?.tenant?.subscription?.subscriptionFeatures;
     const multiBranchSupport = tenantFeatures?.find((feature) => {
         return feature.toString() === 'Multi Branch Support'
@@ -84,6 +83,28 @@ export default function CheckInCard() {
             hour12: true
         });
     };
+
+    // Staff join room
+    useEffect(()=>{
+        if(!orgOrBranchId){
+            return;
+        }
+        const roomId = `staff-join-room-${orgOrBranchId}`;
+
+        socket.emit('staff-join-room', {roomId })
+    },[orgOrBranchId]);
+
+    // Listen to staff checkin session started
+    useEffect(() => {
+        const handleStaffCheckInSession = (incomingData) => {
+            console.log(incomingData)
+        }
+
+        socket.on('staff-checkin-session-started', handleStaffCheckInSession);
+        return () => {
+            socket.off('staff-checkin-session-started', handleStaffCheckInSession);
+        }
+    }, [orgOrBranchId]);
 
     // Update current time every second
     useEffect(() => {
@@ -176,9 +197,9 @@ export default function CheckInCard() {
         try {
             const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? loggedInStaff?.organizationBranch?._id : loggedInStaff?.organization?._id;
             const roomId = `gym-room-${orgOrBranchId}`;
-            const checkInReqMessage = `checkin_req-${loggedInStaff?._id}-${orgOrBranchId}-${loggedInStaff?.fullName}`;
+            const checkInReqMessage = `staff-checkin_req-${loggedInStaff?._id}-${orgOrBranchId}-${loggedInStaff?.fullName}`;
 
-            socket.emit('request-checkin', {
+            socket.emit('staff-request-checkin', {
                 roomId,
                 message: checkInReqMessage
             });
@@ -254,7 +275,6 @@ export default function CheckInCard() {
     }
 
     const radius = 50;
-
     let disableButton = distance >= radius;
 
     // const formatTime = (date) => {

@@ -65,7 +65,6 @@ const SmartStaffCheckin = () => {
     const [responseData, setResponseData] = useState(null);
     const [responseMessage, setResponseMessage] = useState(null);
     const [textareaColor, setTextAreaColor] = useState('');
-    const [activating, setActivating] = useState(false);
 
     // Helper function to format dates
     const formatDate = (dateString) => {
@@ -189,7 +188,7 @@ const SmartStaffCheckin = () => {
         socket.emit('checkin-req-rejected', { orgOrBranchId })
     }
 
-    const enableMemberCheckInFlag = async () => {
+    const startStaffCheckInSession = async () => {
         try {
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -204,24 +203,7 @@ const SmartStaffCheckin = () => {
                         ? user?.organizationBranch?._id
                         : user?.organization?._id;
 
-                    socket.emit('start-member-checkin-session', { orgOrBranchId });
-                    const apiUrl = (multiBranchSupport || onFreeTrail)
-                        ? `http://localhost:3000/api/organizationbranch/toggle-membercheckin-flag`
-                        : `http://localhost:3000/api/organization/toggle-member-checkin`;
-
-                    const response = await fetch(apiUrl, {
-                        method: "PUT",
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ currentLat: lat, currentLng: lng })
-                    });
-
-                    const resBody = await response.json();
-
-                    if (!response.ok) {
-                        toast.error(resBody.message || "Failed to update location");
-                    };
+                    socket.emit('start-staff-checkin-session', { orgOrBranchId });
                 },
                 (error) => {
                     console.error("Failed to get location:", error.message);
@@ -238,7 +220,7 @@ const SmartStaffCheckin = () => {
 
     useEffect(() => {
         const run = async () => {
-            await enableMemberCheckInFlag();
+            await startStaffCheckInSession();
         };
 
         run();
@@ -285,36 +267,6 @@ const SmartStaffCheckin = () => {
             second: '2-digit',
             hour12: true
         });
-    };
-
-    const activateMembership = async () => {
-        setActivating(true);
-        const membershipHoldData = { status: 'Active' };
-
-        try {
-            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
-                method: "PATCH",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(membershipHoldData)
-            });
-
-            const responseBody = await response.json();
-            if (response.status === 200) {
-                toast.success(responseBody.message);
-                setMembershipHoldToggle(false);
-            } else {
-                toast.error(responseBody.message)
-            }
-
-            queryClient.invalidateQueries(['members']);
-        } catch (error) {
-            console.error("Error:", error);
-            toast.error(error.message);
-        } finally {
-            setActivating(false);
-        }
     };
 
     // Authorize focus
@@ -458,8 +410,8 @@ const SmartStaffCheckin = () => {
                                             <div className="flex-1 flex flex-col justify-between">
                                                 <div className="text-center">
                                                     <div className={`text-3xl font-bold ${locationPermission === 'granted' ? 'bg-gradient-to-r from-emerald-500 to-teal-500' :
-                                                            locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
-                                                                'bg-gradient-to-r from-amber-500 to-yellow-500'
+                                                        locationPermission === 'denied' ? 'bg-gradient-to-r from-rose-500 to-red-500' :
+                                                            'bg-gradient-to-r from-amber-500 to-yellow-500'
                                                         } bg-clip-text text-transparent`}>
                                                         {locationPermission === 'granted' && 'Enabled'}
                                                         {locationPermission === 'prompt' && 'Pending'}
