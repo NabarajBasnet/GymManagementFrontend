@@ -228,7 +228,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -307,11 +307,11 @@ const Header = () => {
               title: "Staff Check-In",
               link: "/dashboard/smartcheckin/staffcheckin",
             },
-            {
-              icon: TbLiveViewFilled,
-              title: "Live Track",
-              link: "/dashboard/smartcheckin/livetrack",
-            },
+            // {
+            //   icon: TbLiveViewFilled,
+            //   title: "Live Track",
+            //   link: "/dashboard/smartcheckin/livetrack",
+            // },
           ],
         },
       ],

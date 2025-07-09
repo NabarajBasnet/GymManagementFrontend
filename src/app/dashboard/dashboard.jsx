@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://localhost:3000/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
 
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('https://fitbinary.com/api/averageactivemembers');
+      const response = await fetch('http://localhost:3000/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
@@ -99,7 +99,7 @@ const AdminDashboard = () => {
   // Get New Members
   const getNewMembers = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
     const [, startDate, endDate, page, limit] = queryKey;
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
+        `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
       );
       const responseBody = await response.json();
       return responseBody;
@@ -134,7 +134,7 @@ const AdminDashboard = () => {
 
   const getActiveInactiveMembers = async () => {
     try {
-      const response = await fetch("https://fitbinary.com/api/graphdata/activeinactivemembers")
+      const response = await fetch("http://localhost:3000/api/graphdata/activeinactivemembers")
       const data = await response.json()
       return data;
     } catch (error) {
@@ -153,7 +153,7 @@ const AdminDashboard = () => {
 
   const getNewMembersGrowthPercentage = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/graphdata/newmembers`);
+      const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
