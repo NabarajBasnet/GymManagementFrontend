@@ -339,7 +339,7 @@ const SmartAttendanceDashboard = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
+        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
             <div className="w-full mx-auto">
 
                 {/* Membership Hold Modal */}
@@ -436,20 +436,19 @@ const SmartAttendanceDashboard = () => {
 
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-4 overflow-hidden">
-                    <div className="mt-6 relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-xl p-4">
+                    <div className="mt-6 relative bg-white dark:bg-gray-800 rounded-md p-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                                 <div className="relative">
-                                    <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-20"></div>
-                                    <div className="relative p-4 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl">
+                                    <div className="relative p-3 bg-sky-500 rounded-xl">
                                         <Activity className="h-8 w-8 text-white" />
                                     </div>
                                 </div>
                                 <div>
-                                    <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-800 via-blue-600 to-indigo-600 bg-clip-text text-transparent dark:from-white dark:via-blue-400 dark:to-indigo-400">
+                                    <h1 className="text-3xl font-bold text-black dark:text-gray-200 bg-clip-text">
                                         Member Attendance
                                     </h1>
-                                    <p className="text-slate-600 dark:text-slate-300 font-medium mt-2">
+                                    <p className="text-slate-600 dark:text-slate-300 text-sm font-medium mt-2">
                                         Real-time member check-ins with geolocation validation
                                     </p>
                                 </div>
@@ -466,351 +465,234 @@ const SmartAttendanceDashboard = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    {/* Session Control Panel */}
-                    <div className="space-y-4">
-                        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                            <div className="flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600 p-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <PiChartLineUpBold className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Session Control Center</h2>
-                                        <p className="text-blue-100 mt-1">Manage member check-in sessions</p>
-                                    </div>
+                {/* Member Information Panel */}
+                <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
+                    <Card className="min-h-[75vh] bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-md overflow-hidden">
+                        <div className="flex justify-between border-b dark:border-gray-600 items-center bg-white dark:bg-gray-800 p-3">
+                            <div className="flex items-center space-x-4">
+                                <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                                    <User className="h-6 w-6 dark:text-white" />
                                 </div>
                                 <div>
-                                    <Button onClick={() => window.location.reload()}>
-                                        <TbReload />
-                                        Reload
-                                    </Button>
+                                    <h2 className="text-xl font-bold dark:text-white">Member Information</h2>
+                                    <p className="text-sm text-gray-700 dark:text-indigo-100 mt-1">Real-time member details</p>
                                 </div>
                             </div>
 
-                            <CardContent className="p-3">
-                                <div className="grid grid-cols-1 gap-2">
-                                    {/* Current Location Card */}
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg">
-                                                    <IoLocationOutline className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Current Location
-                                                </h3>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <div className="flex justify-between">
-                                                    <span className="text-xs text-slate-500 dark:text-slate-400">Latitude:</span>
-                                                    <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                        {currentLat ? currentLat.toFixed(6) : "--"}
-                                                    </span>
-                                                </div>
-                                                <div className="flex justify-between">
-                                                    <span className="text-xs text-slate-500 dark:text-slate-400">Longitude:</span>
-                                                    <span className="text-xs font-mono text-slate-700 dark:text-slate-200">
-                                                        {currentLng ? currentLng.toFixed(6) : "--"}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Detection Range Card */}
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-lg">
-                                                    <IoIosWifi className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Detection Range
-                                                </h3>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">50</div>
-                                                <div className="text-xs text-slate-500 dark:text-slate-400">meters</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="relative group">
-                                        <div className="relative bg-white dark:bg-slate-900 rounded-xl p-4 shadow-lg">
-                                            <div className="flex items-center space-x-3 mb-4">
-                                                <div className="p-2 bg-gradient-to-r from-blue-500 to-sky-600 rounded-lg">
-                                                    <MdLocationPin className="h-5 w-5 text-white" />
-                                                </div>
-                                                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-200 uppercase tracking-wide">
-                                                    Location Permission
-                                                </h3>
-                                            </div>
-                                            <div className="text-center">
-                                                <div className="text-2xl font-bold text-slate-700 dark:text-slate-200">
-                                                    {locationPermission === 'granted' && 'Enabled'}
-                                                    {locationPermission === 'prompt' && 'Not Asked'}
-                                                    {locationPermission === 'denied' && 'Disabled'}
-                                                </div>
-                                                {locationPermission === 'denied' && (
-                                                    <p className="text-xs text-red-500">
-                                                        Location access is blocked. Please enable it in your browser settings.
-                                                    </p>
-                                                )}
-
-                                                {locationPermission === 'prompt' && (
-                                                    <button
-                                                        className="text-xs text-blue-600 underline"
-                                                        onClick={() => {
-                                                            navigator.geolocation.getCurrentPosition(
-                                                                (pos) => console.log("Got location:", pos),
-                                                                (err) => console.error("Location error:", err)
-                                                            );
-                                                        }}
-                                                    >
-                                                        Click here to allow location access
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                    {/* Member Information Panel */}
-                    <div>
-                        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden h-fit">
-                            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-3">
-                                <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <User className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Member Information</h2>
-                                        <p className="text-indigo-100 mt-1">Real-time member details</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <CardContent className="p-3 space-y-4">
-                                {/* Personal Details */}
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                                        Personal Details
-                                    </h3>
-                                    <div className="flex items-center space-x-3">
-                                        <div className="w-full">
-                                            <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Full Name</Label>
-                                            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
-                                                {responseData?.member?.fullName || 'Member Name'}
-                                            </div>
-                                        </div>
-                                        <div className="w-full">
-                                            <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Category</Label>
-                                            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
-                                                {responseData?.membershipType || 'Type'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Membership Details */}
-                                <div className="space-y-2">
-                                    <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
-                                        Membership Details
-                                    </h3>
-                                    <div className="space-y-3">
-                                        <div>
-                                            <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Membership Option</Label>
-                                            <Input
-                                                className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                value={responseData?.member?.membership?.servicesIncluded || "—"}
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div>
-                                                <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Start Date</Label>
-                                                <Input
-                                                    className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                    value={formatDate(responseData?.member?.membershipRenewDate)}
-                                                />
-                                            </div>
-                                            <div>
-                                                <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Expire Date</Label>
-                                                <Input
-                                                    className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
-                                                    value={formatDate(responseData?.membershipExpireDate)}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* QR Code Scanner Area */}
-                                <div>
-                                    <Label className="text-sm font-medium text-gray-700 mb-2 block dark:text-gray-200">
-                                        Attendance Message
-                                    </Label>
-                                    <div className={`relative bg-gray-50 dark:bg-slate-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4`}>
-                                        {responseMessage && (
-                                            <div className={`flex items-start ${textareaColor}`}>
-                                                <div className="flex-shrink-0 mt-0.5">
-                                                    {textareaColor === 'text-green-600' ? (
-                                                        <CheckCircle className="h-5 w-5 text-green-600" />
-                                                    ) : textareaColor === 'text-red-600' ? (
-                                                        <AlertCircle className="h-5 w-5 text-red-600" />
-                                                    ) : textareaColor === 'text-yellow-600' ? (
-                                                        <FaExclamationTriangle className="h-5 w-5 text-yellow-600" />
-                                                    ) : (
-                                                        <Info className="h-5 w-5 text-slate-600" />
-                                                    )}
-                                                </div>
-                                                <div className="ml-3">
-                                                    <p className="text-sm font-medium">
-                                                        {responseMessage || "No message available"}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        )}
-                                        {!responseMessage && (
-                                            <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-
-                {/* Attendance History */}
-                <div className="mt-4">
-                    <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-xl overflow-hidden">
-                        <div className="bg-gradient-to-r from-slate-700 to-slate-900 p-4">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-4">
-                                    <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
-                                        <Calendar className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-xl font-bold text-white">Attendance History</h2>
-                                        <p className="text-slate-200 mt-1">Track member check-ins and activity</p>
-                                    </div>
-                                </div>
-                                <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-                                    <span className="text-sm font-medium text-white">
-                                        {totalAttendance || 0} total records
-                                    </span>
-                                </div>
-                            </div>
+                            <Button onClick={() => window.location.reload()}>
+                                <TbReload />
+                                Reload
+                            </Button>
                         </div>
 
-                        <CardContent className="p-4">
-                            {/* Enhanced Search */}
-                            <div className="mb-4">
-                                <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
-                                    Search Attendance Records
-                                </Label>
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                        <Search className="h-5 w-5 text-slate-400" />
+                        <CardContent className="p-3 space-y-4">
+                            {/* Personal Details */}
+                            <div className="space-y-2">
+                                <div className="flex items-center space-x-3">
+                                    <div className="w-full">
+                                        <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Full Name</Label>
+                                        <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
+                                            {responseData?.member?.fullName || 'Member Name'}
+                                        </div>
                                     </div>
-                                    <Input
-                                        id="search"
-                                        type="text"
-                                        placeholder="Search by name or member ID..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
-                                    />
+                                    <div className="w-full">
+                                        <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Category</Label>
+                                        <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-3 text-sm font-medium text-slate-700 dark:text-slate-200">
+                                            {responseData?.membershipType || 'Type'}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Attendance Records */}
-                            {isAttendanceHistory ? (
-                                <Loader />
-                            ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
+                            {/* Membership Details */}
+                            <div className="space-y-2">
                                 <div className="space-y-3">
-                                    {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
-                                        <div
-                                            key={attendance._id}
-                                            className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center space-x-4">
-                                                    <div className="relative">
-                                                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full blur opacity-20"></div>
-                                                        <div className="relative w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                                                            <span className="text-white font-bold text-sm">
-                                                                {attendance.fullName?.charAt(0) || 'M'}
-                                                            </span>
+                                    <div>
+                                        <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Membership Option</Label>
+                                        <Input
+                                            className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
+                                            value={responseData?.member?.membership?.servicesIncluded || "—"}
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Start Date</Label>
+                                            <Input
+                                                className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
+                                                value={formatDate(responseData?.member?.membershipRenewDate)}
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">Expire Date</Label>
+                                            <Input
+                                                className="bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-lg h-12 dark:text-slate-200"
+                                                value={formatDate(responseData?.membershipExpireDate)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* QR Code Scanner Area */}
+                            <div>
+                                <Label className="text-sm font-medium text-gray-700 mb-2 block dark:text-gray-200">
+                                    Attendance Message
+                                </Label>
+                                <div className={`relative bg-gray-50 dark:bg-slate-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4`}>
+                                    {responseMessage && (
+                                        <div className={`flex items-start ${textareaColor}`}>
+                                            <div className="flex-shrink-0 mt-0.5">
+                                                {textareaColor === 'text-green-600' ? (
+                                                    <CheckCircle className="h-5 w-5 text-green-600" />
+                                                ) : textareaColor === 'text-red-600' ? (
+                                                    <AlertCircle className="h-5 w-5 text-red-600" />
+                                                ) : textareaColor === 'text-yellow-600' ? (
+                                                    <FaExclamationTriangle className="h-5 w-5 text-yellow-600" />
+                                                ) : (
+                                                    <Info className="h-5 w-5 text-slate-600" />
+                                                )}
+                                            </div>
+                                            <div className="ml-3">
+                                                <p className="text-sm font-medium">
+                                                    {responseMessage || "No message available"}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                    {!responseMessage && (
+                                        <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
+                                    )}
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <div className="min-h-[75vh]">
+                        <Card className="h-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-md overflow-hidden">
+                            <div className="dark:bg-gray-700 p-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                                            <Calendar className="h-6 w-6 dark:text-white" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-xl font-bold dark:text-white">Attendance History</h2>
+                                            <p className="text-gray-700 dark:text-slate-200 mt-1">Track member check-ins and activity</p>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+                                        <span className="text-sm font-medium text-white">
+                                            {totalAttendance || 0} total records
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <CardContent className="p-4">
+                                {/* Enhanced Search */}
+                                <div className="mb-4">
+                                    <Label htmlFor="search" className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-3 block">
+                                        Search Attendance Records
+                                    </Label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <Search className="h-5 w-5 text-slate-400" />
+                                        </div>
+                                        <Input
+                                            id="search"
+                                            type="text"
+                                            placeholder="Search by name or member ID..."
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className="pl-12 pr-4 py-6 bg-slate-50 dark:bg-slate-700 border-slate-200 dark:border-slate-600 rounded-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Attendance Records */}
+                                {isAttendanceHistory ? (
+                                    <Loader />
+                                ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
+                                            <div
+                                                key={attendance._id}
+                                                className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center space-x-4">
+                                                        <div className="relative">
+                                                            <div className="relative w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                                                                <span className="text-white font-bold text-sm">
+                                                                    {attendance.fullName?.charAt(0) || 'M'}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <h3 className="font-semibold text-slate-800 dark:text-slate-200">
+                                                                {attendance.fullName}
+                                                            </h3>
+                                                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                                ID: {attendance.memberId}
+                                                            </p>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-                                                            {attendance.fullName}
-                                                        </h3>
-                                                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                            ID: {attendance.memberId}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-6">
-                                                    <div className="text-center">
-                                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                            {attendance.membershipOption}
+                                                    <div className="flex items-center space-x-6">
+                                                        <div className="text-center">
+                                                            <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
+                                                                {attendance.membershipOption}
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
-                                                            <Timer className="h-4 w-4 mr-2" />
-                                                            {formatTime ? formatTime(attendance.checkInTime) : attendance.checkInTime}
-                                                        </div>
-                                                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                                            Check-in time
+                                                        <div className="text-right">
+                                                            <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
+                                                                <Timer className="h-4 w-4 mr-2" />
+                                                                {formatTime ? formatTime(attendance.checkInTime) : attendance.checkInTime}
+                                                            </div>
+                                                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                                Check-in time
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <div className="text-center py-16">
-                                    <div className="relative mb-6">
-                                        <div className="absolute -inset-4 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full blur opacity-20"></div>
-                                        <div className="relative w-16 h-16 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
-                                            <Search className="h-8 w-8 text-white" />
-                                        </div>
+                                        ))}
                                     </div>
-                                    <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
-                                        No attendance records found
-                                    </h3>
-                                    <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                                        {debouncedSearchQuery
-                                            ? "No records match your search criteria. Try adjusting your search terms."
-                                            : "Attendance records will appear here once members start checking in"}
-                                    </p>
-                                </div>
-                            )}
+                                ) : (
+                                    <div className="text-center py-16">
+                                        <div className="relative mb-6">
+                                            <div className="absolute -inset-4 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full blur opacity-20"></div>
+                                            <div className="relative w-16 h-16 bg-gradient-to-r from-slate-500 to-slate-600 rounded-full flex items-center justify-center mx-auto">
+                                                <Search className="h-8 w-8 text-white" />
+                                            </div>
+                                        </div>
+                                        <h3 className="text-lg font-semibold text-slate-700 dark:text-slate-200 mb-2">
+                                            No attendance records found
+                                        </h3>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                                            {debouncedSearchQuery
+                                                ? "No records match your search criteria. Try adjusting your search terms."
+                                                : "Attendance records will appear here once members start checking in"}
+                                        </p>
+                                    </div>
+                                )}
 
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <div className="mt-8">
-                                    <Pagination
-                                        total={totalPages}
-                                        page={currentPage}
-                                        onChange={setCurrentPage}
-                                        withEdges={true}
-                                        siblings={1}
-                                        boundaries={1}
-                                        className="justify-center"
-                                    />
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
+                                {/* Pagination */}
+                                {totalPages > 1 && (
+                                    <div className="mt-8">
+                                        <Pagination
+                                            total={totalPages}
+                                            page={currentPage}
+                                            onChange={setCurrentPage}
+                                            withEdges={true}
+                                            siblings={1}
+                                            boundaries={1}
+                                            className="justify-center"
+                                        />
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
 
                 {/* Check-In Authorization Dialog */}
