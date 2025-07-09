@@ -38,7 +38,7 @@ const TenantLoginForm = () => {
   const onLoginUser = async (data) => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/tenant/auth/login",
+        "https://fitbinary.com/api/tenant/auth/login",
         {
           method: "POST",
           headers: {

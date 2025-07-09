@@ -7,7 +7,7 @@ const nextConfig = {
         destination:
           process.env.NODE_ENV === "development"
             ? "http://localhost:5000/api/:path*"
-            : "http://localhost:3000/api/:path*",
+            : "https://fitbinary.com/api/:path*",
       },
     ];
   },

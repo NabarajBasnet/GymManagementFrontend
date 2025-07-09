@@ -114,7 +114,7 @@ const LockerExpiryReport = () => {
     const [, fromDate, toDate, currentPage, limit] = queryKey;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/reports/lockerexpiryreport?fromDate=${fromDate}&toDate=${toDate}&page=${currentPage}&limit=${limit}`
+        `https://fitbinary.com/api/reports/lockerexpiryreport?fromDate=${fromDate}&toDate=${toDate}&page=${currentPage}&limit=${limit}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch locker data");

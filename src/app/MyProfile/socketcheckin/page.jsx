@@ -27,7 +27,7 @@ import { MdClose } from "react-icons/md";
 import { io } from 'socket.io-client';
 import { useStaff } from "@/components/Providers/LoggedInStaffProvider";
 
-const socket = io('http://localhost:5000', {
+const socket = io('https://fitbinary.com', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,

@@ -1,16 +1,14 @@
 'use client';
 
-import { IoClose, IoLocationOutline } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import {
     FaExclamationTriangle,
     FaPlayCircle,
     FaSpinner,
 } from 'react-icons/fa';
-import { MdLocationPin, MdClose } from "react-icons/md";
-import { IoIosWifi } from "react-icons/io";
+import { MdClose } from "react-icons/md";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
@@ -36,7 +34,7 @@ import { Input } from "@/components/ui/input";
 
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5000', {
+const socket = io('https://fitbinary.com', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
@@ -122,7 +120,7 @@ const SmartAttendanceDashboard = () => {
 
     const handleMemberValidation = async (memberId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`https://fitbinary.com/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -211,8 +209,8 @@ const SmartAttendanceDashboard = () => {
 
                     socket.emit('start-member-checkin-session', { orgOrBranchId });
                     const apiUrl = (multiBranchSupport || onFreeTrail)
-                        ? `http://localhost:3000/api/organizationbranch/toggle-membercheckin-flag`
-                        : `http://localhost:3000/api/organization/toggle-member-checkin`;
+                        ? `https://fitbinary.com/api/organizationbranch/toggle-membercheckin-flag`
+                        : `https://fitbinary.com/api/organization/toggle-member-checkin`;
 
                     const response = await fetch(apiUrl, {
                         method: "PUT",
@@ -257,7 +255,7 @@ const SmartAttendanceDashboard = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`https://fitbinary.com/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const data = await response.json();
 
             if (!response.ok) {
@@ -297,7 +295,7 @@ const SmartAttendanceDashboard = () => {
         const membershipHoldData = { status: 'Active' };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
+            const response = await fetch(`https://fitbinary.com/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
