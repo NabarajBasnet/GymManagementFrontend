@@ -216,9 +216,8 @@ export default function CheckInCard() {
     // Handle successful staff check in response
     useEffect(() => {
         const handleSuccessFulResponse = (data) => {
-            console.log('Data: ', data);
-            const { message, status } = data;
-            if (data.split('-')[0] === 200) {
+            const { status, id, message } = data;
+            if (status === 200 && id.toString() === orgOrBranchId.toString()) {
                 toast.success(message);
                 setCheckInRequested(false);
             }

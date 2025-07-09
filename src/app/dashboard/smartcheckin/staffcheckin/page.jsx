@@ -166,7 +166,11 @@ const SmartStaffCheckin = () => {
 
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
-                const emitMessage = `${responseStatus}-${orgOrBranchId}`
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
                 console.log(emitMessage)
                 socket.emit('staff-checkin-req-successful', emitMessage);
                 toast.success(responseBody.message);
