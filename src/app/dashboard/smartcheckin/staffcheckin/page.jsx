@@ -11,12 +11,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { IoClose, IoLocationOutline } from "react-icons/io5";
-import { FaCheck } from "react-icons/fa6";
+import { IoLocationOutline } from "react-icons/io5";
 import { MdLocationPin, MdClose } from "react-icons/md";
 import { IoIosWifi } from "react-icons/io";
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
@@ -60,7 +58,6 @@ const SmartStaffCheckin = () => {
     const orgOrBranchId = (onFreeTrail || multiBranchSupport) ? user?.organizationBranch?._id : user?.organization?._id;
 
     // States
-    const queryClient = useQueryClient();
     const [sessionActive, setSessionActive] = useState(false)
     const [openStaffCheckInAlert, setStaffCheckInAlert] = useState(false);
     const [staffName, setStaffName] = useState('');
@@ -72,17 +69,8 @@ const SmartStaffCheckin = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [locationPermission, setLocationPermissionState] = useState('');
-    const [responseData, setResponseData] = useState(null);
-    const [responseMessage, setResponseMessage] = useState(null);
-    const [textareaColor, setTextAreaColor] = useState('');
     const [confirmCheckInState, setConfirmCheckInState] = useState(false);
     const [confirmCheckOutState, setConfirmCheckOutState] = useState(false);
-
-    // Helper function to format dates
-    const formatDate = (dateString) => {
-        if (!dateString) return "";
-        return new Date(dateString).toLocaleDateString('en-GB');
-    };
 
     useEffect(() => {
         // Check if we're in the browser before using navigator
@@ -103,6 +91,7 @@ const SmartStaffCheckin = () => {
         }
     }, []);
 
+    // Organization join room on load
     useEffect(() => {
         if (!orgOrBranchId) {
             return;
@@ -143,6 +132,7 @@ const SmartStaffCheckin = () => {
         };
     }, [orgOrBranchId]);
 
+    // Check in staff
     const checkInStaff = async () => {
         try {
             const currentDateTime = new Date();
@@ -159,7 +149,11 @@ const SmartStaffCheckin = () => {
             const responseBody = await response.json();
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
-                const emitMessage = `${responseStatus, orgOrBranchId}`
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
                 socket.emit('staff-checkin-req-unsuccessful', emitMessage);
                 return;
             };
@@ -171,22 +165,31 @@ const SmartStaffCheckin = () => {
                     id: orgOrBranchId,
                     message: responseBody.message
                 }
-                console.log(emitMessage)
                 socket.emit('staff-checkin-req-successful', emitMessage);
                 toast.success(responseBody.message);
+                window.location.reload();
             } else {
                 toast.error(responseBody.message);
-                const emitMessage = `${responseStatus}-${orgOrBranchId}`
-                socket.emit('staff-checkin-req-successful', emitMessage);
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
+                socket.emit('staff-checkin-req-unsuccessful', emitMessage);
             }
         } catch (error) {
             console.log("Error: ", error);
-            const emitMessage = `${responseStatus}-${orgOrBranchId}`
-            socket.emit('staff-checkin-req-successful', emitMessage);
+            const emitMessage = {
+                status: responseStatus,
+                id: orgOrBranchId,
+                message: error.message
+            }
+            socket.emit('staff-checkin-req-unsuccessful', emitMessage);
         };
     };
 
-    const checkoutStaff = async (iv, tv) => {
+    // Check out staff
+    const checkoutStaff = async () => {
         const currentDateTime = new Date();
         try {
             const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
@@ -198,34 +201,56 @@ const SmartStaffCheckin = () => {
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
             });
 
+            const responseStatus = response.status;
+            const responseBody = await response.json();
+
             if (!response.ok) {
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
+                socket.emit('staff-checkout-req-unsuccessful', emitMessage);
                 const errorText = await response.text();
                 console.error('Error response:', errorText);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const responseBody = await response.json();
-
             if (responseBody.success) {
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
+                socket.emit('staff-checkout-req-successful', emitMessage);
                 setConfirmCheckOutState(false);
                 toast.success(responseBody.message);
                 setTimeout(() => window.location.reload(), 1000);
             } else {
+                const emitMessage = {
+                    status: responseStatus,
+                    id: orgOrBranchId,
+                    message: responseBody.message
+                }
+                socket.emit('staff-checkout-req-unsuccessful', emitMessage);
                 toast.error(responseBody.message || "Checkout failed");
             }
         } catch (error) {
+            const emitMessage = {
+                status: responseStatus,
+                id: orgOrBranchId,
+                message: error.message
+            }
+            socket.emit('staff-checkout-req-unsuccessful', emitMessage);
             console.log("Error: ", error)
             toast.error("Failed to checkout staff. Please try again.");
         }
     };
 
-    const acceptCheckInReq = async () => {
-        checkInStaff(staffId, new Date())
-    }
-
     const rejectCheckInReq = async () => {
+        setConfirmCheckInState(false);
         socket.emit('staff-checkin-req-declined', { orgOrBranchId })
-    }
+    };
 
     const startStaffCheckInSession = async () => {
         try {
@@ -257,11 +282,15 @@ const SmartStaffCheckin = () => {
         }
     };
 
+    const handleCancelCheckOut = () => {
+        setConfirmCheckOutState(false)
+        socket.emit('staff-checkout-req-declined', { orgOrBranchId })
+    }
+
     useEffect(() => {
         const run = async () => {
             await startStaffCheckInSession();
         };
-
         run();
     }, [orgOrBranchId]);
 
@@ -292,31 +321,6 @@ const SmartStaffCheckin = () => {
         totalPages,
     } = data || {};
 
-    const formatTime = (date) => {
-        return new Date(date).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-    };
-
-    // Authorize focus
-    const authorizeBtnRef = useRef(null);
-
-    useEffect(() => {
-        authorizeBtnRef.current?.focus();
-
-        const handleKeyDown = (e) => {
-            if (e.key === "Enter") {
-                acceptCheckInReq();
-            }
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-    }, []);
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="w-full mx-auto">
@@ -335,7 +339,7 @@ const SmartStaffCheckin = () => {
                             <div className="flex items-center justify-between border-b pb-3">
                                 <h1 className="flex items-center font-semibold text-gray-800">
                                     <QrCode className="text-blue-600 text-lg mr-2" />
-                                    Confirm Check-In
+                                    Confirm check-in request from {staffName || "staff"}?
                                 </h1>
                                 <Button
                                     className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
@@ -351,7 +355,10 @@ const SmartStaffCheckin = () => {
 
                             <div className="flex justify-end space-x-3 mt-4">
                                 <Button
-                                    onClick={() => setConfirmCheckInState(false)}
+                                    onClick={() => {
+                                        rejectCheckInReq()
+                                        setConfirmCheckInState(false)
+                                    }}
                                     className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
                                 >
                                     Cancel
@@ -394,12 +401,12 @@ const SmartStaffCheckin = () => {
                             </div>
 
                             <p className="text-gray-600 text-sm mt-3">
-                                You have already checkedin, Do you want to checkout?
+                                {staffName || 'Staff'} have already checkedin, Do you want to checkout?
                             </p>
 
                             <div className="flex justify-end space-x-3 mt-4">
                                 <Button
-                                    onClick={() => setConfirmCheckOutState(false)}
+                                    onClick={() => handleCancelCheckOut()}
                                     className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
                                 >
                                     Cancel
@@ -701,53 +708,6 @@ const SmartStaffCheckin = () => {
                     </Card>
                 </div>
 
-                {/* Check-In Authorization Dialog */}
-                <AlertDialog open={openStaffCheckInAlert} onOpenChange={setStaffCheckInAlert}>
-                    <AlertDialogContent className="max-w-xl rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-0 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] backdrop-blur-sm overflow-hidden">
-                        <div className="relative">
-                            <AlertDialogHeader className="px-8 pt-6 pb-4">
-                                <div className="mb-4 flex justify-center">
-                                    <div className="relative">
-                                        <div className="absolute -inset-3 rounded-full bg-blue-100/50 dark:bg-blue-900/30 blur-sm" />
-                                        <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 shadow-lg">
-                                            <User className="h-6 w-6 text-white" />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <AlertDialogTitle className="text-center text-2xl font-semibold text-gray-900 dark:text-white">
-                                    Staff Check-In
-                                </AlertDialogTitle>
-                                <AlertDialogDescription className="mt-2 text-center text-gray-600 dark:text-gray-300">
-                                    <span className="font-medium text-indigo-600 dark:text-indigo-400">
-                                        {staffName || "A member"} is requesting to check in. Would you like to approve this request?
-                                    </span>
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                        </div>
-
-                        <AlertDialogFooter className="px-8 pb-6 pt-4">
-                            <div className="flex w-full gap-3">
-                                <AlertDialogCancel
-                                    onClick={() => rejectCheckInReq()}
-                                    className="flex-1 items-center justify-center gap-2 rounded-sm border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-6 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md"
-                                >
-                                    <IoClose />
-                                    Decline Request
-                                </AlertDialogCancel>
-
-                                <AlertDialogAction
-                                    ref={authorizeBtnRef}
-                                    onClick={() => acceptCheckInReq()}
-                                    className="flex-1 items-center justify-center gap-2 rounded-sm bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-6 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                                >
-                                    <FaCheck />
-                                    Confirm Checkin
-                                </AlertDialogAction>
-                            </div>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
             </div>
         </div>
     );

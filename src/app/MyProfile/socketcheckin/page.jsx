@@ -19,15 +19,6 @@ import {
     User,
     Phone,
     Mail,
-    Calendar,
-    Timer,
-    Building,
-    CreditCard,
-    Navigation,
-    Wifi,
-    WifiOff,
-    AlertCircle,
-    Users
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -57,15 +48,10 @@ export default function CheckInCard() {
     const orgOrBranchId = (multiBranchSupport || onFreeTrail)
         ? loggedInStaff?.organizationBranch?._id
         : loggedInStaff?.organization?._id;
-    const [isCheckingIn, setIsCheckingIn] = useState(false);
-    const [checkInSuccess, setCheckInSuccess] = useState(false);
     const [memberLat, setMemberLat] = useState(null);
     const [memberLng, setMemberLng] = useState(null);
-    const [locationError, setLocationError] = useState(null);
-    const [refetchState, setRefetchState] = useState(false);
     const [checkInRequested, setCheckInRequested] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
-
     const [organizationLat, setOrganizationLat] = useState(null);
     const [organizationLng, setOrganizationLng] = useState(null);
 
@@ -98,7 +84,6 @@ export default function CheckInCard() {
     useEffect(() => {
         const handleStaffCheckInSession = (incomingData) => {
             if (incomingData === orgOrBranchId) {
-                console.log('Incoming Id: ', incomingData, orgOrBranchId)
             }
         }
 
@@ -119,24 +104,6 @@ export default function CheckInCard() {
     useEffect(() => {
         socket.emit('member-join-room', orgOrBranchId || '');
     }, [orgOrBranchId]);
-
-    useEffect(() => {
-        const handleSessionStart = (incomingId) => {
-            if (incomingId === orgOrBranchId) {
-                setRefetchState((prev) => !prev);
-            }
-        };
-        socket.on("member-checkin-session-started", handleSessionStart);
-
-        return () => {
-            socket.off("member-checkin-session-started", handleSessionStart);
-        };
-    }, [orgOrBranchId, memberLat, memberLng]);
-
-    useEffect(() => {
-        socket.on('checkin-session-disabled', (incomingId) => {
-        })
-    }, [orgOrBranchId])
 
     useEffect(() => {
         if ('Notification' in window && Notification.permission !== 'granted') {
@@ -175,11 +142,10 @@ export default function CheckInCard() {
                     const { latitude, longitude } = position.coords;
                     setMemberLat(latitude);
                     setMemberLng(longitude);
-                    setLocationError(null);
                 },
                 (error) => {
                     console.log('Geolocation error: ', error.message);
-                    setLocationError(error.message);
+                    toast.error(error.message)
                 }, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
@@ -191,7 +157,6 @@ export default function CheckInCard() {
                 navigator.geolocation.clearWatch(watchId);
             };
         } else {
-            setLocationError('Geolocation not supported');
             toast.error('Geolocation not supported');
         }
     }, []);
@@ -208,7 +173,6 @@ export default function CheckInCard() {
             });
             setCheckInRequested(true);
         } catch (error) {
-            setIsCheckingIn(false);
             setCheckInRequested(false);
         }
     };
@@ -231,8 +195,8 @@ export default function CheckInCard() {
     // Handle unsuccessful check in response
     useEffect(() => {
         const handleErrorResponse = (data) => {
-            const { message, status } = data;
-            if (status !== 200) {
+            const { status, id, message, } = data;
+            if (status !== 200 && id.toString() === orgOrBranchId.toString()) {
                 toast.error(message);
                 setCheckInRequested(false);
             }
@@ -241,6 +205,65 @@ export default function CheckInCard() {
         socket.on('staff-checkin-req-unsuccessful', handleErrorResponse);
 
         return () => socket.off('staff-checkin-req-unsuccessful', handleErrorResponse);
+    }, [orgOrBranchId]);
+
+    // Handle successful staff check out response
+    useEffect(() => {
+        const handleSuccessFulResponse = (data) => {
+            const { status, id, message } = data;
+            if (status === 200 && id.toString() === orgOrBranchId.toString()) {
+                toast.success(message);
+                setCheckInRequested(false);
+            }
+        };
+
+        socket.on('staff-checkout-req-successful', handleSuccessFulResponse);
+
+        return () => socket.off('staff-checkout-req-successful', handleSuccessFulResponse);
+    }, [orgOrBranchId]);
+
+    // Handle unsuccessful check out response
+    useEffect(() => {
+        const handleErrorResponse = (data) => {
+            const { status, id, message, } = data;
+            if (status !== 200 && id.toString() === orgOrBranchId.toString()) {
+                toast.error(message);
+                setCheckInRequested(false);
+            }
+        };
+
+        socket.on('staff-checkout-req-unsuccessful', handleErrorResponse);
+
+        return () => socket.off('staff-checkout-req-unsuccessful', handleErrorResponse);
+    }, [orgOrBranchId]);
+
+    // Handle declined check in response
+    useEffect(() => {
+        const handleErrorResponse = (data) => {
+            const { orgOrBranchId } = data;
+            if (orgOrBranchId.toString() === orgOrBranchId.toString()) {
+                toast.error('Your checkin request has been declined');
+                setCheckInRequested(false);
+            };
+        };
+
+        socket.on('staff-checkin-req-declined', handleErrorResponse);
+
+        return () => socket.off('staff-checkin-req-declined', handleErrorResponse);
+    }, [orgOrBranchId]);
+
+    // Handle declined check out response
+    useEffect(() => {
+        const handleErrorResponse = (data) => {
+            const { orgOrBranchId } = data;
+            if (orgOrBranchId.toString() === orgOrBranchId.toString()) {
+                toast.error('Your checkout request has been declined');
+                setCheckInRequested(false);
+            };
+        };
+        socket.on('staff-checkout-req-declined', handleErrorResponse);
+
+        return () => socket.off('staff-checkout-req-declined', handleErrorResponse);
     }, [orgOrBranchId]);
 
     // Get organization position with dependency member lat, lng
@@ -280,24 +303,6 @@ export default function CheckInCard() {
     const radius = 50;
     let disableButton = distance >= radius;
 
-    // const formatTime = (date) => {
-    //     return date.toLocaleTimeString('en-US', {
-    //         hour: '2-digit',
-    //         minute: '2-digit',
-    //         second: '2-digit',
-    //         hour12: true
-    //     });
-    // };
-
-    // const formatDate = (date) => {
-    //     return date.toLocaleDateString('en-US', {
-    //         weekday: 'long',
-    //         year: 'numeric',
-    //         month: 'long',
-    //         day: 'numeric'
-    //     });
-    // };
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="max-w-4xl mx-auto">
@@ -309,7 +314,7 @@ export default function CheckInCard() {
                                 <BiLoaderCircle className="w-5 h-5" />
                                 <AlertDialogTitle className="w-full flex justify-between items-center text-base font-semibold">
                                     <span>
-                                        Sending Check-In Request
+                                        Sending Check-In/Out Request
                                     </span>
                                     <MdClose
                                         className="cursor-pointer"
@@ -318,7 +323,7 @@ export default function CheckInCard() {
                                 </AlertDialogTitle>
                             </div>
                             <AlertDialogDescription className="text-muted-foreground">
-                                Your attendance check-in request has been sent. Please wait for the response from gym.
+                                Your attendance check-in/out request has been sent. Please wait for the response.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
 
@@ -371,7 +376,7 @@ export default function CheckInCard() {
                                     }`}
                             >
                                 <PiHandTapBold className="w-10 h-10" />
-                                {disableButton ? 'Too Far to Check In' : 'Request Check In'}
+                                {disableButton ? 'Too Far to Check-In/Out' : 'Request Check-In/Out'}
                             </Button>
                         </div>
                     </Card>
