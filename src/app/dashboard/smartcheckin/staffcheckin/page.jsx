@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import {
     Table,
     TableBody,
@@ -19,7 +20,7 @@ import { PiChartLineUpBold } from "react-icons/pi";
 import Loader from '@/components/Loader/Loader';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Pagination from '@/components/ui/CustomPagination';
-import { Activity, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle } from 'lucide-react';
+import { Activity, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, X, QrCode, RefreshCw, Home } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -66,7 +67,6 @@ const SmartStaffCheckin = () => {
     const [staffId, setStaffId] = useState('')
     const [currentLat, setCurrentLat] = useState(null);
     const [currentLng, setCurrentLng] = useState(null);
-    const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
@@ -110,13 +110,32 @@ const SmartStaffCheckin = () => {
         const roomId = `gym-room-${orgOrBranchId}`;
         socket.emit("gym-join-room", { roomId });
 
-        const handleRequestCheckin = (data) => {
+        const handleRequestCheckin = async (data) => {
             if (data.split('-')[0] === 'staff_checkin_req') {
-                setStaffCheckInAlert(true);
                 setStaffName(data.split('-')[3]);
                 setStaffId(data.split('-')[1]);
+                const currentTime = new Date();
+                if (data.split('-')[1].length >= 24 && currentTime) {
+                    const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': "application/json"
+                        },
+                        body: JSON.stringify({ iv: data.split('-')[1], currentTime })
+                    });
+
+                    const responseData = await response.json();
+                    console.log(responseData);
+
+                    if (responseData.checkedIn) {
+                        setConfirmCheckOutState(true);
+                    } else {
+                        setConfirmCheckInState(true);
+                    }
+                }
             };
         };
+
         socket.on('staff-request-checkin', handleRequestCheckin);
 
         // Cleanup on unmount or re-render
@@ -125,14 +144,15 @@ const SmartStaffCheckin = () => {
         };
     }, [orgOrBranchId]);
 
-    const checkInStaff = async (iv, tv) => {
+    const checkInStaff = async () => {
         try {
+            const currentDateTime = new Date();
             const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
                 },
-                body: JSON.stringify({ iv, tv })
+                body: JSON.stringify({ iv: staffId, tv: currentDateTime })
             });
 
             const responseBody = await response.json();
@@ -154,6 +174,39 @@ const SmartStaffCheckin = () => {
             console.log("Error: ", error);
             socket.emit('staff-checkin-req-successful', orgOrBranchId);
         };
+    };
+
+    const checkoutStaff = async (iv, tv) => {
+        const currentDateTime = new Date();
+        try {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json",
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ iv: staffId, tv: currentDateTime })
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseBody = await response.json();
+
+            if (responseBody.success) {
+                setConfirmCheckOutState(false);
+                toast.success(responseBody.message);
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                toast.error(responseBody.message || "Checkout failed");
+            }
+        } catch (error) {
+            console.log("Error: ", error)
+            toast.error("Failed to checkout staff. Please try again.");
+        }
     };
 
     const acceptCheckInReq = async () => {
@@ -214,15 +267,12 @@ const SmartStaffCheckin = () => {
             const data = await response.json();
             if (!response.ok) {
                 toast.error(data.message || 'Internal server error');
-                setTimeout(() => setShowErrorAlert(false), 7000);
             }
-            console.log(data);
             return data;
         } catch (error) {
             console.log('Error: ', error);
-            setTimeout(() => setShowErrorAlert(false), 7000);
             toast.error(error.message)
-        }
+        };
     };
 
     const { data, isLoading } = useQuery({
@@ -234,7 +284,6 @@ const SmartStaffCheckin = () => {
         todaysTotalStaffAttendance,
         totalPages,
     } = data || {};
-    console.log(temporaryStaffAttendanceHistories);
 
     const formatTime = (date) => {
         return new Date(date).toLocaleTimeString('en-US', {
@@ -264,6 +313,100 @@ const SmartStaffCheckin = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 p-4">
             <div className="w-full mx-auto">
+
+                {confirmCheckInState && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                        >
+                            <div className="flex items-center justify-between border-b pb-3">
+                                <h1 className="flex items-center font-semibold text-gray-800">
+                                    <QrCode className="text-blue-600 text-lg mr-2" />
+                                    Confirm Check-In
+                                </h1>
+                                <Button
+                                    className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                    onClick={() => setConfirmCheckInState(false)}
+                                >
+                                    <X className="text-gray-600 text-lg" />
+                                </Button>
+                            </div>
+
+                            <p className="text-gray-600 text-sm mt-3">
+                                Are you sure you want to continue check-in?
+                            </p>
+
+                            <div className="flex justify-end space-x-3 mt-4">
+                                <Button
+                                    onClick={() => setConfirmCheckInState(false)}
+                                    className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
+                                    onClick={() => {
+                                        checkInStaff(staffId, new Date())
+                                    }}
+                                >
+                                    Continue
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
+
+                {confirmCheckOutState && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                        >
+                            <div className="flex items-center justify-between border-b pb-3">
+                                <h1 className="flex items-center font-semibold text-gray-800">
+                                    <QrCode className="text-blue-600 text-lg mr-2" />
+                                    Confirm Check-Out
+                                </h1>
+                                <Button
+                                    className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                    onClick={() => setConfirmCheckOutState(false)}
+                                >
+                                    <X className="text-gray-600 text-lg" />
+                                </Button>
+                            </div>
+
+                            <p className="text-gray-600 text-sm mt-3">
+                                You have already checkedin, Do you want to checkout?
+                            </p>
+
+                            <div className="flex justify-end space-x-3 mt-4">
+                                <Button
+                                    onClick={() => setConfirmCheckOutState(false)}
+                                    className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg"
+                                    onClick={() => checkoutStaff(staffId, new Date())}
+                                >
+                                    Continue
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </div>
+                )}
 
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-4 overflow-hidden">
