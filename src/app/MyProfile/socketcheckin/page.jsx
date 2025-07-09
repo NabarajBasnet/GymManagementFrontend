@@ -85,19 +85,21 @@ export default function CheckInCard() {
     };
 
     // Staff join room
-    useEffect(()=>{
-        if(!orgOrBranchId){
+    useEffect(() => {
+        if (!orgOrBranchId) {
             return;
         }
         const roomId = `staff-join-room-${orgOrBranchId}`;
 
-        socket.emit('staff-join-room', {roomId })
-    },[orgOrBranchId]);
+        socket.emit('staff-join-room', { roomId })
+    }, [orgOrBranchId]);
 
     // Listen to staff checkin session started
     useEffect(() => {
         const handleStaffCheckInSession = (incomingData) => {
-            console.log(incomingData)
+            if (incomingData === orgOrBranchId) {
+                console.log('Incoming Id: ', incomingData, orgOrBranchId)
+            }
         }
 
         socket.on('staff-checkin-session-started', handleStaffCheckInSession);
@@ -199,7 +201,7 @@ export default function CheckInCard() {
             const roomId = `gym-room-${orgOrBranchId}`;
             const checkInReqMessage = `staff-checkin_req-${loggedInStaff?._id}-${orgOrBranchId}-${loggedInStaff?.fullName}`;
 
-            socket.emit('staff-request-checkin', {
+            socket.emit('staff_request_checkin', {
                 roomId,
                 message: checkInReqMessage
             });

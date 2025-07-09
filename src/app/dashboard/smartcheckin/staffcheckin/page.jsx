@@ -51,9 +51,10 @@ const SmartStaffCheckin = () => {
     // States
     const queryClient = useQueryClient();
     const [sessionActive, setSessionActive] = useState(false)
-    const [openMemberCheckInAlert, setMemberCheckInAlert] = useState(false);
-    const [memberName, setMemberName] = useState('')
-    const [memberId, setMemberId] = useState('')
+    const [openStaffCheckInAlert, setStaffCheckInAlert] = useState(false);
+    const [staffName, setStaffName] = useState('');
+    console.log('Staff Name: ', staffName);
+    const [staffId, setStaffId] = useState('')
     const [currentLat, setCurrentLat] = useState(null);
     const [currentLng, setCurrentLng] = useState(null);
     const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
@@ -65,6 +66,8 @@ const SmartStaffCheckin = () => {
     const [responseData, setResponseData] = useState(null);
     const [responseMessage, setResponseMessage] = useState(null);
     const [textareaColor, setTextAreaColor] = useState('');
+    const [confirmCheckInState, setConfirmCheckInState] = useState(false);
+    const [confirmCheckOutState, setConfirmCheckOutState] = useState(false);
 
     // Helper function to format dates
     const formatDate = (dateString) => {
@@ -92,96 +95,60 @@ const SmartStaffCheckin = () => {
     }, []);
 
     useEffect(() => {
-        const handleChatMessage = (data) => {
-            toast.success(data);
-        };
+
+        if (!orgOrBranchId) {
+            return;
+        }
+        const roomId = `gym-room-${orgOrBranchId}`;
+        socket.emit("gym-join-room", { roomId });
 
         const handleRequestCheckin = (data) => {
-            if (data.split('-')[0] === 'checkin_req') {
-                setMemberCheckInAlert(true);
-                setMemberName(data.split('-')[3]);
-                setMemberId(data.split('-')[1]);
+            console.log(data);
+            if (data.split('-')[0] === 'staff-checkin_req') {
+                toast.success('Request is here')
+                setStaffCheckInAlert(true);
+                setStaffName(data.split('-')[3]);
+                setStaffId(data.split('-')[1]);
             };
         };
 
-        socket.on('chat message', handleChatMessage);
-        socket.on('request-checkin', handleRequestCheckin);
+        socket.on('staff-request-checkin', handleRequestCheckin);
 
         // Cleanup on unmount or re-render
         return () => {
-            socket.off('chat message', handleChatMessage);
-            socket.off('request-checkin', handleRequestCheckin);
+            socket.off('staff-request-checkin', handleRequestCheckin);
         };
-    }, []);
+    }, [orgOrBranchId]);
 
-    const handleMemberValidation = async (memberId) => {
+    const checkInStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                body: JSON.stringify({ memberId }),
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({ iv, tv })
             });
 
             const responseBody = await response.json();
-            setResponseData(responseBody);
-            setResponseMessage(responseBody.message);
-            if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
+            if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
-                setTextAreaColor('text-red-500');
-                const message = {
-                    message: responseBody.message,
-                    status: response.status
-                };
-                socket.emit('check-in-req-error', { message })
-            }
+                return;
+            };
 
-            if (response.status === 200) {
-                setTextAreaColor('text-green-600');
+            if (response.ok && responseBody.type !== 'CheckedIn') {
+                setConfirmCheckInState(false);
                 toast.success(responseBody.message);
-                const message = {
-                    message: responseBody.message,
-                    status: response.status
-                };
-                socket.emit('check-in-req-successful', { message })
-            };
-
-            if (response.status === 403 && responseBody.member?.status === 'OnHold') {
-                setMembershipHoldToggle(true);
-                setMembershipHoldToggle(true);
-                setTextAreaColor('text-yellow-600');
-                const message = {
-                    message: responseBody.message,
-                    status: response.status
-                };
-                socket.emit('check-in-req-error', { message })
+            } else {
                 toast.error(responseBody.message);
             }
-
-            if (response.status !== 403 && response.status !== 200) {
-                toast.error(responseBody.message);
-                setTextAreaColor('text-red-600');
-                const message = {
-                    message: responseBody.message,
-                    status: response.status
-                };
-                socket.emit('check-in-req-error', { message })
-            }
-            return response;
         } catch (error) {
-            setTextAreaColor('text-red-600');
-            console.log('Error: ', error);
-            const message = {
-                message: responseBody.message,
-                status: response.status
-            };
-            socket.emit('check-in-req-error', { message })
-            toast.error(error.message);
-        }
+            console.log("Error: ", error);
+        };
     };
 
     const acceptCheckInReq = async () => {
-        handleMemberValidation(memberId)
+        checkInStaff(staffId, new Date())
     }
 
     const rejectCheckInReq = async () => {
@@ -515,7 +482,7 @@ const SmartStaffCheckin = () => {
                                                             {attendance.fullName}
                                                         </h3>
                                                         <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                            ID: {attendance.memberId}
+                                                            ID: {attendance.staffId}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -577,7 +544,7 @@ const SmartStaffCheckin = () => {
                 </div>
 
                 {/* Check-In Authorization Dialog */}
-                <AlertDialog open={openMemberCheckInAlert} onOpenChange={setMemberCheckInAlert}>
+                <AlertDialog open={openStaffCheckInAlert} onOpenChange={setStaffCheckInAlert}>
                     <AlertDialogContent className="max-w-xl rounded-2xl border-0 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 p-0 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] backdrop-blur-sm overflow-hidden">
                         <div className="relative">
                             <AlertDialogHeader className="px-8 pt-6 pb-4">
@@ -595,7 +562,7 @@ const SmartStaffCheckin = () => {
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="mt-2 text-center text-gray-600 dark:text-gray-300">
                                     <span className="font-medium text-indigo-600 dark:text-indigo-400">
-                                        {memberName || "A member"} is requesting to check in. Would you like to approve this request?
+                                        {staffName || "A member"} is requesting to check in. Would you like to approve this request?
                                     </span>
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
