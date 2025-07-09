@@ -1,5 +1,6 @@
 'use client';
 
+import { PiChartLineUpBold } from "react-icons/pi";
 import { motion } from 'framer-motion';
 import {
     Table,
