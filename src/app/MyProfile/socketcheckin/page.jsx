@@ -161,11 +161,12 @@ export default function CheckInCard() {
             }
         }
 
-        socket.on('checkin-req-declined', handleDeclinedReq);
+        socket.on('staff-checkin-req-declined', handleDeclinedReq);
 
-        return () => socket.off('checkin-req-declined', handleDeclinedReq)
+        return () => socket.off('staff-checkin-req-declined', handleDeclinedReq)
     }, [orgOrBranchId]);
 
+    // Location details
     useEffect(() => {
         if ('geolocation' in navigator) {
 
@@ -199,7 +200,7 @@ export default function CheckInCard() {
         try {
             const orgOrBranchId = (multiBranchSupport || onFreeTrail) ? loggedInStaff?.organizationBranch?._id : loggedInStaff?.organization?._id;
             const roomId = `gym-room-${orgOrBranchId}`;
-            const checkInReqMessage = `staff-checkin_req-${loggedInStaff?._id}-${orgOrBranchId}-${loggedInStaff?.fullName}`;
+            const checkInReqMessage = `staff_checkin_req-${loggedInStaff?._id}-${orgOrBranchId}-${loggedInStaff?.fullName}`;
 
             socket.emit('staff_request_checkin', {
                 roomId,
@@ -222,9 +223,9 @@ export default function CheckInCard() {
             }
         };
 
-        socket.on('checkin-req-successful', handleSuccessFulResponse);
+        socket.on('staff-checkin-req-successful', handleSuccessFulResponse);
 
-        return () => socket.off('checkin-req-successful', handleSuccessFulResponse);
+        return () => socket.off('staff-checkin-req-successful', handleSuccessFulResponse);
     }, [orgOrBranchId]);
 
     // Handle unsuccessful check in response
@@ -237,9 +238,9 @@ export default function CheckInCard() {
             }
         };
 
-        socket.on('checkin-req-unsuccessful', handleErrorResponse);
+        socket.on('staff-checkin-req-unsuccessful', handleErrorResponse);
 
-        return () => socket.off('checkin-req-unsuccessful', handleErrorResponse);
+        return () => socket.off('staff-checkin-req-unsuccessful', handleErrorResponse);
     }, [orgOrBranchId]);
 
     // Get organization position with dependency member lat, lng

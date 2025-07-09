@@ -1,5 +1,15 @@
 'use client';
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { IoClose, IoLocationOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
 import { MdLocationPin, MdClose } from "react-icons/md";
@@ -53,7 +63,6 @@ const SmartStaffCheckin = () => {
     const [sessionActive, setSessionActive] = useState(false)
     const [openStaffCheckInAlert, setStaffCheckInAlert] = useState(false);
     const [staffName, setStaffName] = useState('');
-    console.log('Staff Name: ', staffName);
     const [staffId, setStaffId] = useState('')
     const [currentLat, setCurrentLat] = useState(null);
     const [currentLng, setCurrentLng] = useState(null);
@@ -95,7 +104,6 @@ const SmartStaffCheckin = () => {
     }, []);
 
     useEffect(() => {
-
         if (!orgOrBranchId) {
             return;
         }
@@ -103,15 +111,12 @@ const SmartStaffCheckin = () => {
         socket.emit("gym-join-room", { roomId });
 
         const handleRequestCheckin = (data) => {
-            console.log(data);
-            if (data.split('-')[0] === 'staff-checkin_req') {
-                toast.success('Request is here')
+            if (data.split('-')[0] === 'staff_checkin_req') {
                 setStaffCheckInAlert(true);
                 setStaffName(data.split('-')[3]);
                 setStaffId(data.split('-')[1]);
             };
         };
-
         socket.on('staff-request-checkin', handleRequestCheckin);
 
         // Cleanup on unmount or re-render
@@ -133,17 +138,21 @@ const SmartStaffCheckin = () => {
             const responseBody = await response.json();
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
+                socket.emit('staff-checkin-req-unsuccessful', orgOrBranchId);
                 return;
             };
 
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
+                socket.emit('staff-checkin-req-successful', orgOrBranchId);
                 toast.success(responseBody.message);
             } else {
                 toast.error(responseBody.message);
+                socket.emit('staff-checkin-req-successful', orgOrBranchId);
             }
         } catch (error) {
             console.log("Error: ", error);
+            socket.emit('staff-checkin-req-successful', orgOrBranchId);
         };
     };
 
@@ -152,7 +161,7 @@ const SmartStaffCheckin = () => {
     }
 
     const rejectCheckInReq = async () => {
-        socket.emit('checkin-req-rejected', { orgOrBranchId })
+        socket.emit('staff-checkin-req-declined', { orgOrBranchId })
     }
 
     const startStaffCheckInSession = async () => {
@@ -201,31 +210,31 @@ const SmartStaffCheckin = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const data = await response.json();
-
             if (!response.ok) {
-                setAlertMessage('Failed to load attendance history');
-                setShowErrorAlert(true);
+                toast.error(data.message || 'Internal server error');
                 setTimeout(() => setShowErrorAlert(false), 7000);
             }
-
+            console.log(data);
             return data;
         } catch (error) {
             console.log('Error: ', error);
-            setAlertMessage(error.message);
-            setShowErrorAlert(true);
             setTimeout(() => setShowErrorAlert(false), 7000);
-            sonnerToast.error(error.message)
+            toast.error(error.message)
         }
     };
 
-    const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['temporaryMemberAttendanceHistory', currentPage, debouncedSearchQuery],
         queryFn: getTemporaryAttendanceHistory,
     });
 
-    const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
+    const { temporaryStaffAttendanceHistories,
+        todaysTotalStaffAttendance,
+        totalPages,
+    } = data || {};
+    console.log(temporaryStaffAttendanceHistories);
 
     const formatTime = (date) => {
         return new Date(date).toLocaleTimeString('en-US', {
@@ -430,7 +439,7 @@ const SmartStaffCheckin = () => {
                                 </div>
                                 <div className="bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
                                     <span className="text-sm font-medium text-white">
-                                        {totalAttendance || 0} total records
+                                        {todaysTotalStaffAttendance || 0} total records
                                     </span>
                                 </div>
                             </div>
@@ -458,53 +467,52 @@ const SmartStaffCheckin = () => {
                             </div>
 
                             {/* Attendance Records */}
-                            {isAttendanceHistory ? (
+                            {isLoading ? (
                                 <Loader />
-                            ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
+                            ) : temporaryStaffAttendanceHistories?.length > 0 ? (
                                 <div className="space-y-3">
-                                    {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
-                                        <div
-                                            key={attendance._id}
-                                            className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
-                                        >
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center space-x-4">
-                                                    <div className="relative">
-                                                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full blur opacity-20"></div>
-                                                        <div className="relative w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center">
-                                                            <span className="text-white font-bold text-sm">
-                                                                {attendance.fullName?.charAt(0) || 'M'}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-                                                            {attendance.fullName}
-                                                        </h3>
-                                                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                                                            ID: {attendance.staffId}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center space-x-6">
-                                                    <div className="text-center">
-                                                        <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                            {attendance.membershipOption}
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-right">
-                                                        <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
-                                                            <Timer className="h-4 w-4 mr-2" />
-                                                            {formatTime ? formatTime(attendance.checkInTime) : attendance.checkInTime}
-                                                        </div>
-                                                        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                                            Check-in time
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-[100px] dark:text-gray-200">Staff Id</TableHead>
+                                                <TableHead className="dark:text-gray-200">Name</TableHead>
+                                                <TableHead className="dark:text-gray-200">Role</TableHead>
+                                                <TableHead className="dark:text-gray-200">Check In</TableHead>
+                                                <TableHead className="dark:text-gray-200">Check Out</TableHead>
+                                                <TableHead className="dark:text-gray-200">Remark</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {Array.isArray(temporaryStaffAttendanceHistories) && temporaryStaffAttendanceHistories?.length > 0 ? (
+                                                temporaryStaffAttendanceHistories?.map((attendance) => (
+                                                    <TableRow key={attendance?._id}>
+                                                        <TableCell className="font-medium text-xs dark:text-gray-200">{attendance?.staff?._id}</TableCell>
+                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.staff?.fullName}</TableCell>
+                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.role}</TableCell>
+                                                        <TableCell className="text-sm dark:text-gray-200">
+                                                            {attendance?.checkIn ? new Date(attendance?.checkIn).toLocaleTimeString() : 'N/A'}
+                                                        </TableCell>
+                                                        <TableCell className="text-sm dark:text-gray-200">
+                                                            {attendance?.checkOut ? new Date(attendance?.checkOut).toLocaleTimeString() : 'N/A'}
+                                                        </TableCell>
+                                                        <TableCell className="text-sm dark:text-gray-200">{attendance?.remark}</TableCell>
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={7} align="center" className="dark:text-gray-200">
+                                                        Showing 0 out of 0 entries
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TableCell colSpan={1} className="dark:text-gray-200">Total Entries</TableCell>
+                                                <TableCell className="text-right dark:text-gray-200">{todaysTotalStaffAttendance || 0}</TableCell>
+                                            </TableRow>
+                                        </TableFooter>
+                                    </Table>
                                 </div>
                             ) : (
                                 <div className="text-center py-16">
@@ -558,7 +566,7 @@ const SmartStaffCheckin = () => {
                                 </div>
 
                                 <AlertDialogTitle className="text-center text-2xl font-semibold text-gray-900 dark:text-white">
-                                    Check-In Authorization
+                                    Staff Check-In
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="mt-2 text-center text-gray-600 dark:text-gray-300">
                                     <span className="font-medium text-indigo-600 dark:text-indigo-400">
@@ -575,7 +583,7 @@ const SmartStaffCheckin = () => {
                                     className="flex-1 items-center justify-center gap-2 rounded-sm border border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 px-4 py-6 text-sm font-medium shadow-sm transition-all hover:bg-gray-50 dark:hover:bg-gray-700 hover:shadow-md"
                                 >
                                     <IoClose />
-                                    Decline
+                                    Decline Request
                                 </AlertDialogCancel>
 
                                 <AlertDialogAction
@@ -584,7 +592,7 @@ const SmartStaffCheckin = () => {
                                     className="flex-1 items-center justify-center gap-2 rounded-sm bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-6 text-sm font-medium text-white shadow-sm transition-all hover:shadow-md hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                                 >
                                     <FaCheck />
-                                    Authorize
+                                    Confirm Checkin
                                 </AlertDialogAction>
                             </div>
                         </AlertDialogFooter>
