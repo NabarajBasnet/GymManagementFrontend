@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const ThirdStep = () => {
     return (
-        <div className="space-y-10 text-center">
+        <div className="space-y-4 text-center">
             {/* Header Section */}
             <div className="text-center pb-8">
                 <motion.div
@@ -96,9 +96,9 @@ const ThirdStep = () => {
                     You can always change these settings later in your account preferences.
                 </p>
 
-                <div className="mt-8">
+                <div className="mt-4">
                     <Button
-                        className="w-full h-14 text-base font-semibold rounded-xl shadow-lg transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl"
+                        className="w-full h-14 text-base dark:text-gray-200 font-semibold rounded-lg shadow-lg transition-all duration-200 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl"
                     >
                         Go to Dashboard
                     </Button>

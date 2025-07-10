@@ -271,16 +271,16 @@ const SecondStep = () => {
     }
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-1">
             {/* Header Section */}
             <div className="text-center pb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl mb-6 shadow-lg">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl mb-2 shadow-lg">
                     <FiGlobe className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
                     Location & Regional Settings
                 </h2>
-                <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-sm font-medium text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
                     Configure your regional preferences to ensure accurate scheduling, billing, and localization for your fitness business.
                 </p>
             </div>
@@ -380,8 +380,8 @@ const SecondStep = () => {
                                     {errors.city.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
-                                🏢 Your business location helps us provide accurate local services and compliance information.
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 rounded-lg">
+                                Your business location helps us provide accurate local services and compliance information.
                             </p>
                         </div>
                     </div>
@@ -419,8 +419,8 @@ const SecondStep = () => {
                                     {errors.timezone.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
-                                ⏰ Used for class scheduling, reminders, and system timestamps
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 rounded-lg">
+                                Used for class scheduling, reminders, and system timestamps
                             </p>
                         </div>
 
@@ -446,8 +446,8 @@ const SecondStep = () => {
                                     {errors.currency.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
-                                💰 Default currency for memberships, payments, and financial reports
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1 rounded-lg">
+                                Default currency for memberships, payments, and financial reports
                             </p>
                         </div>
 
@@ -473,8 +473,8 @@ const SecondStep = () => {
                                     {errors.language.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
-                                🌐 Language for your admin dashboard, emails, and system communications
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 px-1 rounded-lg">
+                                Language for your admin dashboard, emails, and system communications
                             </p>
                         </div>
                     </div>
@@ -482,21 +482,21 @@ const SecondStep = () => {
 
                 {/* Submit Button */}
                 <div className="bg-gradient-to-r from-emerald-50/50 to-teal-50/50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl p-8 border border-emerald-100 dark:border-emerald-900/30">
-                    <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center gap-3 mb-3">
                         <div className="w-8 h-8 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center">
                             <FiCheck className="w-4 h-4 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white">Complete Regional Setup</h3>
                     </div>
 
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
+                    <p className="text-slate-600 text-sm font-medium dark:text-slate-300 mb-3">
                         Your regional settings will be applied across your entire fitness management platform to ensure the best experience for you and your clients.
                     </p>
 
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full h-16 text-lg font-bold rounded-2xl shadow-lg transition-all duration-300 transform ${isSubmitting
+                        className={`w-full h-16 text-lg font-bold rounded-lg shadow-lg transition-all duration-300 transform ${isSubmitting
                             ? "bg-slate-400 cursor-not-allowed scale-95"
                             : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700                                    hover:to-cyan-700 hover:shadow-xl hover:scale-[1.01]"
                             }`}

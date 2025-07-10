@@ -88,7 +88,7 @@ const FirstStep = () => {
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl mb-6 shadow-lg">
                     <FaBuilding className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-200 mb-4">
+                <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-4">
                     Tell us about your business
                 </h2>
                 <p className="text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
@@ -137,7 +137,7 @@ const FirstStep = () => {
                                 </div>
                             )}
                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400 rounded-lg">
-                                💡 This name will appear on your client portal, invoices, and all customer-facing materials.
+                                This name will appear on your client portal, invoices, and all customer-facing materials.
                             </p>
                         </div>
 
@@ -293,7 +293,7 @@ const FirstStep = () => {
                                 </div>
                             )}
                             <p className="text-xs font-medium text-slate-500 rounded-lg">
-                                🎨 Your logo will be displayed on the client portal, invoices, and member communications. We recommend a square image (minimum 200x200px).
+                                Your logo will be displayed on the client portal, invoices, and member communications. We recommend a square image (minimum 200x200px).
                             </p>
                         </div>
                     </div>
@@ -315,7 +315,7 @@ const FirstStep = () => {
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`w-full h-16 text-lg font-bold rounded-2xl shadow-lg transition-all duration-300 transform ${isSubmitting
+                        className={`w-full h-16 text-lg font-bold rounded-lg shadow-lg transition-all duration-300 transform ${isSubmitting
                             ? "bg-slate-400 cursor-not-allowed scale-95"
                             : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 hover:shadow-2xl hover:scale-105 active:scale-95"
                             }`}
