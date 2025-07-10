@@ -231,7 +231,7 @@ const StaffManagement = () => {
     const [, page, searchQuery, limit] = queryKey;
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
+        `http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
       if (!response.ok) {
@@ -317,8 +317,8 @@ const StaffManagement = () => {
 
     try {
       const url = currentStaffId
-        ? `https://fitbinary.com/api/staffsmanagement/changedetails/${currentStaffId}`
-        : "https://fitbinary.com/api/staffsmanagement/create";
+        ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+        : "http://localhost:3000/api/staffsmanagement/create";
 
       const method = currentStaffId ? "PATCH" : "POST";
 
@@ -346,7 +346,7 @@ const StaffManagement = () => {
   const deleteStaff = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/remove/${id}`,
+        `http://localhost:3000/api/staffsmanagement/remove/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -374,7 +374,7 @@ const StaffManagement = () => {
   const editStaffDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -389,7 +389,7 @@ const StaffManagement = () => {
   const populateAddressDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -444,7 +444,7 @@ const StaffManagement = () => {
   const populateShiftDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
 
@@ -634,18 +634,18 @@ const StaffManagement = () => {
                               <div className="w-full">
                                 <div className="w-full bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                   {/* Table Header with gradient background */}
-                                  <div className="flex justify-between items-center bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-6 py-4">
+                                  <div className="flex justify-between items-center px-6 py-4">
                                     <div>
-                                      <h2 className="text-xl font-semibold text-white">
+                                      <h2 className="text-xl font-semibold dark:text-gray-100 text-black">
                                         Staff Management
                                       </h2>
-                                      <p className="text-indigo-100 text-xs mt-1 font-medium">
+                                      <p className="dark:text-gray-100 text-black text-xs mt-1 font-medium">
                                         Manage your team members and their
                                         details
                                       </p>
                                     </div>
                                     <Button
-                                      className="rounded-sm bg-white dark:bg-gray-800 text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-100"
+                                      className="rounded-sm bg-gray-300 dark:bg-gray-800 text-black hover:bg-gray-200 dark:hover:bg-gray-700 dark:text-gray-100"
                                       onClick={() => {
                                         reset();
                                         setOpenForm(!openForm);
@@ -709,7 +709,7 @@ const StaffManagement = () => {
                                               <TableCell className="py-4">
                                                 <div className="flex items-center gap-3">
                                                   <div className="relative">
-                                                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold w-12 h-12 flex items-center justify-center rounded-full shadow-lg ring-2 ring-white dark:ring-gray-800 group-hover:scale-105 transition-transform duration-200">
+                                                    <div className="bg-indigo-500 text-white font-bold w-10 h-10 flex items-center justify-center rounded-full shadow-lg ring-2 ring-white dark:ring-gray-800 group-hover:scale-105 transition-transform duration-200">
                                                       {(() => {
                                                         const nameParts =
                                                           staff.fullName
@@ -740,26 +740,20 @@ const StaffManagement = () => {
                                                   <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
                                                     {staff.fullName}
                                                   </span>
-                                                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                  <span className="text-xs text-gray-500 dark:text-gray-400">
                                                     ID: {staff._id.slice(-6)}
                                                   </span>
                                                 </div>
                                               </TableCell>
-                                              <TableCell className="py-4">
-                                                <div className="flex flex-col items-center gap-1">
-                                                  <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-                                                    <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                      📱
-                                                    </span>
-                                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                              <TableCell className="py-4 items-center text-center">
+                                                <div className="flex flex-col items-center">
+                                                  <div className="flex items-center gap-2 px-3 rounded-full">
+                                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
                                                       {staff.contactNo}
                                                     </span>
                                                   </div>
-                                                  <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
-                                                    <span className="text-xs text-gray-600 dark:text-gray-400">
-                                                      📧
-                                                    </span>
-                                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[150px]">
+                                                  <div className="flex items-center gap-2 px-3 rounded-full">
+                                                    <span className="text-xs font-medium text-gray-700 dark:text-gray-300 truncate max-w-[170px]">
                                                       {staff.email}
                                                     </span>
                                                   </div>
@@ -772,31 +766,25 @@ const StaffManagement = () => {
                                                       staff._id
                                                     )
                                                   }
-                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors duration-200 cursor-pointer border border-indigo-200 dark:border-indigo-800"
+                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors duration-200 cursor-pointer"
                                                 >
-                                                  <span className="text-xs">
-                                                    📍
-                                                  </span>
                                                   View
                                                 </button>
                                               </TableCell>
                                               <TableCell className="py-4 text-center">
-                                                <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-bold rounded-full text-sm shadow-lg">
+                                                <div className="inline-flex items-center justify-center w-7 h-7 border dark:border-gray-400 text-primary font-bold rounded-full text-sm shadow-lg">
                                                   {staff.numberOfShifts}
                                                 </div>
                                               </TableCell>
                                               <TableCell className="py-4 text-center">
                                                 <button
-                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors duration-200 cursor-pointer border border-purple-200 dark:border-purple-800"
+                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors duration-200 cursor-pointer"
                                                   onClick={() =>
                                                     populateShiftDetails(
                                                       staff._id
                                                     )
                                                   }
                                                 >
-                                                  <span className="text-xs">
-                                                    🕒
-                                                  </span>
                                                   Details
                                                 </button>
                                               </TableCell>
@@ -898,11 +886,6 @@ const StaffManagement = () => {
                                               className="text-center py-12"
                                             >
                                               <div className="flex flex-col items-center gap-3">
-                                                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
-                                                  <span className="text-2xl text-gray-400 dark:text-gray-600">
-                                                    👥
-                                                  </span>
-                                                </div>
                                                 <div>
                                                   <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
                                                     No staff found
@@ -931,17 +914,12 @@ const StaffManagement = () => {
                                             <div className="flex items-center justify-between">
                                               <div className="flex items-center gap-3">
                                                 <div className="flex items-center gap-2">
-                                                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
-                                                    <span className="text-white text-xs font-bold">
-                                                      👥
-                                                    </span>
-                                                  </div>
                                                   <span className="font-semibold text-gray-700 dark:text-gray-300">
                                                     Total Staff Members
                                                   </span>
                                                 </div>
-                                                <div className="bg-indigo-100 dark:bg-indigo-900/30 px-4 py-2 rounded-full">
-                                                  <span className="font-bold text-indigo-800 dark:text-indigo-200 text-lg">
+                                                <div className="rounded-full">
+                                                  <span className="text-indigo-800 dark:text-indigo-200 text-sm">
                                                     {totalStaffs}
                                                   </span>
                                                 </div>

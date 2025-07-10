@@ -251,7 +251,7 @@ const MemberDetails = ({ memberId }) => {
 
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/members/${memberId}`,
+        `http://localhost:3000/api/members/${memberId}`,
         {
           method: "PATCH",
           headers: {
@@ -292,7 +292,7 @@ const MemberDetails = ({ memberId }) => {
 
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/members/hold-membership/${memberId}`,
+        `http://localhost:3000/api/members/hold-membership/${memberId}`,
         {
           method: "PATCH",
           headers: {
@@ -321,7 +321,7 @@ const MemberDetails = ({ memberId }) => {
     const membershipHoldData = { status: 'Active' };
 
     try {
-      const response = await fetch(`https://fitbinary.com/api/members/resume-membership/${memberId}`, {
+      const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
@@ -343,7 +343,7 @@ const MemberDetails = ({ memberId }) => {
   const getAactionTakers = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/actiontakers?actionTakers=${[
+        `http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${[
           "Gym Admin",
           "Super Admin",
           "Operational Manager",
@@ -375,7 +375,7 @@ const MemberDetails = ({ memberId }) => {
   const GetMembershipPlans = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/membershipplans/by-org`
+        `http://localhost:3000/api/membershipplans/by-org`
       );
       const responseBody = await response.json();
       return responseBody;
