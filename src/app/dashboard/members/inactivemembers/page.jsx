@@ -254,7 +254,7 @@ const InactiveMembers = () => {
                     <></>
                 )}
 
-                <Breadcrumb className='mb-6 mt-1'>
+                <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <TiHome className="w-4 h-4" /><BreadcrumbLink href="/" className='font-medium text-sm'>Home</BreadcrumbLink>

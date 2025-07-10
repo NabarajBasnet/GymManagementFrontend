@@ -139,7 +139,7 @@ const PaymentReceipts = () => {
     return (
         <div className="w-full p-4 md:pt-8 bg-gray-100 dark:bg-gray-900 min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="rounded-sm dark:bg-gray-800 bg-white shadow-md px-4 py-2">
+            <div className="rounded-sm dark:bg-gray-800 bg-white shadow-md px-4 py-2 mt-2 md:mt-3">
                 {/* Enhanced Breadcrumb with Icons */}
                 <div className="mb-4">
                     <Breadcrumb>
@@ -696,7 +696,7 @@ const PaymentReceipts = () => {
                                         onClick={handleGenerateInvoice}
                                         className="px-6 py-6 bg-blue-600 hover:bg-blue-700 text-white rounded-sm transition-colors"
                                     >
-                                                                <PiPrinterBold className="h-4 w-4" />
+                                        <PiPrinterBold className="h-4 w-4" />
                                         Print Invoice
                                     </AlertDialogAction>
                                 </div>

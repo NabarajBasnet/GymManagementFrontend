@@ -104,37 +104,37 @@ const MemberDetails = ({ memberId }) => {
   useEffect(() => {
     if (member) {
       reset({
-        fullName: member.fullName,
-        contactNo: member.contactNo,
-        email: member.email,
-        dob: member.dob ? new Date(member.dob).toISOString().split("T")[0] : "",
-        secondaryContactNo: member.secondaryContactNo,
-        gender: member.gender,
-        address: member.address,
-        status: member.status,
-        membershipOption: member.membershipOption,
-        membershipType: member.membershipType,
-        membershipShift: member.membershipShift,
-        membershipDate: member.membershipDate
-          ? new Date(member.membershipDate).toISOString().split("T")[0]
+        fullName: member?.fullName,
+        contactNo: member?.contactNo,
+        email: member?.email,
+        dob: member?.dob ? new Date(member?.dob).toISOString().split("T")[0] : "",
+        secondaryContactNo: member?.secondaryContactNo,
+        gender: member?.gender,
+        address: member?.address,
+        status: member?.status,
+        membershipOption: member?.membershipOption,
+        membershipType: member?.membershipType,
+        membershipShift: member?.membershipShift,
+        membershipDate: member?.membershipDate
+          ? new Date(member?.membershipDate).toISOString().split("T")[0]
           : "",
-        membershipRenewDate: member.membershipRenewDate
-          ? new Date(member.membershipRenewDate).toISOString().split("T")[0]
-          : "" && setMembershipRenewDate(new Date(member.membershipRenewDate)),
-        membershipDuration: member.membershipDuration,
-        membershipExpireDate: member.membershipExpireDate
-          ? new Date(member.membershipExpireDate).toISOString().split("T")[0]
+        membershipRenewDate: member?.membershipRenewDate
+          ? new Date(member?.membershipRenewDate).toISOString().split("T")[0]
+          : "" && setMembershipRenewDate(new Date(member?.membershipRenewDate)),
+        membershipDuration: member?.membershipDuration,
+        membershipExpireDate: member?.membershipExpireDate
+          ? new Date(member?.membershipExpireDate).toISOString().split("T")[0]
           : "" &&
-          setMembershipExpireDate(new Date(member.membershipExpireDate)),
-        paymentMethod: member.paymentMethod,
-        discountAmmount: member.discountAmmount,
-        discountReason: member.discountReason,
-        discountCode: member.discountCode,
-        paidAmmount: member.paidAmmount,
-        finalAmmount: member.finalAmmount,
-        receiptNo: member.receiptNo,
-        remark: member.remark,
-        dueAmmount: member.dueAmmount
+          setMembershipExpireDate(new Date(member?.membershipExpireDate)),
+        paymentMethod: member?.paymentMethod,
+        discountAmmount: member?.discountAmmount,
+        discountReason: member?.discountReason,
+        discountCode: member?.discountCode,
+        paidAmmount: member?.paidAmmount,
+        finalAmmount: member?.finalAmmount,
+        receiptNo: member?.receiptNo,
+        remark: member?.remark,
+        dueAmmount: member?.dueAmmount
       });
       setDiscountAmmount(member?.discountAmmount);
       setValue('finalAmount', member?.finalAmmount);
@@ -464,7 +464,7 @@ const MemberDetails = ({ memberId }) => {
   };
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 pb-4">
       <Breadcrumb className='p-4 md:pt-8'>
         <BreadcrumbList>
           <BreadcrumbItem>
@@ -1209,13 +1209,13 @@ const MemberDetails = ({ memberId }) => {
                                             <option
                                               onClick={() =>
                                                 setCurrentActionTaker(
-                                                  actionTaker.fullName
+                                                  actionTaker?.fullName
                                                 )
                                               }
                                               key={actionTaker._id}
                                               value={actionTaker._id}
                                             >
-                                              {actionTaker.fullName}
+                                              {actionTaker?.fullName}
                                             </option>
                                           ))
                                         ) : (

@@ -317,7 +317,7 @@ const PaymentInvoice = () => {
             {resendingInvoice && <ResendingInvoiceToMember />}
 
             {/* Breadcrumb Navigation */}
-            <div className="bg-slate-50 dark:bg-gray-800 rounded-sm">
+            <div className="bg-slate-50 dark:bg-gray-800 rounded-sm mt-2 md:mt-3">
                 {/* Professional Container */}
                 <div className="bg-slate-50 dark:bg-gray-800 shadow-md rounded-sm border-b border-gray-200/50 dark:border-none">
                     <div className="w-full mx-auto px-4">

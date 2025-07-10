@@ -269,8 +269,8 @@ const ScheduleManagement = () => {
         <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:pt-8'>
             <div className="w-full">
                 {/* Breadcrumb */}
-                <div className='w-full mb-6'>
-                    <Breadcrumb className="mb-6">
+                <div className='w-full'>
+                    <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
                                 <MdHome className='w-4 h-4 text-gray-500 dark:text-gray-400' />
