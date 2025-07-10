@@ -1,5 +1,18 @@
 'use client';
 
+import {
+  FileText,
+  Zap,
+  BarChart3,
+  Users,
+  UserPlus,
+  UserCheck,
+  RotateCcw,
+  InfoIcon,
+  TrendingDown,
+  TrendingUp,
+  RefreshCcw
+} from 'lucide-react';
 import { FaUsers } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { RiUserShared2Fill } from 'react-icons/ri';
@@ -8,7 +21,6 @@ import * as React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { InfoIcon, TrendingDown, TrendingUp, RefreshCcw } from 'lucide-react';
 import { MdAutorenew } from "react-icons/md";
 import { GiBiceps } from "react-icons/gi";
 import { PiUsersFourFill } from "react-icons/pi";
@@ -248,182 +260,114 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">
-      <div className="w-full px-4 py-7">
+      <div className="w-full p-4 md:pt-10">
 
         {/* Welcome Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
-          {/* Main Welcome Card - Now with max height */}
-          <Card className="lg:col-span-8 relative overflow-hidden rounded-xl shadow-md group transition-all duration-500 hover:shadow-xl bg-white dark:bg-gray-900/95 border-0 dark:border dark:border-gray-800/50 max-h-[24rem]">
-            {/* Light mode background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/30 to-blue-50/20 dark:hidden"></div>
-
-            {/* Modern dot grid background for dark mode */}
-            <div
-              className="hidden dark:block absolute inset-0 opacity-10"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='1' cy='1' r='1' fill='%236b7280' /%3E%3C/svg%3E")`,
-                backgroundRepeat: 'repeat'
-              }}
-            ></div>
-
-            {/* Floating orbs */}
-            <div className="absolute top-10 right-20 w-32 h-32 bg-gradient-to-r from-blue-400/10 to-cyan-300/10 rounded-full blur-xl animate-pulse"></div>
-            <div className="absolute bottom-10 left-10 w-24 h-24 bg-gradient-to-r from-purple-400/10 to-pink-300/10 rounded-full blur-xl animate-pulse delay-1000"></div>
-
-            {/* Content container with constrained height */}
-            <div className="relative z-20 h-full p-6 lg:p-8 flex flex-col">
-              <div className="flex-1 flex flex-col lg:flex-row items-center gap-6">
+          {/* Main Welcome Card */}
+          <Card className="lg:col-span-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div className="p-6 lg:p-8">
+              <div className="flex flex-col lg:flex-row items-center gap-6">
                 {/* Text content */}
-                <div className="flex-1 space-y-4 text-center lg:text-left">
-                  <div className="flex justify-center lg:justify-start items-center gap-3">
-                    <div className="space-y-2">
-                      <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white tracking-tight leading-tight">
-                        {getGreeting()},{" "}
-                        <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
-                          {loggedInUser?.firstName}
-                        </span>
-                        <span className="text-3xl"> 👋</span>
-                      </h1>
-                    </div>
+                <div className="flex-1 space-y-4 flex flex-col justify-between text-center lg:text-left">
+                  <div className="space-y-2">
+                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white">
+                      {getGreeting()}, {loggedInUser?.firstName}
+                    </h1>
+                    <div className="w-12 h-1 bg-blue-600 mx-auto lg:mx-0 rounded-full"></div>
                   </div>
 
-                  <p className="text-gray-700 dark:text-gray-300 text-base md:text-lg font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  <p className="text-gray-600 dark:text-gray-400 text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
                     Transform your gym operations with cutting-edge analytics and intelligent member management solutions.
                   </p>
 
-                  <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 pt-2">
+                  <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 pt-4">
                     <Button
                       onClick={() => router.push('/dashboard')}
-                      className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 hover:from-blue-700 hover:via-purple-700 hover:to-cyan-600 text-white transition-all duration-500 shadow-lg hover:shadow-xl px-6 py-6 rounded-lg font-bold text-sm transform hover:scale-105 border-0 overflow-hidden"
+                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-6 rounded-lg font-medium text-sm transition-colors duration-200 shadow-sm hover:shadow-md"
                     >
-                      <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                      <span className="relative flex items-center gap-2">
-                        <span className="text-lg">📝</span>
-                        See Documentation
-                      </span>
+                      <FileText className="w-4 h-4 mr-2" />
+                      See Documentation
                     </Button>
                     <Button
                       variant="outline"
-                      className="group relative bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white 
-                         border-2 border-gray-200 dark:border-gray-700 
-                         hover:bg-gray-50 dark:hover:bg-gray-700/90 
-                         hover:border-gray-300 dark:hover:border-gray-600 
-                         transition-all duration-500 shadow-md hover:shadow-lg 
-                         px-6 py-6 rounded-lg font-bold text-sm 
-                         transform hover:scale-105 overflow-hidden backdrop-blur-sm"
+                      className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 px-6 py-6 rounded-lg font-medium text-sm transition-colors duration-200"
                     >
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                      <span className="relative flex items-center gap-2">
-                        <span className="text-lg">📚</span>
-                        Explore Features
-                      </span>
+                      <Zap className="w-4 h-4 mr-2" />
+                      Explore Features
                     </Button>
                   </div>
                 </div>
 
-                {/* Image Container - Adjusted size */}
-                <div className="flex-shrink-0 w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40 transform transition-all duration-700 group-hover:scale-110 group-hover:rotate-2">
-                  <div className="w-full h-full relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-3xl blur-xl scale-110 animate-pulse"></div>
-                    <div className="relative w-full h-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl p-3 border border-gray-200/50 dark:border-gray-700/50 shadow-2xl">
-                      <img
-                        src="/dashboard.png"
-                        alt="dashboard"
-                        className="w-full h-full object-contain rounded-2xl filter drop-shadow-lg transition-all duration-500 group-hover:drop-shadow-2xl"
-                      />
-                    </div>
+                {/* Image Container */}
+                <div className="flex-shrink-0 w-32 h-32 md:w-36 md:h-36 lg:w-40 lg:h-40">
+                  <div className="w-full h-full bg-gray-50 dark:bg-gray-800 rounded-lg p-3 border border-gray-200 dark:border-gray-700">
+                    <img
+                      src="/dashboard.png"
+                      alt="dashboard"
+                      className="w-full h-full object-contain rounded-md"
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </Card>
 
-          {/* Quick Stats Card - Now with max height */}
-          <Card className="lg:col-span-4 relative rounded-xl shadow-md bg-white dark:bg-gray-900/95 group border-0 dark:border dark:border-gray-800/50 overflow-hidden max-h-[24rem]">
-            {/* Light mode background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white via-gray-50/50 to-indigo-50/30 dark:hidden"></div>
+          {/* Quick Stats Card */}
+          <Card className="lg:col-span-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+            <div className="p-6 h-full flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="space-y-1">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                    Analytics Hub
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Live Performance Metrics</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="p-2 h-8 w-8 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-md"
+                >
+                  <RefreshCcw className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                </Button>
+              </div>
 
-            {/* Dark mode grid background */}
-            <div
-              className="hidden dark:block absolute inset-0 opacity-10"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%236b7280' stroke-width='0.3'%3E%3Cpath d='M0 20h20M20 0v20'/%3E%3C/g%3E%3C/svg%3E")`,
-                backgroundRepeat: 'repeat'
-              }}
-            ></div>
-
-            {/* Floating elements */}
-            <div className="absolute inset-0 pointer-events-none">
-              <div className="absolute top-4 right-6 w-16 h-16 bg-gradient-to-r from-blue-400/15 to-cyan-400/15 rounded-full blur-md animate-pulse"></div>
-              <div className="absolute bottom-6 left-4 w-12 h-12 bg-gradient-to-r from-purple-400/15 to-pink-400/15 rounded-full blur-md animate-pulse delay-700"></div>
-            </div>
-
-            {/* Content with constrained height */}
-            <div className="relative z-10 h-full p-4 flex flex-col">
-              <div className="space-y-2 flex-1 flex flex-col">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight flex items-center gap-2">
-                      <span className="text-xl">📊</span>
-                      Analytics Hub
-                    </h3>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">Live Performance Metrics</p>
-                  </div>
-                  <div className="group/refresh p-2 bg-white/80 dark:bg-gray-800/80 hover:bg-white dark:hover:bg-gray-700 rounded-lg transition-all duration-300 cursor-pointer shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
-                    <MdAutorenew className="text-lg text-blue-600 dark:text-blue-400 group-hover/refresh:animate-spin transition-all duration-300" />
+              {/* Stats Grid */}
+              <div className="space-y-4 flex-1">
+                {/* New Members Card */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Users className="w-4 h-4 text-blue-600" />
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">New Members</p>
+                      </div>
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                        {newMembers?.members?.length || 0}
+                      </p>
+                    </div>
+                    <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <UserPlus className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                    </div>
                   </div>
                 </div>
 
-                {/* Stats Grid - Now with flex-1 to fill remaining space */}
-                <div className="grid gap-2 flex-1">
-                  {/* New Members Card */}
-                  <div className="group/card relative p-3 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-750 rounded-xl transition-all duration-500 shadow-md hover:shadow-xl transform hover:scale-[1.02] border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-12 h-12 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-full blur-xl transform translate-x-6 -translate-y-6"></div>
-                    <div className="relative flex items-center justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">👥</span>
-                          <p className="text-xs font-bold text-gray-700 dark:text-gray-300">New Members</p>
-                        </div>
-                        <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-                          {newMembers?.members?.length || 0}
-                        </p>
-                        {/* <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 bg-emerald-100 dark:bg-emerald-500/20 px-2 py-1 rounded-md border border-emerald-200 dark:border-emerald-500/30">
-                            <ArrowUp className="h-2.5 w-2.5 text-emerald-700 dark:text-emerald-400" />
-                            <p className="text-[10px] font-black text-emerald-700 dark:text-emerald-400">+8% growth</p>
-                          </div>
-                        </div> */}
+                {/* Renewed Members Card */}
+                <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-green-600" />
+                        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Renewed Members</p>
                       </div>
-                      <div className="p-3 bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-500/20 dark:to-cyan-500/20 border border-blue-200 dark:border-blue-500/30 rounded-xl shadow-lg group-hover/card:shadow-xl transition-all duration-300">
-                        <FaUsers className="h-6 w-6 text-blue-700 dark:text-blue-400" />
-                      </div>
+                      <p className="text-2xl font-semibold text-gray-900 dark:text-white">
+                        {renewedMembers?.members?.length || 0}
+                      </p>
                     </div>
-                  </div>
-
-                  {/* Renewed Members Card */}
-                  <div className="group/card relative p-5 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-750 rounded-xl transition-all duration-500 shadow-md hover:shadow-xl transform hover:scale-[1.02] border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
-                    <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-full blur-xl transform translate-x-6 -translate-y-6"></div>
-                    <div className="relative flex items-center justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-base">✨</span>
-                          <p className="text-xs font-bold text-gray-700 dark:text-gray-300">Renewed Members</p>
-                        </div>
-                        <p className="text-3xl font-black text-gray-900 dark:text-white tracking-tight">
-                          {renewedMembers?.members?.length || 0}
-                        </p>
-                        {/* <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-1 bg-amber-100 dark:bg-amber-500/20 px-2 py-1 rounded-md border border-amber-200 dark:border-amber-500/30">
-                            <ArrowUp className="h-2.5 w-2.5 text-amber-700 dark:text-amber-400" />
-                            <p className="text-[10px] font-black text-amber-700 dark:text-amber-400">+15% renewal</p>
-                          </div>
-                        </div> */}
-                      </div>
-                      <div className="p-3 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-500/20 dark:to-orange-500/20 border border-amber-200 dark:border-amber-500/30 rounded-xl shadow-lg group-hover/card:shadow-xl transition-all duration-300">
-                        <RiUserShared2Fill className="h-6 w-6 text-amber-700 dark:text-amber-400" />
-                      </div>
+                    <div className="p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                      <RotateCcw className="w-6 h-6 text-green-600 dark:text-green-400" />
                     </div>
                   </div>
                 </div>

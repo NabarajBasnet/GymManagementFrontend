@@ -49,7 +49,7 @@ const ViewPlans = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 md:pt-8">
       <div className="w-full mx-auto">
         {/* Breadcrumb */}
-        <nav className="flex items-center text-sm mb-6">
+        <nav className="flex items-center text-sm mb-4">
           <div className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 transition-colors cursor-pointer">
             <MdHome className="w-4 h-4 mr-2" />
             <span className="flex items-center">
