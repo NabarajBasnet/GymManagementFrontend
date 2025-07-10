@@ -255,7 +255,7 @@ const SmartAttendanceDashboard = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`https://fitbinary.com/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const data = await response.json();
 
             if (!response.ok) {
@@ -274,12 +274,11 @@ const SmartAttendanceDashboard = () => {
         }
     };
 
-    const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
+    const { data, isLoading: isAttendanceHistory } = useQuery({
         queryKey: ['temporaryMemberAttendanceHistory', currentPage, debouncedSearchQuery],
         queryFn: getTemporaryAttendanceHistory,
     });
-
-    const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
+    const { temporarymemberattendancehistory, totalPages, totalAttendance } = data || {};
 
     const formatTime = (date) => {
         return new Date(date).toLocaleTimeString('en-US', {
@@ -610,9 +609,9 @@ const SmartAttendanceDashboard = () => {
                                 {/* Attendance Records */}
                                 {isAttendanceHistory ? (
                                     <Loader />
-                                ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory?.length > 0 ? (
+                                ) : temporarymemberattendancehistory?.length > 0 ? (
                                     <div className="space-y-3">
-                                        {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance, index) => (
+                                        {temporarymemberattendancehistory?.map((attendance, index) => (
                                             <div
                                                 key={attendance._id}
                                                 className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"

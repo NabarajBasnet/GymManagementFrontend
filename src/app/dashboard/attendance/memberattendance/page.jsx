@@ -97,12 +97,11 @@ const MemberAttendance = () => {
         }
     };
 
-    const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
+    const { data, isLoading: isAttendanceHistory } = useQuery({
         queryKey: ['temporaryMemberAttendanceHistory', currentPage, debouncedSearchQuery],
         queryFn: getTemporaryAttendanceHistory,
     });
-
-    const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
+    const { temporarymemberattendancehistory, totalPages, totalAttendance } = data || {};
 
     const handleValidation = async () => {
         try {
@@ -578,7 +577,7 @@ const MemberAttendance = () => {
                                 <div className="flex justify-center items-center p-12">
                                     <Loader />
                                 </div>
-                            ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory.length > 0 ? (
+                            ) : temporarymemberattendancehistory?.length > 0 ? (
                                 <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
                                     <Table>
                                         <TableHeader>
@@ -590,7 +589,7 @@ const MemberAttendance = () => {
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
-                                            {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance) => (
+                                            {temporarymemberattendancehistory?.map((attendance) => (
                                                 <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 overflow-x-auto transition-colors border-t border-gray-200 dark:border-gray-600">
                                                     <TableCell className="py-3 flex flex-col space-y-1">
                                                         <span className="text-indigo-600 font-semibold">{attendance.fullName}</span>
