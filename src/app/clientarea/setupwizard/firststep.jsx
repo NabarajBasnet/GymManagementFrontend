@@ -82,16 +82,16 @@ const FirstStep = () => {
     ];
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-6">
             {/* Header Section */}
-            <div className="text-center pb-8">
+            <div className="text-center pb-4">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indigo-100 to-purple-100 dark:from-indigo-900/30 dark:to-purple-900/30 rounded-2xl mb-6 shadow-lg">
                     <FaBuilding className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
                 </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
+                <h2 className="text-3xl font-bold text-gray-200 mb-4">
                     Tell us about your business
                 </h2>
-                <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                <p className="text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
                     Help us customize your Liftora experience by providing some basic information about your fitness business. This information will be used across your platform.
                 </p>
             </div>
@@ -118,8 +118,8 @@ const FirstStep = () => {
                                 <Input
                                     {...register('name', { required: 'Organization name is required' })}
                                     className={`h-14 pl-5 pr-5 border-2 focus:border-indigo-500 dark:focus:border-indigo-400 rounded-xl shadow-sm text-lg font-medium transition-all duration-300 ${errors.name
-                                            ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950/20'
-                                            : 'border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600'
+                                        ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950/20'
+                                        : 'border-slate-200 dark:border-slate-700 hover:border-indigo-300 dark:hover:border-indigo-600'
                                         } dark:bg-slate-800 dark:text-white`}
                                     id="name"
                                     placeholder="e.g., Peak Performance Fitness Center"
@@ -136,7 +136,7 @@ const FirstStep = () => {
                                     {errors.name.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
+                            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 rounded-lg">
                                 💡 This name will appear on your client portal, invoices, and all customer-facing materials.
                             </p>
                         </div>
@@ -209,8 +209,8 @@ const FirstStep = () => {
                                         }
                                     })}
                                     className={`h-14 pl-5 pr-5 border-2 focus:border-cyan-500 dark:focus:border-cyan-400 rounded-xl shadow-sm text-lg font-medium transition-all duration-300 ${errors.businessEmail
-                                            ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950/20'
-                                            : 'border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600'
+                                        ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-950/20'
+                                        : 'border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600'
                                         } dark:bg-slate-800 dark:text-white`}
                                     id="businessEmail"
                                     type="email"
@@ -292,7 +292,7 @@ const FirstStep = () => {
                                     {errors.logoUrl.message}
                                 </div>
                             )}
-                            <p className="text-sm text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50 px-4 py-3 rounded-lg">
+                            <p className="text-xs font-medium text-slate-500 rounded-lg">
                                 🎨 Your logo will be displayed on the client portal, invoices, and member communications. We recommend a square image (minimum 200x200px).
                             </p>
                         </div>
@@ -301,14 +301,14 @@ const FirstStep = () => {
 
                 {/* Submit Button */}
                 <div className="bg-gradient-to-r from-emerald-50/50 to-teal-50/50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl p-8 border border-emerald-100 dark:border-emerald-900/30">
-                    <div className="flex items-center gap-3 mb-6">
+                    <div className="flex items-center gap-3 mb-2">
                         <div className="w-8 h-8 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center">
                             <FiCheck className="w-4 h-4 text-white" />
                         </div>
                         <h3 className="text-xl font-bold text-slate-900 dark:text-white">Ready to Continue</h3>
                     </div>
 
-                    <p className="text-slate-600 dark:text-slate-300 mb-6">
+                    <p className="text-slate-600 text-sm font-medium dark:text-slate-300 mb-2">
                         Once you save this information, we'll set up your business profile and you can proceed to the next step.
                     </p>
 
@@ -316,8 +316,8 @@ const FirstStep = () => {
                         type="submit"
                         disabled={isSubmitting}
                         className={`w-full h-16 text-lg font-bold rounded-2xl shadow-lg transition-all duration-300 transform ${isSubmitting
-                                ? "bg-slate-400 cursor-not-allowed scale-95"
-                                : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 hover:shadow-2xl hover:scale-105 active:scale-95"
+                            ? "bg-slate-400 cursor-not-allowed scale-95"
+                            : "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-700 hover:shadow-2xl hover:scale-105 active:scale-95"
                             }`}
                     >
                         {isSubmitting ? (

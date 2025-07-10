@@ -66,27 +66,24 @@ const ClientOnboardingPage = () => {
 
             <div className="relative container mx-auto px-4 py-8 max-w-6xl">
                 {/* Header Section */}
-                <div className="text-center mb-16">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 rounded-3xl mb-8 shadow-2xl shadow-indigo-500/25 transform hover:scale-105 transition-transform duration-300">
-                        <div className="text-3xl">🚀</div>
-                    </div>
-                    <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-6 leading-tight">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-2 leading-tight">
                         Welcome to Fitbinary
                     </h1>
-                    <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
+                    <p className="text-md text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
                         Transform your fitness business with our comprehensive management platform.
                         <br />
-                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Let's get you set up in just 2 simple steps.</span>
+                        <span className="text-indigo-600 text-sm dark:text-indigo-400 font-semibold">Let's get you set up in just 2 simple steps.</span>
                     </p>
                 </div>
 
                 {/* Progress Steps Visualization */}
-                <div className="mb-16">
-                    <div className="flex items-center justify-center mb-8">
+                <div className="mb-8">
+                    <div className="flex items-center justify-center mb-6">
                         {stepData.map((step, index) => (
                             <div key={index} className="flex items-center">
                                 {/* Step Circle */}
-                                <div className={`relative flex items-center justify-center w-16 h-16 rounded-2xl transition-all duration-500 ${index + 1 <= currentStep
+                                <div className={`relative flex items-center justify-center w-10 h-10 rounded-lg transition-all duration-500 ${index + 1 <= currentStep
                                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/25 scale-110'
                                     : index + 1 === currentStep + 1
                                         ? 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600'
@@ -121,14 +118,14 @@ const ClientOnboardingPage = () => {
                     <div className="grid grid-cols-3 gap-4 max-w-4xl mx-auto">
                         {stepData.map((step, index) => (
                             <div key={index} className="text-center">
-                                <div className="text-2xl mb-2">{step.icon}</div>
-                                <h3 className={`font-bold text-lg mb-1 transition-colors duration-300 ${index + 1 === currentStep
+                                <div className="text-md">{step.icon}</div>
+                                <h3 className={`font-bold text-lg transition-colors duration-300 ${index + 1 === currentStep
                                     ? 'text-indigo-600 dark:text-indigo-400'
                                     : 'text-slate-600 dark:text-slate-400'
                                     }`}>
                                     {step.title}
                                 </h3>
-                                <p className="text-sm text-slate-500 dark:text-slate-500 leading-relaxed">
+                                <p className="text-xs font-medium text-slate-500 dark:text-slate-500 leading-relaxed">
                                     {step.description}
                                 </p>
                             </div>
@@ -137,7 +134,7 @@ const ClientOnboardingPage = () => {
                 </div>
 
                 {/* Progress Bar */}
-                <div className="mb-12 max-w-2xl mx-auto">
+                <div className="mb-8 max-w-2xl mx-auto">
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-sm font-semibold text-slate-600 dark:text-slate-400">
                             Progress
@@ -160,7 +157,7 @@ const ClientOnboardingPage = () => {
                 {/* Main Content Card */}
                 <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50 overflow-hidden">
                     {/* Content Area */}
-                    <div className="p-8 lg:p-16">
+                    <div className="p-4 md:p-8">
                         <div className="transform transition-all duration-500">
                             {currentStep === 1 && <FirstStep />}
                             {currentStep === 2 && <SecondStep />}

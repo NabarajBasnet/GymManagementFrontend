@@ -464,8 +464,8 @@ const MemberDetails = ({ memberId }) => {
   };
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-0 py-6">
-      <Breadcrumb className='px-4'>
+    <div className="w-full bg-gray-100 dark:bg-gray-900">
+      <Breadcrumb className='p-4 md:pt-8'>
         <BreadcrumbList>
           <BreadcrumbItem>
             <TiHome className="w-4 h-4 font-medium dark:text-gray-200" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-200">Home</BreadcrumbLink>
