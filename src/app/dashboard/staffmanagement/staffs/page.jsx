@@ -231,7 +231,7 @@ const StaffManagement = () => {
     const [, page, searchQuery, limit] = queryKey;
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
+        `http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
       if (!response.ok) {
@@ -317,8 +317,8 @@ const StaffManagement = () => {
 
     try {
       const url = currentStaffId
-        ? `https://fitbinary.com/api/staffsmanagement/changedetails/${currentStaffId}`
-        : "https://fitbinary.com/api/staffsmanagement/create";
+        ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+        : "http://localhost:3000/api/staffsmanagement/create";
 
       const method = currentStaffId ? "PATCH" : "POST";
 
@@ -346,7 +346,7 @@ const StaffManagement = () => {
   const deleteStaff = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/remove/${id}`,
+        `http://localhost:3000/api/staffsmanagement/remove/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -374,7 +374,7 @@ const StaffManagement = () => {
   const editStaffDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -389,7 +389,7 @@ const StaffManagement = () => {
   const populateAddressDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -444,7 +444,7 @@ const StaffManagement = () => {
   const populateShiftDetails = async (id) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
 
