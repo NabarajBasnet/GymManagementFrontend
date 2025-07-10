@@ -46,7 +46,7 @@ export default function RootSignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('https://fitbinary.com/api/rootuser/register', {
+            const response = await fetch('http://localhost:3000/api/rootuser/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -11,7 +11,7 @@ const LoggedInRootUserProvider = ({ children }) => {
 
     const getLoggedInRootUserDetails = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/rootuser/details`, {
+            const response = await fetch(`http://localhost:3000/api/rootuser/details`, {
                 credentials: 'include',
             });
 
