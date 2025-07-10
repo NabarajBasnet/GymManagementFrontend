@@ -254,7 +254,7 @@ const PausedMembers = () => {
                     <></>
                 )}
 
-                <Breadcrumb>
+                <Breadcrumb className='mb-4'>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <TiHome className="w-4 h-4" /><BreadcrumbLink href="/" className='font-medium text-sm'>Home</BreadcrumbLink>

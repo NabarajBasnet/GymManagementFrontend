@@ -255,7 +255,7 @@ const SmartAttendanceDashboard = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const data = await response.json();
 
             if (!response.ok) {

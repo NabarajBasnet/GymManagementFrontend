@@ -266,11 +266,11 @@ const ScheduleManagement = () => {
     }
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:pt-8'>
-            <div className="w-full">
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen'>
+            <div className="w-full p-4 md:pt-10">
                 {/* Breadcrumb */}
-                <div className='w-full'>
-                    <Breadcrumb>
+                <div className='w-full mb-4'>
+                    <Breadcrumb className="mb-4">
                         <BreadcrumbList>
                             <BreadcrumbItem>
                                 <MdHome className='w-4 h-4 text-gray-500 dark:text-gray-400' />
@@ -294,7 +294,7 @@ const ScheduleManagement = () => {
                     </Breadcrumb>
 
                     {/* Enhanced Header Card */}
-                    <div className="flex flex-col md:flex-row justify-between items-start bg-gradient-to-r from-primary/5 to-blue-50 dark:from-gray-700/50 dark:to-gray-800 p-6 border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm md:items-center gap-4">
+                    <div className="flex flex-col md:flex-row justify-between items-start bg-gradient-to-r from-primary/5 to-blue-50 dark:from-gray-700/50 dark:to-gray-800 p-6 border border-gray-100 dark:border-gray-700 rounded-md shadow-sm md:items-center gap-4">
                         <div className="flex items-start gap-4">
                             <div className="p-3 rounded-lg bg-primary/10 dark:bg-primary/20">
                                 <BsCalendar2Week className="w-6 h-6 text-primary dark:text-primary/80" />
