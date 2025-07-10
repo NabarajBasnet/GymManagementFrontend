@@ -36,7 +36,7 @@ const System = () => {
       setError(null);
       
       const response = await fetch(
-        "http://localhost:3000/api/root/system/monitor/system-info",
+        "https://fitbinary.com/api/root/system/monitor/system-info",
         {
           headers: {
             'Cache-Control': 'no-cache',
@@ -219,7 +219,7 @@ const System = () => {
           <p className="text-gray-400 mt-4">
             You might need to check if the API endpoint is available at:
             <code className="block mt-2 p-2 bg-gray-700 rounded text-sm">
-              http://localhost:3000/api/root/system/monitor/system-info
+              https://fitbinary.com/api/root/system/monitor/system-info
             </code>
           </p>
         )}

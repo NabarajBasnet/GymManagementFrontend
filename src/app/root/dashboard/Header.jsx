@@ -156,7 +156,7 @@ const RootUserHeader = ({ activeTab }) => {
   const logOutRootUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/rootuser/logout`,
+        `https://fitbinary.com/api/rootuser/logout`,
         {
           method: "POST",
           headers: {

@@ -130,7 +130,7 @@ const PromotionsAndOfferManagement = () => {
     const [offerStatus, setSelectedOfferStatus] = useState('');
     const [discountValueIsPercentage, setDiscountValueIsPercentage] = useState(false);
     const [selectedAudiences, setSelectedAudiences] = useState([]);
-    const baseURL = `http://localhost:3000/api/promotionsandoffers`;
+    const baseURL = `https://fitbinary.com/api/promotionsandoffers`;
 
     const onFormSubmit = async (data) => {
         const {
@@ -259,7 +259,7 @@ const PromotionsAndOfferManagement = () => {
 
     const deleteOffer = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/promotionsandoffers/${id}`, {
+            const response = await fetch(`https://fitbinary.com/api/promotionsandoffers/${id}`, {
                 method: "DELETE"
             });
 
