@@ -693,10 +693,10 @@ const PaymentHistory = () => {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {paymenthistories.map((payment) => (
-                                            <TableRow key={payment._id} className="dark:border-gray-700">
+                                        {paymenthistories?.map((payment) => (
+                                            <TableRow key={payment?._id} className="dark:border-gray-700">
                                                 <TableCell className="font-medium flex items-center justify-between dark:text-gray-100">
-                                                    {payment.receiptNo || 'N/A'}
+                                                    {payment?.receiptNo || 'N/A'}
                                                     <TooltipProvider className='flex justify-end'>
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
@@ -705,7 +705,7 @@ const PaymentHistory = () => {
                                                                     size="icon"
                                                                     className="h-8 w-8"
                                                                     onClick={() => {
-                                                                        navigator.clipboard.writeText(payment.receiptNo || '');
+                                                                        navigator.clipboard.writeText(payment?.receiptNo || '');
                                                                         toast.success('Receipt number copied');
                                                                     }}
                                                                 >
@@ -716,23 +716,23 @@ const PaymentHistory = () => {
                                                         </Tooltip>
                                                     </TooltipProvider>
                                                 </TableCell>
-                                                <TableCell className="dark:text-gray-100">{formatDate(payment.paymentDate)}</TableCell>
-                                                <TableCell className='text-center dark:text-gray-100'>{payment.membership.servicesIncluded[0] || 'N/A'}</TableCell>
-                                                <TableCell className="dark:text-gray-100">{payment.membershipDuration || 'N/A'}</TableCell>
-                                                <TableCell className="dark:text-gray-100">{formatDate(payment.membershipRenewDate)}</TableCell>
-                                                <TableCell className="dark:text-gray-100">{formatDate(payment.membershipExpireDate)}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment?.paymentDate)}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment?.membership?.servicesIncluded[0] || 'N/A'}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{payment?.membershipDuration || 'N/A'}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment?.membershipRenewDate)}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment?.membershipExpireDate)}</TableCell>
                                                 <TableCell className="font-medium dark:text-gray-100">
-                                                    {formatAmount(payment.paidAmount)}
+                                                    {formatAmount(payment?.paidAmount)}
                                                 </TableCell>
                                                 <TableCell className='text-center dark:text-gray-100'>
-                                                    {payment.discount ? formatAmount(payment.discount) : 'N/A'}
+                                                    {payment?.discount ? formatAmount(payment?.discount) : 'N/A'}
                                                 </TableCell>
                                                 <TableCell className='text-center dark:text-gray-100'>
-                                                    <span className={`px-2 py-1 rounded-full text-xs ${getPaymentMethodStyle(payment.paymentMethod)}`}>
-                                                        {payment.paymentMethod || 'N/A'}
+                                                    <span className={`px-2 py-1 rounded-full text-xs ${getPaymentMethodStyle(payment?.paymentMethod)}`}>
+                                                        {payment?.paymentMethod || 'N/A'}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className='text-center dark:text-gray-100'>{payment.actionTaker.fullName || 'N/A'}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment?.actionTaker?.fullName || 'N/A'}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
