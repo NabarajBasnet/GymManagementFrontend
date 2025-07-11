@@ -1,11 +1,12 @@
 "use client";
 
+import { BiInfoCircle } from "react-icons/bi";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "./membershiplanaccordin";
 import { MdSettings, MdCardMembership } from "react-icons/md";
 import {
     ChevronRight,
@@ -371,31 +372,6 @@ const MembershipPlanManagement = () => {
                             {" "}
                             <FiPlus className="w-4 h-4 mr-2" /> Create Plans
                         </TabsTrigger>
-                    </div>
-
-                    <div>
-                        <Accordion
-                            type="single"
-                            collapsible
-                            className="w-full"
-                        >
-                            <AccordionItem value="item-1 border-none">
-                                <AccordionTrigger className="text-primary no-underline hover:no-underline focus:no-underline border-0 border-b-0 outline-none ring-0 shadow-none">
-                                    Creating your organization's membership plans? View Guide
-                                </AccordionTrigger>
-                                <AccordionContent className="flex flex-col gap-4 text-balance text-primary">
-                                    <p>
-                                        1. Start by creating an <strong>admission charge plan</strong> — this should be the first plan you set up for new members.
-                                    </p>
-                                    <p>
-                                        2. To ensure the system recognizes it correctly, name this plan starting with either: <strong>“Admission Charge”</strong> or <strong>“Admission Fee”</strong>.
-                                    </p>
-                                    <p>
-                                        3. Set a <strong>duration</strong> and <strong>price</strong> for the plan. These values will be automatically calculated and sent to members during registration.
-                                    </p>
-                                </AccordionContent>
-                            </AccordionItem>
-                        </Accordion>
                     </div>
                 </TabsList>
 
@@ -828,6 +804,34 @@ const MembershipPlanManagement = () => {
                 </TabsContent>
 
                 <TabsContent value="Create Plans">
+
+                    <Accordion
+                        type="single"
+                        collapsible
+                        className="w-full"
+                    >
+                        <AccordionItem value="item-1 border-none">
+                            <AccordionTrigger className="text-primary no-underline hover:no-underline focus:no-underline border-0 border-b-0 outline-none ring-0 shadow-none">
+                                <section className='flex items-center space-x-2'>
+                                    <BiInfoCircle className="text-blue-500" />
+                                    <span className="text-blue-500">
+                                        Important Guides
+                                    </span>
+                                </section>
+                            </AccordionTrigger>
+                            <AccordionContent className="flex flex-col gap-2 text-balance text-primary">
+                                <p>
+                                    1. Start by creating an <strong className="text-blue-500">admission charge plan</strong> — this should be the first plan you set up for new members.
+                                </p>
+                                <p>
+                                    2. To ensure the system recognizes it correctly, name this plan starting with either: <strong className="text-blue-500">“Admission Charge”</strong> or <strong className="text-blue-500">“Admission Fee”</strong>.
+                                </p>
+                                <p>
+                                    3. Set a <strong className="text-blue-500">duration</strong> and <strong className="text-blue-500">price</strong> for the plan. These values will be automatically calculated and sent to members during registration.
+                                </p>
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
                     <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
                         {/* Left Card - Settings */}
                         <Card className="rounded-xl w-full lg:w-3/12 shadow-md dark:bg-gray-800 dark:border-none">
