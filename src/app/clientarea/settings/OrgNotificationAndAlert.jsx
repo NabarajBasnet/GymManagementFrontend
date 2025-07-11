@@ -1,5 +1,6 @@
 "use client";
 
+import { LuLoader } from "react-icons/lu";
 import { Settings2Icon } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,7 @@ const OrganizationNotificationAndAlertSettings = () => {
     const [invoiceAttachments, setInvoiceAttachments] = useState(false);
     const [membershipRenewal, setMembershipRenewal] = useState(false);
     const [classReminders, setClassReminders] = useState(false);
+    const [saving, setSaving] = useState(false);
 
     const [email, setEmail] = useState(false);
     const [sms, setSMS] = useState(false);
@@ -27,6 +29,7 @@ const OrganizationNotificationAndAlertSettings = () => {
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        setSaving(true);
         const finalData = {
             sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp
         };
@@ -40,11 +43,14 @@ const OrganizationNotificationAndAlertSettings = () => {
             });
             const resBody = await response.json();
             if (!response.ok) {
+                setSaving(false);
                 toast.error(resBody.message);
             } else {
+                setSaving(false);
                 toast.success(resBody.message);
             };
         } catch (error) {
+            setSaving(false);
             console.log("Error: ", error);
             toast.error(error.message);
         };
@@ -162,11 +168,11 @@ const OrganizationNotificationAndAlertSettings = () => {
                         <div className="w-full flex justify-end py-4">
                             <Button
                                 onClick={(e) => onSubmit(e)}
-                                className='py-6 rounded-sm flex items-center space-x-2'
+                                className='py-6 rounded-sm flex items-center space-x-1'
                             >
-                                <Save />
+                                {saving ? <LuLoader className='animate-spin duration-500' /> : <Save />}
                                 <span>
-                                    Submit
+                                    {saving ? 'Saving...' : 'Save'}
                                 </span>
                             </Button>
                         </div>
