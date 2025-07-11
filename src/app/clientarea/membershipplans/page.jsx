@@ -381,7 +381,7 @@ const MembershipPlanManagement = () => {
                             defaultValue="item-1"
                         >
                             <AccordionItem value="item-1">
-                                <AccordionTrigger className="text-primary">
+                                <AccordionTrigger className="text-primary no-underline hover:no-underline focus:no-underline underline-offset-0">
                                     Creating your organization's membership plans? View Guide
                                 </AccordionTrigger>
                                 <AccordionContent className="flex flex-col gap-4 text-balance text-primary">
