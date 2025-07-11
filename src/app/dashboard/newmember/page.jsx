@@ -16,7 +16,6 @@ import { format } from "date-fns";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { toast as notify } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 
 // Import UI components
@@ -254,7 +253,7 @@ const NewMemberRegistrationForm = () => {
           message: "Paid ammount is required",
         });
       }
-      const response = await fetch("http://localhost:3000/api/members", {
+      const response = await fetch("https://fitbinary.com/api/members", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -291,7 +290,6 @@ const NewMemberRegistrationForm = () => {
         });
       }
     } catch (error) {
-      notify.error(error.message);
       sonnerToast.error("Internal server error", {
         description: error.message,
       });
@@ -303,7 +301,7 @@ const NewMemberRegistrationForm = () => {
   const getAactionTakers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${[
+        `https://fitbinary.com/api/staffsmanagement/actiontakers?actionTakers=${[
           "Gym Admin",
           "Super Admin",
           "Operational Manager",
@@ -380,7 +378,7 @@ const NewMemberRegistrationForm = () => {
   useFieldAvailabilityCheck({
     fieldValue: fullName,
     fieldName: "fullName",
-    apiUrl: "http://localhost:3000/api/members/membername-exist",
+    apiUrl: "https://fitbinary.com/api/members/membername-exist",
     onError: setError,
     onSuccess: clearErrors,
   });
@@ -390,7 +388,7 @@ const NewMemberRegistrationForm = () => {
   useFieldAvailabilityCheck({
     fieldValue: contactNo,
     fieldName: "contactNo",
-    apiUrl: "http://localhost:3000/api/members/memberphoneno-exist",
+    apiUrl: "https://fitbinary.com/api/members/memberphoneno-exist",
     onError: setError,
     onSuccess: clearErrors,
   });
@@ -400,7 +398,7 @@ const NewMemberRegistrationForm = () => {
   useFieldAvailabilityCheck({
     fieldValue: email,
     fieldName: "email",
-    apiUrl: "http://localhost:3000/api/members/memberemail-exist",
+    apiUrl: "https://fitbinary.com/api/members/memberemail-exist",
     onError: setError,
     onSuccess: clearErrors,
   });
@@ -409,7 +407,7 @@ const NewMemberRegistrationForm = () => {
   const GetMembershipPlans = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/membershipplans/by-org`
+        `https://fitbinary.com/api/membershipplans/by-org`
       );
       const responseBody = await response.json();
       return responseBody;

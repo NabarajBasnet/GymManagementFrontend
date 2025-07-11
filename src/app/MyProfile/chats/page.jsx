@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import io from 'socket.io-client';
 
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect('https://fitbinary.com');
 
 const StaffChatSection = () => {
 

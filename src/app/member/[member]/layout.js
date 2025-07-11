@@ -7,7 +7,7 @@ export async function generateMetadata() {
   const cookieStore = await cookies();
   const token = cookieStore.get("memberLoginToken")?.value;
 
-  const res = await fetch(`http://localhost:3000/api/member/details`, {
+  const res = await fetch(`https://fitbinary.com/api/member/details`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
