@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 import { QrCode } from 'lucide-react';
 import { useMember } from '@/components/Providers/LoggedInMemberProvider';
 import Loader from '@/components/Loader/Loader';
@@ -28,7 +28,6 @@ const QRCodePage = () => {
 
             if (response.ok) {
                 setMemberData(responseBody);
-                toast.success(responseBody.message);
             } else {
                 setError(responseBody.message || 'Failed to load QR code');
                 toast.error(responseBody.message);

@@ -1,5 +1,11 @@
 "use client";
 
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion";
 import { MdSettings, MdCardMembership } from "react-icons/md";
 import {
     ChevronRight,
@@ -355,15 +361,43 @@ const MembershipPlanManagement = () => {
             </div>
 
             <Tabs value={tabValue} onValueChange={setTabValue}>
-                <TabsList className="mb-2 border border-gray-300 dark:border-gray-700 p-2 rounded-sm dark:bg-gray-800">
-                    <TabsTrigger value="Current Plans">
-                        {" "}
-                        <FaList className="w-4 h-4 mr-2" /> Current Plans
-                    </TabsTrigger>
-                    <TabsTrigger value="Create Plans">
-                        {" "}
-                        <FiPlus className="w-4 h-4 mr-2" /> Create Plans
-                    </TabsTrigger>
+                <TabsList className="flex justify-between items-center mb-2 border border-gray-300 dark:border-gray-700 p-2 rounded-sm dark:bg-gray-800">
+                    <div>
+                        <TabsTrigger value="Current Plans">
+                            {" "}
+                            <FaList className="w-4 h-4 mr-2" /> Current Plans
+                        </TabsTrigger>
+                        <TabsTrigger value="Create Plans">
+                            {" "}
+                            <FiPlus className="w-4 h-4 mr-2" /> Create Plans
+                        </TabsTrigger>
+                    </div>
+
+                    <div>
+                        <Accordion
+                            type="single"
+                            collapsible
+                            className="w-full"
+                            defaultValue="item-1"
+                        >
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="text-primary">
+                                    Creating your organization's membership plans? View Guide
+                                </AccordionTrigger>
+                                <AccordionContent className="flex flex-col gap-4 text-balance text-primary">
+                                    <p>
+                                        1. Start by creating an <strong>admission charge plan</strong> — this should be the first plan you set up for new members.
+                                    </p>
+                                    <p>
+                                        2. To ensure the system recognizes it correctly, name this plan starting with either: <strong>“Admission Charge”</strong> or <strong>“Admission Fee”</strong>.
+                                    </p>
+                                    <p>
+                                        3. Set a <strong>duration</strong> and <strong>price</strong> for the plan. These values will be automatically calculated and sent to members during registration.
+                                    </p>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+                    </div>
                 </TabsList>
 
                 <TabsContent value="Current Plans">
