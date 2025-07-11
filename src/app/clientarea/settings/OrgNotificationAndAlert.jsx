@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { toast } from "sonner";
+import { Save } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +25,8 @@ const OrganizationNotificationAndAlertSettings = () => {
     const [sms, setSMS] = useState(false);
     const [inApp, setInApp] = useState(false);
 
-    const onSubmit = async () => {
+    const onSubmit = async (e) => {
+        e.preventDefault();
         const finalData = {
             sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp
         };
@@ -39,7 +41,9 @@ const OrganizationNotificationAndAlertSettings = () => {
             const resBody = await response.json();
             if (!response.ok) {
                 toast.error(resBody.message);
-            }
+            } else {
+                toast.success(resBody.message);
+            };
         } catch (error) {
             console.log("Error: ", error);
             toast.error(error.message);
@@ -155,11 +159,15 @@ const OrganizationNotificationAndAlertSettings = () => {
                             />
                         </div>
 
-                        <div className="w-full flex md:justify-end justify-center py-4">
+                        <div className="w-full flex justify-end py-4">
                             <Button
-                                onClick={onSubmit}
+                                onClick={(e) => onSubmit(e)}
+                                className='py-6 rounded-sm flex items-center space-x-2'
                             >
-                                Submit
+                                <Save />
+                                <span>
+                                    Submit
+                                </span>
                             </Button>
                         </div>
                     </CardContent>
