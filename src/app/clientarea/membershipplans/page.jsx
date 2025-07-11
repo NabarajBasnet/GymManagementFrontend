@@ -379,7 +379,7 @@ const MembershipPlanManagement = () => {
                             collapsible
                             className="w-full"
                         >
-                            <AccordionItem value="item-1">
+                            <AccordionItem value="item-1 border-none">
                                 <AccordionTrigger className="text-primary no-underline hover:no-underline focus:no-underline border-0 border-b-0 outline-none ring-0 shadow-none">
                                     Creating your organization's membership plans? View Guide
                                 </AccordionTrigger>
