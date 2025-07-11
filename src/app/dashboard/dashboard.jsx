@@ -271,7 +271,7 @@ const AdminDashboard = () => {
                 {/* Text content */}
                 <div className="flex-1 space-y-4 flex flex-col justify-between text-center lg:text-left">
                   <div className="space-y-2">
-                    <h1 className="text-3xl md:text-4xl font-semibold text-gray-900 dark:text-white">
+                    <h1 className="text-3xl md:text-4xl font-bold font-serif text-gray-900 dark:text-white">
                       {getGreeting()}, {loggedInUser?.firstName}
                     </h1>
                     <div className="w-12 h-1 bg-blue-600 mx-auto lg:mx-0 rounded-full"></div>

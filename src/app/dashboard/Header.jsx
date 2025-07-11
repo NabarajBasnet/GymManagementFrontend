@@ -361,6 +361,11 @@ const Header = () => {
           title: "Membership Plans",
           link: "/dashboard/membershipplans",
         },
+        {
+          icon: FaUsers,
+          title: "Payment Reminder",
+          link: "/dashboard/paymentreminders",
+        },
         // {
         //   icon: LuLogs,
         //   title: "Membership Logs",
@@ -386,6 +391,11 @@ const Header = () => {
           icon: GiLockers,
           title: "Locker Management",
           link: "/dashboard/lockersmanagement",
+        },
+        {
+          icon: GiLockers,
+          title: "Locker Expiry",
+          link: "/dashboard/lockersexpiry",
         },
         {
           icon: GiBiceps,

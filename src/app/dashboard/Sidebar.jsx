@@ -288,6 +288,11 @@ const Sidebar = () => {
           //   },
           // ],
         },
+        {
+          icon: FaUsers,
+          title: "Payment Reminder",
+          link: "/dashboard/paymentreminders",
+        },
         // {
         //   icon: LuLogs,
         //   title: "Membership Logs",
@@ -315,6 +320,11 @@ const Sidebar = () => {
           icon: GiLockers,
           title: "Locker Management",
           link: "/dashboard/lockersmanagement",
+        },
+        {
+          icon: GiLockers,
+          title: "Locker Expiry",
+          link: "/dashboard/lockersexpiry",
         },
         {
           icon: GiBiceps,
