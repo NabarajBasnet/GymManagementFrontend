@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const OrganizationNotificationAndAlertSettings = () => {
     const tenant = useTenant();
@@ -44,10 +45,6 @@ const OrganizationNotificationAndAlertSettings = () => {
             toast.error(error.message);
         };
     };
-
-    useEffect(() => {
-        onSubmit();
-    }, [sendPortalLink, paymentReminders, invoiceAttachments, membershipRenewal, classReminders, email, sms, inApp])
 
     useEffect(() => {
         setSendPortalLink(organization?.sendPortalLink)
@@ -158,6 +155,13 @@ const OrganizationNotificationAndAlertSettings = () => {
                             />
                         </div>
 
+                        <div className="w-full flex md:justify-end justify-center py-4">
+                            <Button
+                                onClick={onSubmit}
+                            >
+                                Submit
+                            </Button>
+                        </div>
                     </CardContent>
                 </Card>
 
