@@ -34,7 +34,7 @@ import { toast } from "sonner"
 
 // Hooks
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { Button } from "@/components/ui/button";
 
@@ -77,6 +77,9 @@ const MembershipPaymentReminder = () => {
     const { user } = useUser();
     const loggedInUser = user?.user;
 
+    const queryClient = useQueryClient()
+    const [sendingReminder, setSendingReminder] = useState(false);
+    const [sendingIds, setSendingIds] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState([]);
 
     const getPaymentReminderList = async () => {
@@ -114,30 +117,46 @@ const MembershipPaymentReminder = () => {
     };
 
     const sendBulkPaymentReminders = async () => {
+        setSendingReminder(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/api/org-members/send-bulk-payment-reminder`, {
+            const response = await fetch(`http://localhost:3000/api/org-members/send-bulk-payment-reminder`, {
                 method: "PUT",
-                headers:{
-                    'Content-Type':'application/json'
+                headers: {
+                    'Content-Type': 'application/json'
                 },
-                body:JSON.stringify({selectedMembers})
+                body: JSON.stringify({ selectedMembers })
             });
             const resBody = await response.json();
-            console.log(resBody);
+            if (response.ok) {
+                setSendingReminder(false);
+                toast.success(resBody.message);
+                queryClient.invalidateQueries(['memberlist']);
+            }
         } catch (error) {
+            setSendingReminder(false);
             console.log("Error: ", error);
             toast.error(error.message);
         };
     };
 
     const sendPaymentReminderBySingle = async (id) => {
+        setSendingIds(id);
         try {
+            setSendingReminder(true);
             const response = await fetch(`http://localhost:3000/api/org-members/send-single-payment-reminder/${id}`, {
                 method: "PUT"
             });
             const resBody = await response.json();
-            console.log(resBody);
+            if (response.ok) {
+                setSendingIds([]);
+                setSendingReminder(false);
+                toast.success(resBody.message);
+                queryClient.invalidateQueries(['memberlist']);
+            }
+
         } catch (error) {
+            setSendingIds([]);
+            setSendingReminder(false)
             console.log("Error: ", error);
             toast.error(error.message);
         };
@@ -217,11 +236,40 @@ const MembershipPaymentReminder = () => {
                             </div>
                             {selectedMembers?.length >= 1 ? (
                                 <Button
-                                    className="flex items-center gap-1 text-sm"
+                                    className="flex items-center gap-2 text-sm disabled:opacity-60"
                                     onClick={sendBulkPaymentReminders}
+                                    disabled={sendingReminder}
                                 >
-                                    <TbSend className="text-lg" />
-                                    Remind
+                                    {sendingReminder ? (
+                                        <>
+                                            <svg
+                                                className="animate-spin h-4 w-4 text-current"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <circle
+                                                    className="opacity-25"
+                                                    cx="12"
+                                                    cy="12"
+                                                    r="10"
+                                                    stroke="currentColor"
+                                                    strokeWidth="4"
+                                                ></circle>
+                                                <path
+                                                    className="opacity-75"
+                                                    fill="currentColor"
+                                                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                                                ></path>
+                                            </svg>
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <TbSend className="text-lg" />
+                                            Remind
+                                        </>
+                                    )}
                                 </Button>
                             ) : (
                                 <div>
@@ -347,12 +395,39 @@ const MembershipPaymentReminder = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <button
-                                                    className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400"
+                                                    className="flex items-center gap-1 text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition disabled:opacity-50"
                                                     onClick={() => sendPaymentReminderBySingle(member._id)}
+                                                    disabled={sendingIds.includes(member._id)}
                                                 >
-                                                    <TbSend className="text-lg" />
-                                                    Remind
+                                                    {sendingIds.includes(member._id) ? (
+                                                        <svg
+                                                            className="animate-spin h-4 w-4 text-current"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            fill="none"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <circle
+                                                                className="opacity-25"
+                                                                cx="12"
+                                                                cy="12"
+                                                                r="10"
+                                                                stroke="currentColor"
+                                                                strokeWidth="4"
+                                                            ></circle>
+                                                            <path
+                                                                className="opacity-75"
+                                                                fill="currentColor"
+                                                                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 100 16v-4l-3 3 3 3v-4a8 8 0 01-8-8z"
+                                                            ></path>
+                                                        </svg>
+                                                    ) : (
+                                                        <>
+                                                            <TbSend className="text-lg" />
+                                                            Remind
+                                                        </>
+                                                    )}
                                                 </button>
+
                                             </TableCell>
                                         </TableRow>
                                     ))}
