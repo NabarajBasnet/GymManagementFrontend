@@ -118,6 +118,7 @@ const MembershipPaymentReminder = () => {
 
     const sendBulkPaymentReminders = async () => {
         setSendingReminder(true);
+        setSendingIds(selectedMembers);
         try {
             const response = await fetch(`http://localhost:3000/api/org-members/send-bulk-payment-reminder`, {
                 method: "PUT",
@@ -128,11 +129,13 @@ const MembershipPaymentReminder = () => {
             });
             const resBody = await response.json();
             if (response.ok) {
+                setSendingIds([]);
                 setSendingReminder(false);
                 toast.success(resBody.message);
                 queryClient.invalidateQueries(['memberlist']);
             }
         } catch (error) {
+            setSendingIds([]);
             setSendingReminder(false);
             console.log("Error: ", error);
             toast.error(error.message);
