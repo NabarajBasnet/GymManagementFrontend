@@ -378,7 +378,7 @@ const MembershipPlanManagement = () => {
                 <TabsContent value="Current Plans">
                     <div className="space-y-4">
                         {/* Filter Card */}
-                        <Card className="rounded-xl shadow-md border border-gray-100 dark:bg-gray-800 dark:border-none">
+                        <Card className="rounded-xl shadow-md mt-4 border border-gray-100 dark:bg-gray-800 dark:border-none">
                             <CardHeader className="pb-3">
                                 <div className="flex items-center gap-2 justify-between">
                                     <div className="flex items-center gap-2">
@@ -832,7 +832,7 @@ const MembershipPlanManagement = () => {
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
-                    <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
+                    <div className="lg:flex space-y-4 mt-2 lg:space-y-0 lg:space-x-0 gap-4">
                         {/* Left Card - Settings */}
                         <Card className="rounded-xl w-full lg:w-3/12 shadow-md dark:bg-gray-800 dark:border-none">
                             <CardHeader>
