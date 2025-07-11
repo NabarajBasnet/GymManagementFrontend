@@ -488,9 +488,12 @@ const NewMemberRegistrationForm = () => {
 
   // Filter Plans
   const filteredPlans =
-    fetchedPlans?.filter((plan) =>
-      plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
-    ) || [];
+    fetchedPlans?.filter((plan) => {
+      const planName = plan.planName.toLowerCase();
+      const searchMatch = planName.includes(planSearchQuery.toLowerCase());
+      const isAdmission = planName.startsWith("Admission Fee") || planName.startsWith("Admission Charge") || planName.startsWith("admission fee") || planName.startsWith("admission charge");
+      return searchMatch && !isAdmission;
+    }) || [];
 
   const convertDurationInMonths = (duration) => {
     return `${duration / 30} Months`;
