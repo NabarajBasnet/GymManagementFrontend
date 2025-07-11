@@ -10,6 +10,7 @@ import { HiMiniUsers } from "react-icons/hi2";
 
 // UI
 import { Checkbox } from "@/components/ui/checkbox";
+import Pagination from "@/components/ui/CustomPagination";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -82,9 +83,16 @@ const MembershipPaymentReminder = () => {
     const [sendingIds, setSendingIds] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState([]);
 
-    const getPaymentReminderList = async () => {
+    // Pagination and Sorting States
+    const [currentPage, setCurrentPage] = useState(1);
+    let limit = 10;
+    const [sortBy, setSortBy] = useState("");
+    const [sortOrderDesc, setSortOrderDesc] = useState(true);
+
+    const getPaymentReminderList = async ({ queryKey }) => {
+        const [, page, limit, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/org-members/member-payment-reminders`);
+            const response = await fetch(`http://localhost:3000/api/org-members/member-payment-reminders?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -94,11 +102,12 @@ const MembershipPaymentReminder = () => {
     }
 
     const { data, isLoading } = useQuery({
-        queryKey: ['memberlist'],
-        queryFn: getPaymentReminderList
+        queryKey: ['memberlist', currentPage, limit, sortBy, sortOrderDesc],
+        queryFn: getPaymentReminderList,
+        keepPreviousData: true,
     });
 
-    const { memberlist } = data || {};
+    const { memberlist, totalMembers, totalPages } = data || {};
 
     const toggleMemberSelection = (memberId) => {
         setSelectedMembers(prev =>
@@ -304,49 +313,89 @@ const MembershipPaymentReminder = () => {
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Full Name
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("fullName");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Membership
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("planName");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Renew Date
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("membershipRenewDate");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Expire Date
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("membershipExpireDate");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Status
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("status");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Paid Amount
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("paidAmmount");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Payment Method
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("paymentMethod");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">
                                             <div className="flex items-center">
                                                 Reminder Status
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer" />
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy("paymentReminderState");
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer" />
                                             </div>
                                         </TableHead>
                                         <TableHead className="text-gray-700 dark:text-gray-300">Action</TableHead>
@@ -443,6 +492,14 @@ const MembershipPaymentReminder = () => {
                         )}
                     </div>
                 )}
+
+                <div className="w-full flex justify-center md:justify-end py-4">
+                    <Pagination
+                        total={totalPages}
+                        page={currentPage}
+                        onChange={setCurrentPage}
+                    />
+                </div>
             </div>
         </div>
     )
