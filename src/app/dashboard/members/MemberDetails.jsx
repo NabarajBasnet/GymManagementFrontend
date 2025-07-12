@@ -485,8 +485,8 @@ const MemberDetails = ({ memberId }) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="w-full mt-4 px-4">
-        <h1 className="text-2xl font-bold my-1 dark:text-gray-200">
+      <div className="w-full px-4">
+        <h1 className="text-2xl font-bold dark:text-gray-200">
           Membership Details
         </h1>
       </div>
@@ -496,24 +496,17 @@ const MemberDetails = ({ memberId }) => {
       <div className="w-full flex flex-col md:flex-row gap-4 items-stretch h-full px-4">
         <div className="w-full md:w-3/12">
           <Card className="w-full bg-white dark:bg-gray-800 dark:border-none h-full">
-            <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
-              <div className="w-full flex flex-col gap-6 md:gap-8">
-                QR Code Section
-                <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
-                  <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
-                    Membership QR
-                  </h2>
-                  <div className="p-3 bg-white dark:bg-gray-800 dark:border-none dark:bg-gray-900 rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
-                    <img
-                      src={qrCode}
-                      alt="Membership QR Code"
-                      className="w-40 h-40 rounded-xl"
-                    />
-                  </div>
+            <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-2">
+              <div className="w-full flex flex-col gap-2 md:gap-3">
+                <div className="bg-white dark:bg-gray-800 dark:border-none dark:bg-gray-900 rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
+                  <img
+                    src={qrCode}
+                    alt="Membership QR Code"
+                    className="w-60 h-60 rounded-xl"
+                  />
                 </div>
 
-                Membership Controls & Info
-                <div className="w-full w-full flex-1 space-y-4">
+                <div className="w-full w-full flex-1 space-y-2">
                   <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                     Membership Status
                   </h2>
