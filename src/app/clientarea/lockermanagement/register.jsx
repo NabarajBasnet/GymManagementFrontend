@@ -60,7 +60,7 @@ const CreateLocker = () => {
     // Get Organization Branches If Applicable
     const getBranches = async () => {
         try {
-            const request = await fetch(`https://fitbinary.com/api/organizationbranch/tenant`);
+            const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
             const resBody = await request.json();
             return resBody;
         } catch (error) {
@@ -79,7 +79,7 @@ const CreateLocker = () => {
 
     const onSubmitLockers = async (data) => {
         try {
-            const request = await fetch(`https://fitbinary.com/api/lockers`, {
+            const request = await fetch(`http://localhost:3000/api/lockers`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -111,7 +111,7 @@ const CreateLocker = () => {
     return (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Form Section */}
-            <Card className='dark:bg-gray-900 dark:border-none'>
+            <Card className='dark:bg-transparent dark:border-none shadow-none'>
                 <CardHeader>
                     <CardTitle className="text-2xl">Register New Lockers</CardTitle>
                 </CardHeader>

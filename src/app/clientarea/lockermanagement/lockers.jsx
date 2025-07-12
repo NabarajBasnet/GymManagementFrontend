@@ -212,7 +212,7 @@ const LockersOverview = () => {
     }
 
     return (
-        <div className="space-y-4 p-3 rounded-md bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 min-h-screen">
+        <div className="space-y-4 p-0 rounded-md min-h-screen">
             {/* Header Card with Stats */}
             <Card className="dark:border-gray-700/50 shadow-md mb-4 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 backdrop-blur-sm">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between p-4 space-y-6 md:space-y-0">

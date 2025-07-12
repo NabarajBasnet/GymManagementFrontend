@@ -103,7 +103,7 @@ const LockerExpiry = () => {
         const [, page, limit, sortBy, sortOrderDesc] = queryKey;
         try {
             const response = await fetch(
-                `https://fitbinary.com/api/lockers/expiry-list?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+                `http://localhost:3000/api/lockers/expiry-list?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;
