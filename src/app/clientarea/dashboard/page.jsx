@@ -90,6 +90,7 @@ const TenantDashboard = () => {
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
+      soonerToast.error(error.message);
       console.log("Error: ", error);
     };
   };
@@ -107,6 +108,7 @@ const TenantDashboard = () => {
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
+      soonerToast.error(error.message);
       console.log("Error: ", error);
     };
   };

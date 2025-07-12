@@ -17,7 +17,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetClose,
@@ -61,6 +61,7 @@ import Loader from "@/components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { ToggleClientSidebar } from "@/state/slicer";
 import { io } from 'socket.io-client';
+import Link from "next/link";
 
 const socket = io('http://localhost:5000', {
   transports: ['websocket'],
@@ -502,20 +503,22 @@ const ClientAreaHeader = ({ activeTab }) => {
                               key={notif._id}
                               className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
                             >
-                              <div>
-                                <p className="font-medium">{notif.type || 'N/A'}</p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                  {new Date(notif.createdAt).toLocaleString("en-US", {
-                                    weekday: "short",
-                                    hour: "2-digit",
-                                    minute: "2-digit",
-                                    day: "numeric",
-                                    month: "short",
-                                    year: "numeric",
-                                  })}
-                                </p>
-                              </div>
+                              <Link href={notif.actionUrl || '/dashboard'}>
+                                <div>
+                                  <p className="font-medium">{notif.type || 'N/A'}</p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                    {new Date(notif.createdAt).toLocaleString("en-US", {
+                                      weekday: "short",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                      day: "numeric",
+                                      month: "short",
+                                      year: "numeric",
+                                    })}
+                                  </p>
+                                </div>
+                              </Link>
                               {notif.status === 'Unread' && (
                                 <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
                               )}
