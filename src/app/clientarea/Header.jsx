@@ -77,6 +77,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   const dispatch = useDispatch();
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [selectedNotificationIds, setSelectedNotificationIds] = useState([]);
   const { setTheme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
@@ -247,16 +248,33 @@ const ClientAreaHeader = ({ activeTab }) => {
         method: "PATCH",
       });
       const resBody = await response.json();
-      console.log(resBody)
     } catch (error) {
       console.log("Error: ", error);
       toast.error(error.message);
     }
   };
 
-  const markBulkNotificationAsRead = async (id) => {
+  const markBulkNotificationAsRead = async () => {
     try {
+      const unreadedNotificationsIds = tenantnotifications?.filter((notif) => notif.status === 'Unread').map((notif) => notif._id);
 
+      if (!unreadedNotificationsIds || unreadedNotificationsIds.length === 0) {
+        toast.error("No unread notifications");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/api/tenant-notification/bulk-read/`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ unreadedNotificationsIds })
+      });
+      const resBody = await response.json();
+      if (response.ok) {
+        toast.success(resBody.message || "Notifications marked as read");
+      };
+      refetch();
     } catch (error) {
       console.log("Error: ", error);
       toast.error(error.message);
@@ -509,7 +527,9 @@ const ClientAreaHeader = ({ activeTab }) => {
                   <DropdownMenuContent className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none" align="end">
                     <DropdownMenuLabel className="flex justify-between items-center px-2">
                       <span>Notifications</span>
-                      <button className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                      <button
+                        onClick={markBulkNotificationAsRead}
+                        className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
                         Mark all as read
                       </button>
                     </DropdownMenuLabel>
