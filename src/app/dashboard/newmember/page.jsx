@@ -114,7 +114,7 @@ const NewMemberRegistrationForm = () => {
   // Calculate amounts
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
-    setDueAmmount(due);
+    setDueAmmount(due || 0);
   };
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const NewMemberRegistrationForm = () => {
   // Calculate final amount
   const calculateFinalAmmount = () => {
     const final = admissionFee + (selectedPlanDetails?.price || 0) - discountAmmount;
-    setFinalAmmount(parseInt(final));
+    setFinalAmmount(parseInt(final || 0));
   };
 
   useEffect(() => {
@@ -1208,7 +1208,7 @@ const NewMemberRegistrationForm = () => {
                               className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               value={discountAmmount}
                               onChange={(e) =>
-                                setDiscountAmmount(parseInt(e.target.value))
+                                setDiscountAmmount(parseInt(e.target.value || 0))
                               }
                               type="text"
                               placeholder="Discount Amount"
@@ -1267,7 +1267,7 @@ const NewMemberRegistrationForm = () => {
                               className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               value={paidAmmount}
                               onChange={(e) => {
-                                setPaidAmmount(parseInt(e.target.value));
+                                setPaidAmmount(parseInt(e.target.value || Number(0)));
                                 if (e.target.value) clearErrors("paidAmmount");
                               }}
                               placeholder="Paid Amount"
@@ -1303,11 +1303,11 @@ const NewMemberRegistrationForm = () => {
                               type="text"
                               placeholder="Receipt No"
                             />
-                            {errors.receiptNo && (
+                            {/* {errors.receiptNo && (
                               <p className="text-sm text-red-600 dark:text-red-400">
                                 {errors.receiptNo.message}
                               </p>
-                            )}
+                            )} */}
                           </div>
 
                           <div className="space-y-2">
