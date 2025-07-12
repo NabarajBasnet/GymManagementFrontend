@@ -27,6 +27,7 @@ const TenantDashboard = () => {
   }
 
   if (!loggedInTenant) {
+    router.push('/login');
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)]" />
@@ -382,7 +383,7 @@ const TenantDashboard = () => {
             </div>
 
             {/* Organization and Subscription Details */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid bg-white dark:bg-gray-800 rounded-lg grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Organization Details Card */}
               <div
                 initial={{ opacity: 0, y: 20 }}
@@ -390,7 +391,7 @@ const TenantDashboard = () => {
                 transition={{ delay: 0.1 }}
                 className="h-full"
               >
-                <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden h-full">
+                <Card className="border-none shadow-none bg-transparent overflow-hidden h-full">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div>
@@ -456,7 +457,7 @@ const TenantDashboard = () => {
                 transition={{ delay: 0.2 }}
                 className="h-full"
               >
-                <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden h-full">
+                <Card className="border-none shadow-none bg-transparent overflow-hidden h-full">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
                       <div>
