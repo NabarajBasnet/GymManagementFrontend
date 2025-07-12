@@ -1,5 +1,6 @@
 "use client";
 
+import { FaUser } from "react-icons/fa6";
 import { Separator } from "@/components/ui/separator"
 import { TiHome } from "react-icons/ti";
 import { FiSearch } from "react-icons/fi";
@@ -8,7 +9,6 @@ import { FiSave } from "react-icons/fi";
 import { TiBusinessCard } from "react-icons/ti";
 import { MdOutlinePayment } from "react-icons/md";
 import { toast as sonnerToast } from "sonner";
-import { toast as hotToast } from "react-hot-toast";
 import {
   BiSolidUserDetail,
 } from "react-icons/bi";
@@ -485,7 +485,8 @@ const MemberDetails = ({ memberId }) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="w-full px-4">
+      <div className="flex items-center gap-4 w-full px-4">
+        <FaUser className="w-5 h-5" />
         <h1 className="text-2xl font-bold dark:text-gray-200">
           Membership Details
         </h1>
@@ -498,15 +499,15 @@ const MemberDetails = ({ memberId }) => {
           <Card className="w-full bg-white dark:bg-gray-800 dark:border-none h-full">
             <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-2">
               <div className="w-full flex flex-col gap-2 md:gap-3">
-                <div className="bg-white dark:bg-gray-800 dark:border-none dark:bg-gray-900 rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
+                <div className="bg-white dark:bg-gray-800 dark:border-none shadow-md dark:bg-gray-900 rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
                   <img
                     src={qrCode}
                     alt="Membership QR Code"
-                    className="w-60 h-60 rounded-xl"
+                    className="w-60 h-60 cursor-pointer rounded-xl"
                   />
                 </div>
 
-                <div className="w-full w-full flex-1 space-y-2">
+                <div className="w-full border dark:border-none p-2 rounded-lg shadow-md w-full flex-1 space-y-2">
                   <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                     Membership Status
                   </h2>
