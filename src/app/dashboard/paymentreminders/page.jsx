@@ -296,12 +296,9 @@ const MembershipPaymentReminder = () => {
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full rounded-md border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+                    <div className="w-full rounded-md bg-white dark:bg-gray-900 shadow-sm">
                         {Array.isArray(memberlist) && memberlist?.length >= 1 ? (
-                            <Table>
-                                <TableCaption className="text-sm text-gray-500 dark:text-gray-400">
-                                    A list of members with upcoming or overdue membership payments.
-                                </TableCaption>
+                            <Table className='dark:bg-gray-800 rounded-sm'>
                                 <TableHeader>
                                     <TableRow className="bg-gray-100 dark:bg-gray-800">
                                         <TableHead className="w-[40px] text-gray-700 dark:text-gray-300">

@@ -201,12 +201,9 @@ const LockerExpiry = () => {
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full rounded-md border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+                    <div className="w-full rounded-sm border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
                         {Array.isArray(lockers) && lockers?.length >= 1 ? (
                             <Table>
-                                <TableCaption className="text-sm text-gray-500 dark:text-gray-400">
-                                    A list of lockers with upcoming or past expiry dates. Total {totalLockers} lockers found.
-                                </TableCaption>
                                 <TableHeader>
                                     <TableRow className="bg-gray-100 dark:bg-gray-800">
                                         <TableHead className="text-gray-700 dark:text-gray-300">
@@ -322,7 +319,7 @@ const LockerExpiry = () => {
                                                     {locker?.lockerId}
                                                 </TableCell>
                                                 <TableCell className="text-gray-800 text-center dark:text-gray-300">
-                                                    {locker?.lockerNumber}
+                                                    No. {locker?.lockerNumber}
                                                 </TableCell>
                                                 <TableCell className="text-gray-700 dark:text-gray-400">
                                                     {locker?.lockerSize}
