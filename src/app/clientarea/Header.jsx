@@ -236,6 +236,10 @@ const ClientAreaHeader = ({ activeTab }) => {
     }
   }, [refetch, loggedInTenant]);
 
+  const unreadedNotifications = tenantnotifications?.filter((notif) => {
+    return notif.status === 'Unread'
+  })
+
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 px-2 md:px-0 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
       {loading ? (
@@ -475,12 +479,12 @@ const ClientAreaHeader = ({ activeTab }) => {
                     >
                       <Bell className="w-4 h-4" />
                       <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                        {tenantnotifications?.length || 0}
+                        {unreadedNotifications?.length || 0}
                       </span>
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="end">
-                    <DropdownMenuLabel className="flex justify-between items-center">
+                  <DropdownMenuContent className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none" align="end">
+                    <DropdownMenuLabel className="flex justify-between items-center px-2">
                       <span>Notifications</span>
                       <button className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
                         Mark all as read
@@ -489,82 +493,56 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                     <DropdownMenuSeparator />
 
-                    {/* Unread notifications */}
-                    <DropdownMenuGroup>
-                      {tenantnotifications?.length >= 1 ? (
-                        tenantnotifications.map((notif) => (
-                          <DropdownMenuItem key={notif._id} className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                            <div>
-                              <p className="font-medium">{notif.type || 'N/A'}</p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
-                              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
-                                {
-                                  new Date(notif.createdAt).toLocaleString("en-US", {
+                    {/* Scrollable notification list */}
+                    <div className="flex-1 overflow-y-auto">
+                      <DropdownMenuGroup>
+                        {unreadedNotifications?.length >= 1 ? (
+                          unreadedNotifications.map((notif) => (
+                            <DropdownMenuItem
+                              key={notif._id}
+                              className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
+                            >
+                              <div>
+                                <p className="font-medium">{notif.type || 'N/A'}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                  {new Date(notif.createdAt).toLocaleString("en-US", {
                                     weekday: "short",
                                     hour: "2-digit",
                                     minute: "2-digit",
                                     day: "numeric",
                                     month: "short",
                                     year: "numeric",
-                                  })
-                                }
-                              </p>
+                                  })}
+                                </p>
+                              </div>
+                              {notif.status === 'Unread' && (
+                                <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                              )}
+                            </DropdownMenuItem>
+                          ))
+                        ) : (
+                          <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                            <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                              <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                             </div>
-                            {notif.status === 'Unread' ? (
-                              <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                            ) : (
-                              null
-                            )}
+                            <div>
+                              <p className="font-medium">No notifications yet</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">You're all caught up!</p>
+                            </div>
                           </DropdownMenuItem>
-                        ))
-                      ) : (
-                        <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                          <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
-                            <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                          </div>
-                          <div>
-                            <p className="font-medium">New message received</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
-                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
-                          </div>
-                          <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuGroup>
+                        )}
+                      </DropdownMenuGroup>
+                    </div>
 
                     <DropdownMenuSeparator />
 
-                    {/* Read notifications */}
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                        <div className="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full">
-                          <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Warning notification</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Your storage is almost full</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Yesterday</p>
-                        </div>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                        <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full">
-                          <UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                        </div>
-                        <div>
-                          <p className="font-medium">New connection</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">Sarah Smith accepted your invitation</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 days ago</p>
-                        </div>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-
-                    <DropdownMenuSeparator />
-
+                    {/* Footer always visible */}
                     <DropdownMenuItem className="justify-center text-indigo-600 dark:text-indigo-400 hover:underline">
                       View all notifications
                     </DropdownMenuItem>
                   </DropdownMenuContent>
+
                 </DropdownMenu>
 
               </div>
