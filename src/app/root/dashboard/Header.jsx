@@ -220,12 +220,12 @@ const RootUserHeader = ({ activeTab }) => {
   };
 
   return (
-    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-lg border-b border-red-100/50 dark:border-gray-800/50 sticky top-0 z-50">
+    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-sm border-b border-red-100 dark:border-gray-800/50 sticky top-0 z-50">
       <div className="w-full mx-auto px-4">
         <div className="flex justify-between items-center h-18">
           {/* Mobile menu button */}
           <button
-            className="inline-flex md:flex hidden items-center justify-center p-1 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 dark:focus:bg-gray-800 transition-all duration-200 group"
+            className="inline-flex md:flex hidden items-center justify-center p-2 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 dark:focus:bg-gray-800 transition-all duration-200 group"
             onClick={() => dispatch(ToggleRootSidebar())}
           >
             <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
