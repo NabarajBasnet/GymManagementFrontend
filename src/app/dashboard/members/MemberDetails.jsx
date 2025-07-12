@@ -465,45 +465,63 @@ const MemberDetails = ({ memberId }) => {
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 pb-4">
-      <Breadcrumb className='p-4 md:pt-8'>
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <TiHome className="w-4 h-4 font-medium dark:text-gray-200" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-200">Home</BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              href="/dashboard"
-              className="dark:text-gray-300 font-medium"
-            >
-              Member
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem className="dark:text-gray-300 font-medium">
-            {data ? `${member.fullName || "Member Name"}` : `${""}`}
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-      <div className="flex items-center gap-4 w-full px-4">
-        <FaUser className="w-5 h-5" />
-        <h1 className="text-2xl font-bold dark:text-gray-200">
-          Membership Details
-        </h1>
+      <div className="p-4 md:pt-8">
+        <Breadcrumb className="mb-2">
+          <BreadcrumbList className="flex items-center gap-2 text-sm">
+            <BreadcrumbItem className="flex items-center gap-1.5">
+              <TiHome className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+              <BreadcrumbLink
+                href="/"
+                className="text-gray-500 hover:text-primary transition-colors duration-200 dark:text-gray-400 dark:hover:text-primary"
+              >
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="text-gray-400 dark:text-gray-500" />
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                href="/dashboard"
+                className="text-gray-500 hover:text-primary transition-colors duration-200 dark:text-gray-400 dark:hover:text-primary"
+              >
+                Member
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator className="text-gray-400 dark:text-gray-500" />
+            <BreadcrumbItem>
+              <span className="text-primary font-medium dark:text-primary">
+                {data ? `${member.fullName || "Member Name"}` : "Loading..."}
+              </span>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-lg bg-primary/10 dark:bg-primary/20">
+            <FaUser className="w-5 h-5 text-primary dark:text-primary/80" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              Membership Details
+            </h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              {data ? `Viewing details for ${member?.fullName || 'Member'}` : "Loading member information..."}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <Separator orientation="horizontal" className='my-5 dark:bg-gray-600' />
+      <Separator orientation="horizontal" className='mt-0 mb-4 dark:bg-gray-600' />
 
       <div className="w-full flex flex-col md:flex-row gap-4 items-stretch h-full px-4">
         <div className="w-full md:w-3/12">
           <Card className="w-full bg-white dark:bg-gray-800 dark:border-none h-full">
             <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-2">
               <div className="w-full flex flex-col gap-2 md:gap-3">
-                <div className="bg-white dark:bg-gray-800 dark:border-none shadow-md dark:bg-gray-900 rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
+                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-300 dark:border-gray-700">
                   <img
                     src={qrCode}
                     alt="Membership QR Code"
-                    className="w-60 h-60 cursor-pointer rounded-xl"
+                    className="w-60 h-60 mx-auto p-2 rounded-xl"
                   />
                 </div>
 
