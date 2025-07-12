@@ -56,8 +56,23 @@ import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
 import { useDispatch } from "react-redux";
 import { ToggleRootSidebar } from "@/state/slicer";
 
+import { io } from 'socket.io-client';
+import { useQuery } from "@tanstack/react-query";
+
+const socket = io('http://localhost:5000', {
+  transports: ['websocket'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  timeout: 20000,
+});
+
 const RootUserHeader = ({ activeTab }) => {
   const dispatch = useDispatch();
+
+  // Join notification room
+  socket.emit("join-admin-notification-room");
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
@@ -125,12 +140,6 @@ const RootUserHeader = ({ activeTab }) => {
       color: "text-purple-600",
       link: "/systemalerts",
     },
-  ];
-
-  const systemStats = [
-    { label: "Active Tenants", value: "127", trend: "+12%" },
-    { label: "System Uptime", value: "99.9%", trend: "Stable" },
-    { label: "Total Revenue", value: "$45.2K", trend: "+8.3%" },
   ];
 
   const handleNavClick = (id, tab) => {
@@ -223,6 +232,38 @@ const RootUserHeader = ({ activeTab }) => {
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
+
+  // get notifications
+  const getNotifications = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/root-notification/get`);
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    };
+  };
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: getNotifications
+  });
+
+  // Listen to emit event
+  useEffect(() => {
+
+    const getNotificationHandler = (data) => {
+      refetch();
+    }
+
+    socket.on('new_notification', getNotificationHandler);
+    return () => {
+      socket.off('new_notification', getNotificationHandler);
+    }
+  }, [, refetch, rootUser]);
+
+  const { notifications } = data || {};
 
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-sm border-b border-red-100 dark:border-gray-800/50 sticky top-0 z-50">
@@ -411,7 +452,7 @@ const RootUserHeader = ({ activeTab }) => {
               ))}
             </div>
 
-            {/* Notification */}
+            {/* Notification Real*/}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -419,7 +460,7 @@ const RootUserHeader = ({ activeTab }) => {
                 >
                   <Bell className="w-4 h-4" />
                   <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                    {3}
+                    {notifications?.length || 0}
                   </span>
                 </button>
               </DropdownMenuTrigger>
@@ -435,56 +476,32 @@ const RootUserHeader = ({ activeTab }) => {
 
                 {/* Unread notifications */}
                 <DropdownMenuGroup>
-                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                    <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
-                      <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium">New message received</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
-                    </div>
-                    <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                    <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-full">
-                      <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Task completed</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">"Update dashboard" was marked as done</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">1 hour ago</p>
-                    </div>
-                    <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-
-                <DropdownMenuSeparator />
-
-                {/* Read notifications */}
-                <DropdownMenuGroup>
-                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                    <div className="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full">
-                      <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium">Warning notification</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Your storage is almost full</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Yesterday</p>
-                    </div>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full">
-                      <UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="font-medium">New connection</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Sarah Smith accepted your invitation</p>
-                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 days ago</p>
-                    </div>
-                  </DropdownMenuItem>
+                  {notifications?.length >= 1 ? (
+                    notifications.map((notif) => (
+                      <DropdownMenuItem key={notif._id} className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                        <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                          <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <div>
+                          <p className="font-medium">New notification</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message}</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{new Date(notif.createdAt).toLocaleString("en-US", {
+                            weekday: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })
+                          }</p>
+                        </div>
+                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                      </DropdownMenuItem>
+                    ))
+                  ) : (
+                    <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                    </DropdownMenuItem>
+                  )}
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator />
