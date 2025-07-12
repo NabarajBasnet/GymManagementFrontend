@@ -29,10 +29,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -77,9 +73,12 @@ const MemberDetails = ({ memberId }) => {
   const [membershipHoldDate, setMembershipHoldDate] = useState("");
   const [membershipType, setMembershipType] = useState("");
   const [membershipDuration, setMembershipDuration] = useState("");
+
   const [discountAmmount, setDiscountAmmount] = useState(0);
   const [dueAmmount, setDueAmmount] = useState(0);
   const [paidAmmount, setPaidAmmount] = useState(0);
+  const [finalAmount, setFinalAmount] = useState(0);
+
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
   const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
   const [admissionFee, setAdmissionFee] = useState("");
@@ -89,7 +88,6 @@ const MemberDetails = ({ memberId }) => {
   const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
     new Date()
   );
-  const [finalAmount, setFinalAmount] = useState(0);
 
   // Member Hooks
   const { getSingleUserDetails } = useMember();
@@ -136,7 +134,7 @@ const MemberDetails = ({ memberId }) => {
         remark: member?.remark,
         dueAmmount: member?.dueAmmount
       });
-      setDiscountAmmount(member?.discountAmmount);
+      setDiscountAmmount(Number(member?.discountAmmount) || 0);
       setValue('finalAmount', member?.finalAmmount);
       setValue('dueAmmount', member?.dueAmmount);
       setPrevMembershipExpireDate(
@@ -173,14 +171,14 @@ const MemberDetails = ({ memberId }) => {
     const calculatedFinalAmount = baseAmount - (discountAmmount || 0);
 
     // Ensure final amount doesn't go negative
-    const safeFinalAmount = Math.max(calculatedFinalAmount, 0);
+    const safeFinalAmount = Math.max(Number(calculatedFinalAmount || 0), 0);
 
-    setValue('finalAmmount', safeFinalAmount);
+    setValue('finalAmmount', Number(safeFinalAmount) || 0);
 
     // Calculate due amount (final amount - paid amount)
     const calculatedDueAmount = safeFinalAmount - (paidAmmount || 0);
-    const safeDueAmount = Math.max(calculatedDueAmount, 0);
-    setDueAmmount(safeDueAmount);
+    const safeDueAmount = Math.max(Number(calculatedDueAmount || 0), 0);
+    setDueAmmount(Number(safeDueAmount) || 0);
   }
 
   useEffect(() => {
@@ -276,7 +274,6 @@ const MemberDetails = ({ memberId }) => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      hotToast.error(error.message);
       sonnerToast.error(error.message);
     }
   };
@@ -455,9 +452,12 @@ const MemberDetails = ({ memberId }) => {
 
   // Filter Plans
   const filteredPlans =
-    fetchedPlans?.filter((plan) =>
-      plan.planName?.toLowerCase().includes(planSearchQuery?.toLowerCase())
-    ) || [];
+    fetchedPlans?.filter((plan) => {
+      const planName = plan.planName.toLowerCase();
+      const searchMatch = planName.includes(planSearchQuery.toLowerCase());
+      const isAdmission = planName.startsWith("Admission Fee") || planName.startsWith("Admission Charge") || planName.startsWith("admission fee") || planName.startsWith("admission charge");
+      return searchMatch && !isAdmission;
+    }) || [];
 
   const convertDurationInMonths = (duration) => {
     return `${duration / 30} Months`;
@@ -982,9 +982,7 @@ const MemberDetails = ({ memberId }) => {
                                             setRenderMembershipPlanDropdown(
                                               false
                                             );
-                                            setFinalAmount(
-                                              plan.price
-                                            );
+                                            setFinalAmount(Number(plan.price));
                                             setMembershipDuration(
                                               convertDurationInMonths(
                                                 plan.duration
@@ -1075,7 +1073,7 @@ const MemberDetails = ({ memberId }) => {
                                       {...register("discountAmmount")}
                                       value={field.value}
                                       onChange={(e) => {
-                                        setDiscountAmmount(parseInt(e.target.value));
+                                        setDiscountAmmount(parseInt(e.target.value || 0));
                                         field.onChange(e);
                                       }}
                                       type="text"
@@ -1126,7 +1124,7 @@ const MemberDetails = ({ memberId }) => {
                                       {...register("paidAmmount")}
                                       value={field.value}
                                       onChange={(e) => {
-                                        setPaidAmmount(parseInt(e.target.value));
+                                        setPaidAmmount(parseInt(e.target.value || Number(0)));
                                         field.onChange(e);
                                       }}
                                       type="text"
