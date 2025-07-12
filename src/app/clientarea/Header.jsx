@@ -241,6 +241,28 @@ const ClientAreaHeader = ({ activeTab }) => {
     return notif.status === 'Unread'
   })
 
+  const markSingleNotificationAsRead = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tenant-notification/single-read/${id}`, {
+        method: "PATCH",
+      });
+      const resBody = await response.json();
+      console.log(resBody)
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
+
+  const markBulkNotificationAsRead = async (id) => {
+    try {
+
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
+
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 px-2 md:px-0 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
       {loading ? (
@@ -500,6 +522,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                         {unreadedNotifications?.length >= 1 ? (
                           unreadedNotifications.map((notif) => (
                             <DropdownMenuItem
+                              onClick={() => markSingleNotificationAsRead(notif._id)}
                               key={notif._id}
                               className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
                             >
