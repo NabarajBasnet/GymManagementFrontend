@@ -29,6 +29,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   Home,
   MessageSquare,
@@ -59,6 +60,16 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { ToggleClientSidebar } from "@/state/slicer";
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:5000', {
+  transports: ['websocket'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  timeout: 20000,
+})
 
 const ClientAreaHeader = ({ activeTab }) => {
   const cartLength = useSelector((state) => state.rtkreducer.cartLength);
@@ -189,6 +200,41 @@ const ClientAreaHeader = ({ activeTab }) => {
   const toggleTheme = () => {
     setDarkMode(!darkMode);
   };
+
+  // Notification related functions
+
+  // get notifications
+  const getNotifications = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tenant-notification/get`);
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    };
+  };
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: getNotifications
+  });
+
+  const { tenantnotifications } = data || {};
+
+  // join server on load
+  socket.emit('join-tenant-notification-room');
+
+  useEffect(() => {
+    const handleTenantNotification = (data) => {
+      refetch();
+    }
+
+    socket.on('tenant_notifications', handleTenantNotification);
+    return () => {
+      socket.off('tenant_notifications', handleTenantNotification);
+    }
+  }, [refetch, loggedInTenant]);
 
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 px-2 md:px-0 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
@@ -429,7 +475,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                     >
                       <Bell className="w-4 h-4" />
                       <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                        {3}
+                        {tenantnotifications?.length || 0}
                       </span>
                     </button>
                   </DropdownMenuTrigger>
@@ -445,29 +491,45 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                     {/* Unread notifications */}
                     <DropdownMenuGroup>
-                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                        <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
-                          <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-                        </div>
-                        <div>
-                          <p className="font-medium">New message received</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
-                        </div>
-                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                        <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-full">
-                          <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
-                        </div>
-                        <div>
-                          <p className="font-medium">Task completed</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">"Update dashboard" was marked as done</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">1 hour ago</p>
-                        </div>
-                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
-                      </DropdownMenuItem>
+                      {tenantnotifications?.length >= 1 ? (
+                        tenantnotifications.map((notif) => (
+                          <DropdownMenuItem key={notif._id} className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                            <div>
+                              <p className="font-medium">{notif.type || 'N/A'}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                {
+                                  new Date(notif.createdAt).toLocaleString("en-US", {
+                                    weekday: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })
+                                }
+                              </p>
+                            </div>
+                            {notif.status === 'Unread' ? (
+                              <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                            ) : (
+                              null
+                            )}
+                          </DropdownMenuItem>
+                        ))
+                      ) : (
+                        <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                          <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                            <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium">New message received</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
+                          </div>
+                          <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuGroup>
 
                     <DropdownMenuSeparator />

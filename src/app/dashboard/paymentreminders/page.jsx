@@ -296,7 +296,7 @@ const MembershipPaymentReminder = () => {
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full rounded-md bg-white dark:bg-gray-900 shadow-sm">
+                    <div className="w-full rounded-sm border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md">
                         {Array.isArray(memberlist) && memberlist?.length >= 1 ? (
                             <Table className='dark:bg-gray-800 rounded-sm'>
                                 <TableHeader>

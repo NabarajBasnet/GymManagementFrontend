@@ -201,7 +201,7 @@ const LockerExpiry = () => {
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full rounded-sm border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm">
+                    <div className="w-full rounded-sm border dark:border-gray-700 bg-white dark:bg-gray-900 shadow-md">
                         {Array.isArray(lockers) && lockers?.length >= 1 ? (
                             <Table>
                                 <TableHeader>

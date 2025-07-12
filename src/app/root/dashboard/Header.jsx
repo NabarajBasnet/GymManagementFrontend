@@ -72,7 +72,7 @@ const RootUserHeader = ({ activeTab }) => {
   const dispatch = useDispatch();
 
   // Join notification room
-  socket.emit("join-admin-notification-room");
+  socket.emit("join-root-notification-room");
 
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
