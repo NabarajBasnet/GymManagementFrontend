@@ -1,19 +1,24 @@
 import RootUserHeader from "./Header";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
 import LoggedInRootUserProvider from "@/components/Providers/LoggedInRootUserProvider";
+import RootSidebar from "./RootSidebar";
 
 const RootUserLayout = ({ children }) => {
-
-    return (
-        <div className='w-full'>
-            <LoggedInRootUserProvider>
-                <ReactQueryClientProvider>
-                    <RootUserHeader />
-                    {children}
-                </ReactQueryClientProvider>
-            </LoggedInRootUserProvider>
-        </div>
-    );
-}
+  return (
+    <div className="w-full">
+      <LoggedInRootUserProvider>
+        <ReactQueryClientProvider>
+          <div className="w-full flex overflow-hidden">
+            <RootSidebar />
+            <div className="w-full h-screen overflow-y-auto">
+              <RootUserHeader />
+              {children}
+            </div>
+          </div>
+        </ReactQueryClientProvider>
+      </LoggedInRootUserProvider>
+    </div>
+  );
+};
 
 export default RootUserLayout;
