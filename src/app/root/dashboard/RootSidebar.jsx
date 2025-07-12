@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
 import toast from "react-hot-toast";
@@ -20,15 +19,15 @@ import {
     HelpCircle,
     Crown,
     UserCheck,
+    ChevronLeft,
+    ChevronRight,
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
 const RootSidebar = ({ activeTab }) => {
     const router = useRouter();
     const { rootUser } = useRootUser();
-
     const rootSidebarMinimized = useSelector((state) => state.rtkreducer.rootSidebarMinimized);
-    console.log('Root in sidebar: ', rootSidebarMinimized);
 
     const navItems = [
         {
@@ -145,11 +144,33 @@ const RootSidebar = ({ activeTab }) => {
     const adminRoleStyle = getAdminRoleStyling(rootUser?.rootUserRole);
 
     return (
-        <div className="w-[240px] h-screen flex flex-col bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-r border-red-100/50 dark:border-gray-800/50 sticky top-0">
-            {/* Enhanced Admin Profile */}
-            {rootUser && (
-                <div className="px-2 py-2 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
-                    <div className="flex items-center space-x-4">
+        <div
+            className={`h-screen flex flex-col bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-r border-red-100/50 dark:border-gray-800/50 sticky top-0 transition-all duration-300 ${rootSidebarMinimized ? "w-[70px]" : "w-[240px]"
+                }`}
+        >
+            {/* Enhanced Admin Profile - Minimized Version */}
+            {rootSidebarMinimized && rootUser && (
+                <div className="px-2 py-4 flex flex-col items-center border-b border-red-100 dark:border-gray-700">
+                    <div className="relative">
+                        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
+                            {rootUserName
+                                ?.split(" ")
+                                .map((word) => word[0])
+                                .join("")
+                                .slice(0, 2)
+                                .toUpperCase()}
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white shadow-sm flex items-center justify-center">
+                            <div className="w-1.5 h-1.5 rounded-full bg-white"></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Enhanced Admin Profile - Expanded Version */}
+            {!rootSidebarMinimized && rootUser && (
+                <div className="px-4 py-3 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
+                    <div className="flex items-center space-x-3">
                         <div className="relative">
                             <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
                                 {rootUserName
@@ -169,48 +190,41 @@ const RootSidebar = ({ activeTab }) => {
                             </h3>
                             <div className="flex items-center space-x-2 mt-1">
                                 <span
-                                    className={`inline-flex items-center space-x-1 text-xs font-semibold px-3 py-1 rounded-full text-white ${adminRoleStyle.bg} shadow-sm`}
+                                    className={`inline-flex items-center space-x-1 text-xs font-semibold px-2 py-1 rounded-full text-white ${adminRoleStyle.bg} shadow-sm`}
                                 >
                                     {adminRoleStyle.icon}
                                     <span>{adminRoleStyle.label}</span>
                                 </span>
-                                <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">
-                                    {rootUser?.rootUserStatus}
-                                </span>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
-                                <Lock size={12} className="mr-1" />
-                                System Administrator
-                            </p>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Navigation */}
-            <div className="flex-1 overflow-y-auto px-1 py-2 space-y-2">
-                <div className="mb-4">
-                    <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
-                        Administration
-                    </h4>
-                    {navItems.map((item) => (
-                        <button
-                            key={item.id}
-                            onClick={() => handleNavClick(item.id)}
-                            className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${activeTab === item.id
-                                ? "bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg transform scale-[1.02]"
-                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 hover:transform hover:scale-[1.01]"
+            <div className="flex-1 overflow-y-auto px-2 py-4 space-y-1">
+                {/* Navigation Items */}
+                {navItems.map((item) => (
+                    <button
+                        key={item.id}
+                        onClick={() => handleNavClick(item.id)}
+                        className={`flex items-center w-full ${rootSidebarMinimized ? "justify-center px-2 py-3" : "px-3 py-3"
+                            } rounded-lg text-sm font-medium transition-all duration-200 group ${activeTab === item.id
+                                ? "bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400"
+                            }`}
+                        title={rootSidebarMinimized ? item.label : ""}
+                    >
+                        <span
+                            className={`p-1.5 rounded-lg ${activeTab === item.id
+                                ? "bg-white/20"
+                                : "bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30"
                                 }`}
                         >
-                            <span
-                                className={`mr-4 p-1.5 rounded-lg ${activeTab === item.id
-                                    ? "bg-white/20"
-                                    : "bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30"
-                                    }`}
-                            >
-                                {item.icon}
-                            </span>
-                            <div className="flex-1 text-left">
+                            {item.icon}
+                        </span>
+                        {!rootSidebarMinimized && (
+                            <div className="flex-1 text-left ml-3">
                                 <div className="font-semibold">{item.label}</div>
                                 <div
                                     className={`text-xs ${activeTab === item.id
@@ -221,61 +235,66 @@ const RootSidebar = ({ activeTab }) => {
                                     {item.description}
                                 </div>
                             </div>
-                            {activeTab === item.id && (
-                                <ShieldCheck size={16} className="text-white/80" />
-                            )}
-                        </button>
-                    ))}
-                </div>
+                        )}
+                    </button>
+                ))}
 
-                {/* Quick Actions */}
-                <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                    <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
-                        System Controls
-                    </h4>
-                    {adminQuickActions.map((action, index) => (
-                        <button
-                            onClick={() => router.push(`/root/dashboard/${action.link}`)}
-                            key={index}
-                            className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200 group"
-                        >
-                            <span
-                                className={`mr-3 p-1 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 ${action.color}`}
+                {/* Quick Actions - Only show in expanded mode */}
+                {!rootSidebarMinimized && (
+                    <div className="pt-4 border-t border-gray-200 dark:border-gray-700 mt-4">
+                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
+                            System Controls
+                        </h4>
+                        {adminQuickActions.map((action, index) => (
+                            <button
+                                onClick={() => router.push(`/root/dashboard/${action.link}`)}
+                                key={index}
+                                className="flex items-center w-full px-3 py-2 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200 group"
                             >
-                                {action.icon}
-                            </span>
-                            <span className="flex-1 text-left">{action.label}</span>
-                            {action.count && (
-                                <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-medium">
-                                    {action.count}
+                                <span
+                                    className={`p-1 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 ${action.color}`}
+                                >
+                                    {action.icon}
                                 </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
+                                <span className="flex-1 text-left ml-3">{action.label}</span>
+                                {action.count && (
+                                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-0.5 font-medium">
+                                        {action.count}
+                                    </span>
+                                )}
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Footer */}
-            <div className="px-2 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sticky bottom-0">
-                <button
-                    onClick={logOutRootUser}
-                    className="flex items-center w-full p-3 rounded-xl bg-white dark:bg-gray-900 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200 group"
-                >
-                    <LogOut
-                        size={18}
-                        className="mr-3 group-hover:scale-110 transition-transform"
-                    />
-                    <div className="flex-1 text-left">
-                        <div className="font-semibold">Secure Logout</div>
-                        <div className="text-xs text-red-500 dark:text-red-400">
-                            End admin session
+            <div className="px-2 py-3 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sticky bottom-0">
+                {rootSidebarMinimized ? (
+                    <button
+                        onClick={logOutRootUser}
+                        className="flex items-center justify-center w-full p-2 rounded-lg bg-white dark:bg-gray-900 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200"
+                        title="Logout"
+                    >
+                        <LogOut size={20} />
+                    </button>
+                ) : (
+                    <button
+                        onClick={logOutRootUser}
+                        className="flex items-center w-full p-2 rounded-lg bg-white dark:bg-gray-900 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200 group"
+                    >
+                        <LogOut
+                            size={18}
+                            className="group-hover:scale-110 transition-transform"
+                        />
+                        <div className="flex-1 text-left ml-3">
+                            <div className="font-semibold">Secure Logout</div>
+                            <div className="text-xs text-red-500 dark:text-red-400">
+                                End admin session
+                            </div>
                         </div>
-                    </div>
-                    <Shield
-                        size={16}
-                        className="text-red-400 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors"
-                    />
-                </button>
+                    </button>
+                )}
             </div>
         </div>
     );

@@ -4,8 +4,6 @@
 import { FiShoppingCart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun } from "lucide-react";
-import { useTheme } from "next-themes";
-import { AiOutlineSchedule } from "react-icons/ai";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,39 +19,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { MdCardMembership } from "react-icons/md";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 import {
   Home,
-  MessageSquare,
-  Star,
-  LineChart,
   Settings,
   LogOut,
-  Menu,
-  X,
   User,
-  QrCode,
   Shield,
   Crown,
-  Zap,
-  Bell,
   HelpCircle,
   CreditCard,
-  Building2,
-  Calendar,
-  TrendingUp,
-  Award,
   Users,
   Database,
   Activity,
@@ -65,9 +45,6 @@ import {
   Lock,
   UserCheck,
 } from "lucide-react";
-import { FaTag } from "react-icons/fa";
-import { RiCustomerServiceFill } from "react-icons/ri";
-import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
@@ -83,7 +60,6 @@ const RootUserHeader = ({ activeTab }) => {
 
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { setTheme } = useTheme();
 
   const navItems = [
     {
