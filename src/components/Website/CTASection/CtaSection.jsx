@@ -32,7 +32,7 @@ const CTASection = () => {
                     </h2>
                     <p className="text-xl mb-8 text-white/95">
                         Join hundreds of successful fitness businesses that are growing with Fitbinary.
-                        Start your 14-day free trial today.
+                        Start your 3 weeks free trial today.
                     </p>
 
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">

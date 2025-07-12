@@ -14,9 +14,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast as sonnertoast } from "sonner";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
     Check,
     Zap,
@@ -238,10 +238,7 @@ const PricingSection = () => {
                                                         </span>
                                                         <div className="flex flex-col">
                                                             <span className="text-gray-400 text-lg font-medium">
-                                                                /month
-                                                            </span>
-                                                            <span className="text-gray-500 text-sm">
-                                                                per location
+                                                                / month
                                                             </span>
                                                         </div>
                                                     </div>
@@ -318,7 +315,7 @@ const PricingSection = () => {
                                     },
                                     {
                                         question: "Is there a free trial?",
-                                        answer: "All plans come with a 14-day free trial. No credit card required to start exploring our platform."
+                                        answer: "All plans come with a 3 weeks free trial. No credit card required to start exploring our platform."
                                     },
                                     {
                                         question: "What payment methods do you accept?",

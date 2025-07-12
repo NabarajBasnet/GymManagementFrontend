@@ -142,7 +142,7 @@ const HeroSection = () => {
 
             {/* Simple Stats */}
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto mb-20"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1 }}
@@ -166,12 +166,144 @@ const HeroSection = () => {
             </motion.div>
           </div>
 
+          {/* Enhanced Platform Preview Section */}
+          <motion.div
+            className="max-w-7xl mx-auto mt-32 mb-20"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+          >
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                Experience the{" "}
+                <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                  Platform
+                </span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+                See how our enterprise solution transforms gym management across
+                multiple locations
+              </p>
+            </div>
+
+            {/* User Dashboard Section */}
+            <motion.div
+              className="grid lg:grid-cols-2 gap-12 items-center mb-20"
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.4, duration: 0.8 }}
+            >
+              <div className="space-y-6">
+                <div className="inline-flex items-center space-x-2 bg-blue-500/10 backdrop-blur-sm border border-blue-500/20 rounded-full px-4 py-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  <span className="text-white text-sm font-medium">
+                    Member Experience
+                  </span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-white">
+                  Intuitive User Dashboard
+                </h3>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Empower your members with a sleek, modern interface that makes
+                  booking classes, tracking progress, and managing memberships
+                  effortless across all your locations.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Real-time class availability
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Cross-location booking
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Progress tracking & analytics
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl blur-2xl transform rotate-3"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 shadow-2xl transform rotate-3 hover:rotate-1 transition-transform duration-500">
+                  <img
+                    src="/images/userdashboard.png"
+                    alt="User Dashboard"
+                    className="w-full h-auto rounded-xl shadow-lg opacity-90 hover:opacity-100 transition-opacity duration-300"
+                  />
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Tenant Dashboard Section */}
+            <motion.div
+              className="grid lg:grid-cols-2 gap-12 items-center"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 1.6, duration: 0.8 }}
+            >
+              <div className="relative lg:order-1">
+                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl blur-2xl transform -rotate-3"></div>
+                <div className="relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-4 shadow-2xl transform -rotate-3 hover:-rotate-1 transition-transform duration-500">
+                  <img
+                    src="/images/tenantdashboard.png"
+                    alt="Tenant Dashboard"
+                    className="w-full h-auto rounded-xl shadow-lg opacity-90 hover:opacity-100 transition-opacity duration-300"
+                  />
+                </div>
+              </div>
+              <div className="space-y-6 lg:order-2">
+                <div className="inline-flex items-center space-x-2 bg-cyan-500/10 backdrop-blur-sm border border-cyan-500/20 rounded-full px-4 py-2">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                  <span className="text-cyan-300 text-sm font-medium">
+                    Enterprise Control
+                  </span>
+                </div>
+                <h3 className="text-3xl md:text-4xl font-bold text-white">
+                  Powerful Admin Dashboard
+                </h3>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Take control of your entire gym network with comprehensive
+                  analytics, staff management, and operational insights that
+                  scale with your business growth.
+                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Multi-location analytics
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Staff & resource management
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                    <span className="text-gray-300">
+                      Revenue optimization tools
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+
           {/* Scroll indicator */}
           <motion.div
             className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-gray-400 text-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
+            transition={{ delay: 1.8 }}
           >
             <motion.div
               className="flex flex-col items-center"

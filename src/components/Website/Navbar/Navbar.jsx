@@ -198,7 +198,7 @@ const Navbar = () => {
                                 onClick={() => window.location.href = "/register"}
                                 className="px-4 xl:px-6 py-2.5 rounded-full font-medium shadow-lg bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center group text-sm"
                             >
-                                <span className="hidden xl:inline">Start 14 Days Free Trail</span>
+                                <span className="hidden xl:inline">Start 3 Weeks Free Trail</span>
                                 <span className="xl:hidden">Free Trial</span>
                                 <ArrowRight size={16} className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                             </Button>
@@ -312,7 +312,7 @@ const Navbar = () => {
                                     href="/register"
                                     className="block w-full text-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 flex items-center justify-center group text-sm sm:text-base"
                                 >
-                                    Start 14 Days Free Trail
+                                    Start 3 Weeks Free Trail
                                     <ArrowRight size={16} className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />
                                 </a>
                             </div>

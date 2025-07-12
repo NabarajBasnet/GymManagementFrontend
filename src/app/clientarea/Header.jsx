@@ -584,7 +584,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                     <DropdownMenuSeparator />
 
                     {/* Footer always visible */}
-                    <DropdownMenuItem className="justify-center text-indigo-600 dark:text-indigo-400 hover:underline">
+                    <DropdownMenuItem className="justify-center cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
                       View all notifications
                     </DropdownMenuItem>
                   </DropdownMenuContent>
