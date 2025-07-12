@@ -9,7 +9,9 @@ const RootUserLayout = ({ children }) => {
       <LoggedInRootUserProvider>
         <ReactQueryClientProvider>
           <div className="w-full flex overflow-hidden">
-            <RootSidebar />
+            <div className="hidden md:flex">
+              <RootSidebar />
+            </div>
             <div className="w-full h-screen overflow-y-auto">
               <RootUserHeader />
               {children}

@@ -264,25 +264,9 @@ const RootUserHeader = ({ activeTab }) => {
                 className="w-[340px] sm:w-[380px] p-0 bg-gradient-to-b from-white dark:from-gray-900 to-red-50/30 dark:to-gray-800/30"
               >
                 <div className="h-full flex flex-col">
-                  <SheetHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-red-600 to-rose-700 text-white">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                        <ShieldCheck className="w-6 h-6 text-white" />
-                      </div>
-                      <div>
-                        <SheetTitle className="text-xl font-bold text-white">
-                          Fit Loft Admin
-                        </SheetTitle>
-                        <p className="text-red-100 text-sm font-medium">
-                          System Administration
-                        </p>
-                      </div>
-                    </div>
-                  </SheetHeader>
-
                   {/* Enhanced Admin Profile */}
                   {rootUser && (
-                    <div className="px-6 py-6 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
+                    <div className="px-6 py-1 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
                       <div className="flex items-center space-x-4">
                         <div className="relative">
                           <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
@@ -320,30 +304,6 @@ const RootUserHeader = ({ activeTab }) => {
                       </div>
                     </div>
                   )}
-
-                  {/* System Stats */}
-                  {/* <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-red-50/50 border-b border-gray-200">
-                                        <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                                            System Overview
-                                        </h4>
-                                        <div className="grid grid-cols-1 gap-3">
-                                            {systemStats.map((stat, index) => (
-                                                <div key={index} className="flex items-center justify-between p-2 rounded-lg bg-white/60 border border-gray-100">
-                                                    <div>
-                                                        <p className="text-xs text-gray-600 font-medium">{stat.label}</p>
-                                                        <p className="text-sm font-bold text-gray-900">{stat.value}</p>
-                                                    </div>
-                                                    <span className={`text-xs font-medium px-2 py-1 rounded-md ${
-                                                        stat.trend.includes('+') ? 'bg-green-100 text-green-700' : 
-                                                        stat.trend === 'Stable' ? 'bg-blue-100 text-blue-700' : 
-                                                        'bg-gray-100 text-gray-700'
-                                                    }`}>
-                                                        {stat.trend}
-                                                    </span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div> */}
 
                   {/* Navigation */}
                   <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">

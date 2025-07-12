@@ -141,10 +141,10 @@ const RootSidebar = ({ activeTab }) => {
     const adminRoleStyle = getAdminRoleStyling(rootUser?.rootUserRole);
 
     return (
-        <div className="w-[340px] h-screen flex flex-col bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-r border-red-100/50 dark:border-gray-800/50 sticky top-0">
+        <div className="w-[240px] h-screen flex flex-col bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-r border-red-100/50 dark:border-gray-800/50 sticky top-0">
             {/* Enhanced Admin Profile */}
             {rootUser && (
-                <div className="px-6 py-1 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
+                <div className="px-2 py-2 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
                     <div className="flex items-center space-x-4">
                         <div className="relative">
                             <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
@@ -184,7 +184,7 @@ const RootSidebar = ({ activeTab }) => {
             )}
 
             {/* Navigation */}
-            <div className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+            <div className="flex-1 overflow-y-auto px-1 py-2 space-y-2">
                 <div className="mb-4">
                     <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                         Administration
@@ -252,7 +252,7 @@ const RootSidebar = ({ activeTab }) => {
             </div>
 
             {/* Footer */}
-            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sticky bottom-0">
+            <div className="px-2 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 sticky bottom-0">
                 <button
                     onClick={logOutRootUser}
                     className="flex items-center w-full p-3 rounded-xl bg-white dark:bg-gray-900 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200 group"
