@@ -388,14 +388,14 @@ const ModernGymSaasDashboard = () => {
         </div>
 
         {/* Main Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
           {mainStats.map((stat, index) => (
             <StatCard key={`stat-${index}`} stat={stat} />
           ))}
         </div>
 
         {/* Top Performing Gyms & System Health */}
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-4">
           {/* Top Performing Gyms */}
           <div className="xl:col-span-2">
             <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
@@ -410,7 +410,7 @@ const ModernGymSaasDashboard = () => {
                 </div>
               </div>
 
-              <div className="p-6">
+              <div className="p-4">
                 <div className="space-y-4">
                   {topGyms.map((gym) => (
                     <GymCard key={`gym-${gym.id}`} gym={gym} />
@@ -423,7 +423,7 @@ const ModernGymSaasDashboard = () => {
           {/* System Health */}
           <div className="xl:col-span-1">
             <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
-              <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">
+              <div className="p-4 border-b border-gray-200/50 dark:border-gray-700/50">
                 <div className="flex items-center justify-between">
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                     System Health
@@ -473,7 +473,7 @@ const ModernGymSaasDashboard = () => {
         </div>
 
         {/* Geographic Distribution & Recent Activities */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-4">
           {/* Geographic Distribution */}
           <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50">
             <div className="p-6 border-b border-gray-200/50 dark:border-gray-700/50">

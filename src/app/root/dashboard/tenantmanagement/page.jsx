@@ -159,51 +159,10 @@ const TenantManagement = () => {
   }
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex justify-center min-h-screen p-4 md:p-6">
+    <div className="w-full bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex justify-center min-h-screen p-4 md:pt-6">
       <div className="w-full">
-        {/* Breadcrumb */}
-        <div className="w-full mb-4">
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <MdHome className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                <BreadcrumbLink
-                  href="/"
-                  className="ml-2 font-semibold text-slate-800 dark:text-slate-200"
-                >
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <FiChevronRight className="h-4 w-4 text-slate-500 dark:text-slate-500" />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold text-slate-800 dark:text-slate-200">
-                  Root
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <FiChevronRight className="h-4 w-4 text-slate-500 dark:text-slate-500" />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold text-slate-800 dark:text-slate-200">
-                  Dashboard
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <FiChevronRight className="h-4 w-4 text-slate-500 dark:text-slate-500" />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold text-slate-800 dark:text-slate-200">
-                  Tenant Management
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-
         {/* Filters and Search */}
-        <Card className="mb-6 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-800/50">
+        <Card className="mb-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-800/50">
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1">
@@ -259,7 +218,7 @@ const TenantManagement = () => {
         </Card>
 
         {/* Tenants Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
           <Card className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-800/50">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
@@ -446,31 +405,14 @@ const TenantManagement = () => {
                         </p>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end space-x-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
+                        <div className="flex justify-end space-x-3">
+                          <FiEye
                             onClick={() => handleViewTenant(tenant)}
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                          >
-                            <FiEye className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
-                          >
-                            <FiEdit className="h-4 w-4 text-slate-700 dark:text-slate-300" />
-                          </Button>
+                            className="cursor-pointer h-4 w-4 text-slate-700 dark:text-slate-300 mt-3" />
+                          <FiEdit className="cursor-pointer h-4 w-4 text-slate-700 dark:text-slate-300 mt-3" />
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-900/20 text-rose-600 dark:text-rose-400"
-                              >
-                                <FiTrash2 className="h-4 w-4" />
-                              </Button>
+                              <FiTrash2 className="cursor-pointer text-red-600 h-4 w-4 mt-3" />
                             </AlertDialogTrigger>
                             <AlertDialogContent className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800">
                               <AlertDialogHeader>
@@ -664,8 +606,8 @@ const TenantManagement = () => {
                             Ends At
                           </Label>
                           <p className="text-sm text-slate-900 dark:text-slate-100">
-                            {selectedTenant.subscriptionEndsAt ? 
-                              format(new Date(selectedTenant.subscriptionEndsAt), "MMM dd, yyyy HH:mm") : 
+                            {selectedTenant.subscriptionEndsAt ?
+                              format(new Date(selectedTenant.subscriptionEndsAt), "MMM dd, yyyy HH:mm") :
                               "N/A"}
                           </p>
                         </div>

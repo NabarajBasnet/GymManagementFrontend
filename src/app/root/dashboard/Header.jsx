@@ -3,7 +3,6 @@
 // Icons
 import { FiShoppingCart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { Moon, Sun } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +25,8 @@ import {
 } from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 import {
+  Moon,
+  Sun,
   Home,
   Settings,
   LogOut,
@@ -44,6 +45,10 @@ import {
   Globe,
   Lock,
   UserCheck,
+  Bell,
+  MessageSquare,
+  CheckCircle,
+  UserPlus,
 } from "lucide-react";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
@@ -405,6 +410,90 @@ const RootUserHeader = ({ activeTab }) => {
                 </button>
               ))}
             </div>
+
+            {/* Notification */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="relative p-3 rounded-2xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-gray-700/80 transition-all duration-200 group"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
+                    {3}
+                  </span>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="end">
+                <DropdownMenuLabel className="flex justify-between items-center">
+                  <span>Notifications</span>
+                  <button className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                    Mark all as read
+                  </button>
+                </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
+                {/* Unread notifications */}
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                    <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                      <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium">New message received</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">John Doe sent you a message</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 minutes ago</p>
+                    </div>
+                    <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                    <div className="bg-green-100 dark:bg-green-900/50 p-2 rounded-full">
+                      <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Task completed</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">"Update dashboard" was marked as done</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">1 hour ago</p>
+                    </div>
+                    <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
+                {/* Read notifications */}
+                <DropdownMenuGroup>
+                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                    <div className="bg-yellow-100 dark:bg-yellow-900/50 p-2 rounded-full">
+                      <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium">Warning notification</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Your storage is almost full</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Yesterday</p>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                    <div className="bg-blue-100 dark:bg-blue-900/50 p-2 rounded-full">
+                      <UserPlus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="font-medium">New connection</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">Sarah Smith accepted your invitation</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">2 days ago</p>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem className="justify-center text-indigo-600 dark:text-indigo-400 hover:underline">
+                  View all notifications
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Theme Toggle */}
             <button
