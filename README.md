@@ -2,7 +2,7 @@
 
 **Fitbinary** is a modern, scalable **SaaS Gym Management Platform** designed for fitness centers, and gym chains. Built with **Next.js**, **Express.js**, **MongoDB**, and real-time technologies, this system provides a comprehensive solution to manage every aspect of gym operations—from memberships and payments to real-time notifications and staff management.
 
-> 🔗 **Live Demo**: [https://fitbinary.com/](https://fitbinary.com/)
+> 🔗 **Live **: [https://fitbinary.com/](https://fitbinary.com/)
 
 ---
 
@@ -128,14 +128,14 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/your-username/revive-fitness-system.git
+git clone https://github.com/NabarajBasnet/GymManagementFrontend.git
 cd revive-fitness-system
 
 # Install dependencies
-yarn install
+npm install
 
 # Setup environment variables (see below)
-cp .env.example .env.local
+cp .env
 ```
 
 ---
