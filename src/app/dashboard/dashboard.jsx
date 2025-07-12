@@ -217,7 +217,7 @@ const AdminDashboard = () => {
       trend: newMembersGrowthPercentage > 0 ? "up" : "down",
       color: 'text-yellow-600',
       bg: 'bg-yellow-100 dark:bg-yellow-700/20',
-      border: 'border-yellow-300',
+      border: 'bg-yellow-200',
       description: "Total new member from starting of this month"
     },
     {
@@ -229,7 +229,7 @@ const AdminDashboard = () => {
       trend: activeMembersGrowth > 0 ? "up" : "down",
       color: 'text-green-600',
       bg: 'bg-green-100 dark:bg-green-700/20',
-      border: 'border-green-300',
+      border: 'bg-green-200',
       description: "Total active member of today"
     },
     {
@@ -263,9 +263,9 @@ const AdminDashboard = () => {
       <div className="w-full p-4 md:pt-10">
 
         {/* Welcome Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
           {/* Main Welcome Card */}
-          <Card className="lg:col-span-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+          <Card className="lg:col-span-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200">
             <div className="p-6 lg:p-8">
               <div className="flex flex-col lg:flex-row items-center gap-6">
                 {/* Text content */}
@@ -314,7 +314,7 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="lg:col-span-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200">
+          <Card className="lg:col-span-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200">
             <div className="p-6 h-full flex flex-col">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
@@ -466,15 +466,15 @@ const AdminDashboard = () => {
             <Card
               key={item.id}
               className={`
-        group relative overflow-hidden 
-        rounded-2xl 
-        bg-white dark:bg-gray-800
-        border-0 shadow-sm hover:shadow-xl
-        transition-all duration-300 ease-out
-        hover:-translate-y-1
-        ${item.border}
-        backdrop-blur-sm
-      `}
+              group relative overflow-hidden 
+              rounded-2xl 
+              bg-white dark:bg-gray-800
+              border-0 shadow-sm hover:shadow-xl
+              transition-all duration-300 ease-out
+              hover:-translate-y-1
+              ${item.border}
+              backdrop-blur-sm
+            `}
             >
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-br from-white/50 to-transparent dark:from-gray-800/50 pointer-events-none" />
@@ -491,12 +491,12 @@ const AdminDashboard = () => {
                         {item.value.toLocaleString()}
                       </h1>
                       <span className={`
-                flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold
-                ${item.trend === 'up'
+                        flex items-center space-x-1 px-3 py-1.5 rounded-full text-xs font-semibold
+                        ${item.trend === 'up'
                           ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
                           : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                         }
-              `}>
+                      `}>
                         {item.trend === 'up' ? (
                           <TrendingUp className="h-3 w-3" />
                         ) : (
@@ -511,19 +511,19 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className={`
-            p-4 rounded-xl ${item.bg} 
-            group-hover:scale-110 transition-transform duration-300
-          `}>
+                    p-4 rounded-xl ${item.bg} 
+                    group-hover:scale-110 transition-transform duration-300
+                  `}>
                     <item.icon className={`w-6 h-6 ${item.color}`} />
                   </div>
                 </div>
 
                 {/* Bottom accent line */}
                 <div className={`
-          absolute bottom-0 left-0 right-0 h-1 
-          bg-gradient-to-r ${item.color.replace('text-', 'from-').replace(' dark:text-', ' to-')}
-          opacity-60 group-hover:opacity-100 transition-opacity duration-300
-        `} />
+                  absolute bottom-0 left-0 right-0 h-1 
+                  bg-gradient-to-r ${item.color.replace('text-', 'from-').replace(' dark:text-', ' to-')}
+                  opacity-60 group-hover:opacity-100 transition-opacity duration-300
+                `} />
               </div>
             </Card>
           ))}
