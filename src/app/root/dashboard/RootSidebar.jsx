@@ -21,10 +21,14 @@ import {
     Crown,
     UserCheck,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const RootSidebar = ({ activeTab }) => {
     const router = useRouter();
     const { rootUser } = useRootUser();
+
+    const rootSidebarMinimized = useSelector((state) => state.rtkreducer.rootSidebarMinimized);
+    console.log('Root in sidebar: ', rootSidebarMinimized);
 
     const navItems = [
         {

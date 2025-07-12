@@ -71,8 +71,12 @@ import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
+import { useDispatch } from "react-redux";
+import { ToggleRootSidebar } from "@/state/slicer";
 
 const RootUserHeader = ({ activeTab }) => {
+  const dispatch = useDispatch();
+
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
   const { rootUser, loading } = useRootUser();
@@ -241,11 +245,12 @@ const RootUserHeader = ({ activeTab }) => {
 
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-lg border-b border-red-100/50 dark:border-gray-800/50 sticky top-0 z-50">
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full mx-auto px-4">
         <div className="flex justify-between items-center h-18">
           {/* Mobile menu button */}
           <button
-            className="inline-flex md:flex hidden items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 dark:focus:bg-gray-800 transition-all duration-200 group"
+            className="inline-flex md:flex hidden items-center justify-center p-1 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 dark:focus:bg-gray-800 transition-all duration-200 group"
+            onClick={() => dispatch(ToggleRootSidebar())}
           >
             <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
           </button>
@@ -316,14 +321,14 @@ const RootUserHeader = ({ activeTab }) => {
                           key={item.id}
                           onClick={() => handleNavClick(item.id)}
                           className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${activeTab === item.id
-                              ? "bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg transform scale-[1.02]"
-                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 hover:transform hover:scale-[1.01]"
+                            ? "bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg transform scale-[1.02]"
+                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 hover:transform hover:scale-[1.01]"
                             }`}
                         >
                           <span
                             className={`mr-4 p-1.5 rounded-lg ${activeTab === item.id
-                                ? "bg-white/20"
-                                : "bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30"
+                              ? "bg-white/20"
+                              : "bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30"
                               }`}
                           >
                             {item.icon}
@@ -332,8 +337,8 @@ const RootUserHeader = ({ activeTab }) => {
                             <div className="font-semibold">{item.label}</div>
                             <div
                               className={`text-xs ${activeTab === item.id
-                                  ? "text-white/80"
-                                  : "text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
+                                ? "text-white/80"
+                                : "text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400"
                                 }`}
                             >
                               {item.description}
@@ -405,23 +410,6 @@ const RootUserHeader = ({ activeTab }) => {
             </Sheet>
           </div>
 
-          {/* Enhanced Logo */}
-          <div className="hidden md:flex items-center ml-56 space-x-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center shadow-lg">
-                <ShieldCheck className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
-                  Fit Loft Admin
-                </h1>
-                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                  System Administration
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Enhanced User Profile */}
           <div className="flex items-center space-x-4">
             {/* Quick Action Buttons - Desktop */}
@@ -451,14 +439,14 @@ const RootUserHeader = ({ activeTab }) => {
               <div className="relative w-5 h-5">
                 <Sun
                   className={`absolute inset-0 w-5 h-5 text-black dark:text-white transition-all duration-300 ${darkMode
-                      ? "opacity-0 rotate-90 scale-0"
-                      : "opacity-100 rotate-0 scale-100"
+                    ? "opacity-0 rotate-90 scale-0"
+                    : "opacity-100 rotate-0 scale-100"
                     }`}
                 />
                 <Moon
                   className={`absolute inset-0 w-5 h-5 text-white transition-all duration-300 ${darkMode
-                      ? "opacity-100 rotate-0 scale-100"
-                      : "opacity-0 -rotate-90 scale-0"
+                    ? "opacity-100 rotate-0 scale-100"
+                    : "opacity-0 -rotate-90 scale-0"
                     }`}
                 />
               </div>

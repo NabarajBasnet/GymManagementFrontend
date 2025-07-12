@@ -4,6 +4,7 @@ const initialState = {
   adminSidebar: true,
   clientSidebar: true,
   sidebarMinimized: false,
+  rootSidebarMinimized: false,
   cartLength: 0,
 };
 
@@ -17,6 +18,9 @@ const MainReduxSlice = createSlice({
     ToggleClientSidebar: (state) => {
       state.clientSidebar = !state.clientSidebar;
     },
+    ToggleRootSidebar: (state) => {
+      state.rootSidebarMinimized = !state.rootSidebarMinimized;
+    },
     MinimizeSidebar: (state) => {
       state.sidebarMinimized = !state.sidebarMinimized;
     },
@@ -26,6 +30,11 @@ const MainReduxSlice = createSlice({
   },
 });
 
-export const { ToggleAdminSidebar, MinimizeSidebar, setCartLength, ToggleClientSidebar } =
-  MainReduxSlice.actions;
+export const {
+  ToggleAdminSidebar,
+  MinimizeSidebar,
+  setCartLength,
+  ToggleClientSidebar,
+  ToggleRootSidebar,
+} = MainReduxSlice.actions;
 export default MainReduxSlice.reducer;
