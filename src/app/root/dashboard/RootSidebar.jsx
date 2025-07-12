@@ -150,7 +150,7 @@ const RootSidebar = ({ activeTab }) => {
         >
             {/* Enhanced Admin Profile - Minimized Version */}
             {rootSidebarMinimized && rootUser && (
-                <div className="px-2 py-4 flex flex-col items-center border-b border-red-100 dark:border-gray-700">
+                <div className="px-2 py-5 flex flex-col items-center border-b border-red-100 dark:border-gray-700">
                     <div className="relative">
                         <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
                             {rootUserName
