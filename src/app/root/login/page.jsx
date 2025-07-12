@@ -39,7 +39,7 @@ const RootLoginForm = ({ className, ...props }) => {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch("https://fitbinary.com/api/rootuser/login", {
+      const response = await fetch("http://localhost:3000/api/rootuser/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const RootLoginForm = ({ className, ...props }) => {
                         id="email"
                         type="email"
                         placeholder="admin@company.com"
-                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
+                        className="w-full pl-12 pr-4 py-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
                         {...register("email", {
                           required: "Email is required",
                           pattern: {
@@ -224,7 +224,7 @@ const RootLoginForm = ({ className, ...props }) => {
                         id="password"
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter root password"
-                        className="w-full pl-12 pr-12 py-3.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
+                        className="w-full pl-12 pr-12 py-6 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
                         {...register("password", {
                           required: "Password is required",
                         })}
@@ -254,7 +254,7 @@ const RootLoginForm = ({ className, ...props }) => {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl group"
+                      className="w-full relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-6 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl group"
                     >
                       {isSubmitting ? (
                         <div className="flex items-center justify-center">
