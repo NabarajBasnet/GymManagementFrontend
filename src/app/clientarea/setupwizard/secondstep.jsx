@@ -243,7 +243,7 @@ const SecondStep = () => {
         try {
             const selectedCountry = countries.find(country => country.value === data.country);
 
-            const response = await fetch(`http://localhost:3000/api/organization/second-step`, {
+            const response = await fetch(`https://fitbinary.com/api/organization/second-step`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
