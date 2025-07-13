@@ -563,7 +563,16 @@ const ClientAreaHeader = ({ activeTab }) => {
                                 </div>
                               </Link>
                               {notif.status === 'Unread' && (
-                                <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                                <span
+                                  className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
+                                    ? 'bg-red-600'
+                                    : notif.priority.toString() === 'Normal'
+                                      ? 'bg-yellow-600'
+                                      : notif.priority.toString() === 'Low'
+                                        ? 'bg-green-600'
+                                        : 'bg-gray-600'
+                                    }`}
+                                />
                               )}
                             </DropdownMenuItem>
                           ))
