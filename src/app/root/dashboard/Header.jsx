@@ -276,6 +276,9 @@ const RootUserHeader = ({ activeTab }) => {
         method: "PATCH",
       });
       const resBody = await response.json();
+      if (response.ok) {
+        refetch()
+      }
     } catch (error) {
       console.log("Error: ", error);
       toast.error(error.message);
@@ -300,6 +303,7 @@ const RootUserHeader = ({ activeTab }) => {
       });
       const resBody = await response.json();
       if (response.ok) {
+        refetch()
         toast.success(resBody.message || "Notifications marked as read");
       };
       refetch();
