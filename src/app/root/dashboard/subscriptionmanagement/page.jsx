@@ -98,39 +98,38 @@ const SubscriptionManagement = () => {
     const { data: subscriptions, isLoading } = useQuery({
         queryKey: ['subscriptions'],
         queryFn: async () => {
-            const response = await fetch('https://fitbinary.com/api/subscription/getall');
+            const response = await fetch('http://localhost:3000/api/subscription/getall');
             const data = await response.json();
             return data.subscriptions;
         }
     });
 
     const featuresList = [
-        "Attendance Management",
+        "QR Code Attendance",
+        "Live Location Attendance",
         "Locker Management",
-        "Attendance Report",
-        "Membership Analytics",
+        "Custom Website",
+        "Free Training (Online)",
         "Staff Management",
+        "Unlimited Members",
+        "Unlimited Staffs",
+        "Unlimited Branches",
         "Multi Branch Support",
         "Class Booking",
         "Personal Training",
-        "Billing & Invoicing",
-        "Equipment Management",
-        "Progress Tracking",
+        "Automatic Billing & Invoicing",
         "Customer Support",
         "Customizable Features",
-        "API Integration",
         "Email Notifications",
-        "Multi-Language Support",    
         "Analytics & Reporting",
         "Member Web Portal",
+        "Staff Web Portal",
         "Payment Gateway Integration",
-        "Backup & Recovery",
         "Scheduled Maintenance",
-        "AI Integration",
     ];
 
     const handleFeatureToggle = (feature) => {
-        setSelectedFeatures(prev => 
+        setSelectedFeatures(prev =>
             prev.includes(feature)
                 ? prev.filter(f => f !== feature)
                 : [...prev, feature]
@@ -139,10 +138,10 @@ const SubscriptionManagement = () => {
 
     const onSubmit = async (data) => {
         try {
-            const url = editingSubscription 
-                ? `https://fitbinary.com/api/subscription/update/${editingSubscription._id}`
-                : 'https://fitbinary.com/api/subscription/create';
-            
+            const url = editingSubscription
+                ? `http://localhost:3000/api/subscription/update/${editingSubscription._id}`
+                : 'http://localhost:3000/api/subscription/create';
+
             const method = editingSubscription ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -190,7 +189,7 @@ const SubscriptionManagement = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/subscription/delete/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/subscription/delete/${id}`, {
                 method: 'DELETE',
             });
 
@@ -225,9 +224,9 @@ const SubscriptionManagement = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Button 
-                                variant="outline" 
-                                onClick={handleRefresh} 
+                            <Button
+                                variant="outline"
+                                onClick={handleRefresh}
                                 className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
                             >
                                 <FiRefreshCcw className="mr-2" />
@@ -297,25 +296,25 @@ const SubscriptionManagement = () => {
                                                 </Label>
                                                 <Select onValueChange={(value) => setSelectedCurrency(value)}>
                                                     <SelectTrigger className="bg-white py-6 rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-                                                    <SelectValue placeholder="Select a currency" />
+                                                        <SelectValue placeholder="Select a currency" />
                                                     </SelectTrigger>
 
                                                     <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
-                                                    {currencies.map((currency) => (
-                                                        <SelectItem
-                                                        key={currency.symbol}
-                                                        className="text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-blue-900/30"
-                                                        value={currency.symbol}
-                                                        >
-                                                        {currency.name} ({currency.symbol})
-                                                        </SelectItem>
-                                                    ))}
+                                                        {currencies.map((currency) => (
+                                                            <SelectItem
+                                                                key={currency.symbol}
+                                                                className="text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-blue-900/30"
+                                                                value={currency.symbol}
+                                                            >
+                                                                {currency.name} ({currency.symbol})
+                                                            </SelectItem>
+                                                        ))}
                                                     </SelectContent>
                                                 </Select>
 
                                                 {errors.currency && (
                                                     <p className="text-sm text-red-500 dark:text-red-400">
-                                                    {errors.currency.message}
+                                                        {errors.currency.message}
                                                     </p>
                                                 )}
                                             </div>
@@ -404,7 +403,7 @@ const SubscriptionManagement = () => {
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel className="border-gray-200 dark:border-none border-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction 
+                                                        <AlertDialogAction
                                                             onClick={() => handleDelete(subscription._id)}
                                                             className="bg-red-600 dark:text-gray-100 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
                                                         >
@@ -474,7 +473,7 @@ const SubscriptionManagement = () => {
                             <FiPlus className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                             <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-2">No subscription plans found</h3>
                             <p className="text-gray-400 dark:text-gray-500 mb-6">Create your first subscription plan to get started</p>
-                            <Button 
+                            <Button
                                 onClick={() => setIsDialogOpen(true)}
                                 className="bg-blue-600 dark:text-gray-100 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
                             >

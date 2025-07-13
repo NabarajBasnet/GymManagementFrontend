@@ -1,7 +1,6 @@
 "use client";
 
 // Icons
-import Link from 'next/link'
 import { FiShoppingCart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import {
@@ -18,7 +17,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -60,7 +59,7 @@ import { ToggleRootSidebar } from "@/state/slicer";
 import { io } from 'socket.io-client';
 import { useQuery } from "@tanstack/react-query";
 
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:3000', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -151,7 +150,7 @@ const RootUserHeader = ({ activeTab }) => {
   const logOutRootUser = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/rootuser/logout`,
+        `http://localhost:3000/api/rootuser/logout`,
         {
           method: "POST",
           headers: {
@@ -237,7 +236,7 @@ const RootUserHeader = ({ activeTab }) => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/root-notification/get`);
+      const response = await fetch(`http://localhost:3000/api/root-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -272,7 +271,7 @@ const RootUserHeader = ({ activeTab }) => {
 
   const markSingleNotificationAsRead = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/root-notification/single-read/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/root-notification/single-read/${id}`, {
         method: "PATCH",
       });
       const resBody = await response.json();
@@ -294,7 +293,7 @@ const RootUserHeader = ({ activeTab }) => {
         return;
       }
 
-      const response = await fetch(`https://fitbinary.com/api/root-notification/bulk-read/`, {
+      const response = await fetch(`http://localhost:3000/api/root-notification/bulk-read/`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
@@ -549,7 +548,16 @@ const RootUserHeader = ({ activeTab }) => {
                             </p>
                           </div>
                           {notif.status === 'Unread' && (
-                            <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                            <span
+                              className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
+                                ? 'bg-red-600'
+                                : notif.priority.toString() === 'Normal'
+                                  ? 'bg-yellow-600'
+                                  : notif.priority.toString() === 'Low'
+                                    ? 'bg-green-600'
+                                    : 'bg-gray-600'
+                                }`}
+                            />
                           )}
                         </DropdownMenuItem>
                       ))
