@@ -98,7 +98,7 @@ const SubscriptionManagement = () => {
     const { data: subscriptions, isLoading } = useQuery({
         queryKey: ['subscriptions'],
         queryFn: async () => {
-            const response = await fetch('https://fitbinary.com/api/subscription/getall');
+            const response = await fetch('http://localhost:3000/api/subscription/getall');
             const data = await response.json();
             return data.subscriptions;
         }
@@ -140,8 +140,8 @@ const SubscriptionManagement = () => {
     const onSubmit = async (data) => {
         try {
             const url = editingSubscription 
-                ? `https://fitbinary.com/api/subscription/update/${editingSubscription._id}`
-                : 'https://fitbinary.com/api/subscription/create';
+                ? `http://localhost:3000/api/subscription/update/${editingSubscription._id}`
+                : 'http://localhost:3000/api/subscription/create';
             
             const method = editingSubscription ? 'PUT' : 'POST';
 
@@ -190,7 +190,7 @@ const SubscriptionManagement = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/subscription/delete/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/subscription/delete/${id}`, {
                 method: 'DELETE',
             });
 

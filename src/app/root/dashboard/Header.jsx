@@ -1,6 +1,7 @@
 "use client";
 
 // Icons
+import Link from 'next/link'
 import { FiShoppingCart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import {
@@ -59,7 +60,7 @@ import { ToggleRootSidebar } from "@/state/slicer";
 import { io } from 'socket.io-client';
 import { useQuery } from "@tanstack/react-query";
 
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:3000', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -150,7 +151,7 @@ const RootUserHeader = ({ activeTab }) => {
   const logOutRootUser = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/rootuser/logout`,
+        `http://localhost:3000/api/rootuser/logout`,
         {
           method: "POST",
           headers: {
@@ -236,7 +237,7 @@ const RootUserHeader = ({ activeTab }) => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/root-notification/get`);
+      const response = await fetch(`http://localhost:3000/api/root-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -264,6 +265,49 @@ const RootUserHeader = ({ activeTab }) => {
   }, [, refetch, rootUser]);
 
   const { notifications } = data || {};
+
+  const unreadedNotifications = notifications?.filter((notif) => {
+    return notif.status === 'Unread'
+  })
+
+  const markSingleNotificationAsRead = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/root-notification/single-read/${id}`, {
+        method: "PATCH",
+      });
+      const resBody = await response.json();
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
+
+  const markBulkNotificationAsRead = async () => {
+    try {
+      const unreadedNotificationsIds = notifications?.filter((notif) => notif.status === 'Unread').map((notif) => notif._id);
+
+      if (!unreadedNotificationsIds || unreadedNotificationsIds.length === 0) {
+        toast.error("No unread notifications");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/api/root-notification/bulk-read/`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ unreadedNotificationsIds })
+      });
+      const resBody = await response.json();
+      if (response.ok) {
+        toast.success(resBody.message || "Notifications marked as read");
+      };
+      refetch();
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
 
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-sm border-b border-red-100 dark:border-gray-800/50 sticky top-0 z-50">
@@ -460,56 +504,73 @@ const RootUserHeader = ({ activeTab }) => {
                 >
                   <Bell className="w-4 h-4" />
                   <span className="absolute -top-0 right-1 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center font-bold">
-                    {notifications?.length || 0}
+                    {unreadedNotifications?.length || 0}
                   </span>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="end">
-                <DropdownMenuLabel className="flex justify-between items-center">
+              <DropdownMenuContent className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none" align="end">
+                <DropdownMenuLabel className="flex justify-between items-center px-2">
                   <span>Notifications</span>
-                  <button className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                  <button
+                    onClick={markBulkNotificationAsRead}
+                    className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
                     Mark all as read
                   </button>
                 </DropdownMenuLabel>
 
                 <DropdownMenuSeparator />
 
-                {/* Unread notifications */}
-                <DropdownMenuGroup>
-                  {notifications?.length >= 1 ? (
-                    notifications.map((notif) => (
-                      <DropdownMenuItem key={notif._id} className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                {/* Scrollable notification list */}
+                <div className="flex-1 overflow-y-auto">
+                  <DropdownMenuGroup>
+                    {unreadedNotifications?.length >= 1 ? (
+                      unreadedNotifications.map((notif) => (
+                        <DropdownMenuItem
+                          onClick={() => markSingleNotificationAsRead(notif._id)}
+                          key={notif._id}
+                          className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
+                        >
+                          <div>
+                            <p className="font-medium">{notif.type || 'N/A'}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                              {new Date(notif.createdAt).toLocaleString("en-US", {
+                                weekday: "short",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                              })}
+                            </p>
+                          </div>
+                          {notif.status === 'Unread' && (
+                            <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
+                          )}
+                        </DropdownMenuItem>
+                      ))
+                    ) : (
+                      <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
                         <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
                           <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                         </div>
                         <div>
-                          <p className="font-medium">New notification</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message}</p>
-                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">{new Date(notif.createdAt).toLocaleString("en-US", {
-                            weekday: "short",
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                          })
-                          }</p>
+                          <p className="font-medium">No notifications yet</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">You're all caught up!</p>
                         </div>
-                        <span className="ml-auto w-2 h-2 rounded-full bg-indigo-600"></span>
                       </DropdownMenuItem>
-                    ))
-                  ) : (
-                    <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
-                    </DropdownMenuItem>
-                  )}
-                </DropdownMenuGroup>
+                    )}
+                  </DropdownMenuGroup>
+                </div>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem className="justify-center text-indigo-600 dark:text-indigo-400 hover:underline">
+                {/* Footer always visible */}
+                <DropdownMenuItem className="justify-center cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
                   View all notifications
                 </DropdownMenuItem>
               </DropdownMenuContent>
+
             </DropdownMenu>
 
             {/* Theme Toggle */}
