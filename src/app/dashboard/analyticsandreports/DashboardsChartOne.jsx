@@ -30,7 +30,7 @@ const chartConfig = {
 
 const getNewMembersGrowthPercentage = async () => {
   try {
-    const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`)
+    const response = await fetch(`https://fitbinary.com/api/graphdata/newmembers`)
     const resBody = await response.json()
     return resBody
   } catch (error) {

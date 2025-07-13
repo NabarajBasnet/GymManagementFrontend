@@ -65,7 +65,7 @@ const TenantDashboard = () => {
 
   const logOutTenant = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tenant/auth/logout`, {
+      const response = await fetch(`https://fitbinary.com/api/tenant/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +86,7 @@ const TenantDashboard = () => {
   // Get staffs by tenant
   const getStaffsByTenant = async () => {
     try {
-      const request = await fetch(`http://localhost:3000/api/staffsmanagement/by-tenant`);
+      const request = await fetch(`https://fitbinary.com/api/staffsmanagement/by-tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
@@ -104,7 +104,7 @@ const TenantDashboard = () => {
   // Get System Users by tenant
   const getSystemUsersByTenant = async () => {
     try {
-      const request = await fetch(`http://localhost:3000/api/systemusers/system-users-by-tenant`);
+      const request = await fetch(`https://fitbinary.com/api/systemusers/system-users-by-tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
@@ -122,7 +122,7 @@ const TenantDashboard = () => {
   // Get members by tenant
   const getMembersByTenant = async () => {
     try {
-      const request = await fetch(`http://localhost:3000/api/members/members-by-tenant`);
+      const request = await fetch(`https://fitbinary.com/api/members/members-by-tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
@@ -140,7 +140,7 @@ const TenantDashboard = () => {
   // Get branches by tenant
   const getBranchessByTenant = async () => {
     try {
-      const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
+      const request = await fetch(`https://fitbinary.com/api/organizationbranch/tenant`);
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
