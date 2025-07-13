@@ -433,8 +433,8 @@ const SmartAttendanceDashboard = () => {
 
                 {/* Modern Header with Glassmorphism Effect */}
                 <div className="relative mb-4 overflow-hidden">
-                    <div className="mt-6 relative bg-white dark:bg-gray-800 rounded-md p-4">
-                        <div className="flex items-center justify-between">
+                    <div className="mt-1 md:mt-6 relative bg-white dark:bg-gray-800 rounded-md p-4">
+                        <div className="md:flex items-center justify-between">
                             <div className="flex items-center space-x-4">
                                 <div className="relative">
                                     <div className="relative p-3 bg-sky-500 rounded-xl">
@@ -450,7 +450,7 @@ const SmartAttendanceDashboard = () => {
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-4">
+                            <div className="flex items-center mt-2 md:mt-0 space-x-4">
                                 <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${sessionActive ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'}`}>
                                     <div className={`w-2 h-2 rounded-full ${sessionActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`}></div>
                                     <span className="text-sm font-medium">
@@ -610,34 +610,34 @@ const SmartAttendanceDashboard = () => {
                                 {isAttendanceHistory ? (
                                     <Loader />
                                 ) : temporarymemberattendancehistory?.length > 0 ? (
-                                    <div className="space-y-3">
+                                    <div className="space-y-3 overflow-x-auto rounded-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600">
                                         {temporarymemberattendancehistory?.map((attendance, index) => (
                                             <div
-                                                key={attendance._id}
-                                                className="group relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded-sm p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
+                                                key={index}
+                                                className="group relative border-b dark:border-gray-600 p-2 hover:shadow-lg transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-500"
                                             >
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center space-x-4">
                                                         <div className="relative">
                                                             <div className="relative w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                                                                 <span className="text-white font-bold text-sm">
-                                                                    {attendance.fullName?.charAt(0) || 'M'}
+                                                                    {attendance?.memberId?.fullName?.charAt(0) || 'M'}
                                                                 </span>
                                                             </div>
                                                         </div>
                                                         <div>
                                                             <h3 className="font-semibold text-slate-800 dark:text-slate-200">
-                                                                {attendance.fullName}
+                                                                {attendance?.memberId?.fullName}
                                                             </h3>
                                                             <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                                                                ID: {attendance.memberId}
+                                                                ID: {attendance?.memberId?._id}
                                                             </p>
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center space-x-6">
                                                         <div className="text-center">
                                                             <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400">
-                                                                {attendance.membershipOption}
+                                                                {attendance?.memberId?.membershipType}
                                                             </div>
                                                         </div>
                                                         <div className="text-right">
@@ -647,6 +647,16 @@ const SmartAttendanceDashboard = () => {
                                                             </div>
                                                             <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                                                                 Check-in time
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="text-right">
+                                                            <div className="flex items-center text-slate-600 dark:text-slate-300 text-sm">
+                                                                <Timer className="h-4 w-4 mr-2" />
+                                                                00:00
+                                                            </div>
+                                                            <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                                Expiration Time
                                                             </div>
                                                         </div>
                                                     </div>

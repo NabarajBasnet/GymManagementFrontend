@@ -583,7 +583,7 @@ const MemberAttendance = () => {
                                         <TableHeader>
                                             <TableRow className="bg-gray-50 dark:bg-gray-900 dark:border-none">
                                                 <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Member</TableHead>
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Membership</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Membership Type</TableHead>
                                                 <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Check-in</TableHead>
                                                 <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Expiration</TableHead>
                                             </TableRow>
@@ -592,12 +592,12 @@ const MemberAttendance = () => {
                                             {temporarymemberattendancehistory?.map((attendance) => (
                                                 <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 overflow-x-auto transition-colors border-t border-gray-200 dark:border-gray-600">
                                                     <TableCell className="py-3 flex flex-col space-y-1">
-                                                        <span className="text-indigo-600 font-semibold">{attendance.fullName}</span>
-                                                        <span className="text-xs font-semibold">{attendance.memberId}</span>
+                                                        <span className="text-indigo-600 font-semibold">{attendance.memberId?.fullName}</span>
+                                                        <span className="text-xs font-semibold">{attendance.memberId?._id}</span>
                                                     </TableCell>
                                                     <TableCell className="py-3">
                                                         <Badge className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
-                                                            {attendance.membershipOption}
+                                                            {attendance.memberId?.membershipType}
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell className="py-3 text-right">
