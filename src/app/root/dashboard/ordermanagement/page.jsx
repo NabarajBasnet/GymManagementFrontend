@@ -232,7 +232,7 @@ const OrderManagement = () => {
 
       const responseBody = await response.json();
       if (response.ok) {
-        soonerToast.success(error.message);
+        soonerToast.success(responseBody.message);
         queryClient.invalidateQueries({ queryKey: ["orders"] });
         reset();
         setPaymentMethod("");
@@ -240,7 +240,7 @@ const OrderManagement = () => {
         setOrderStatus("");
         setIsPaymentDetailsFormOpen(false);
       } else {
-        soonerToast.error(responseBody.error);
+        soonerToast.error(responseBody.message);
       }
     } catch (error) {
       console.log("Error: ", error);
