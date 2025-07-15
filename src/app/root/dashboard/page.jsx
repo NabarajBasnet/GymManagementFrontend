@@ -279,8 +279,8 @@ const StatCard = ({ stat }) => (
 );
 
 const GymCard = ({ gym }) => (
-  <div className="flex items-center justify-between p-4 bg-gray-50/50 dark:bg-gray-700/30 rounded-xl hover:bg-gray-100/50 dark:hover:bg-gray-700/50 transition-all duration-200">
-    <div className="flex items-center space-x-4">
+  <div className="w-full flex items-center justify-between p-4 rounded-xl transition-all duration-200">
+    <div className="w-full flex items-center space-x-4">
       <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-rose-600 rounded-xl flex items-center justify-center text-white text-xl">
         {gym.logo}
       </div>
@@ -410,10 +410,10 @@ const ModernGymSaasDashboard = () => {
                 </div>
               </div>
 
-              <div className="p-4">
-                <div className="space-y-4">
+              <div className="p-4 w-full">
+                <div className="w-full overflow-x-auto space-y-4">
                   {topGyms.map((gym) => (
-                    <GymCard key={`gym-${gym.id}`} gym={gym} />
+                    <GymCard key={`w-full gym-${gym.id}`} gym={gym} />
                   ))}
                 </div>
               </div>
