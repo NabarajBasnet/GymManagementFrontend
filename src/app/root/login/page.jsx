@@ -39,7 +39,7 @@ const RootLoginForm = ({ className, ...props }) => {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/api/rootuser/login", {
+      const response = await fetch("https://fitbinary.com/api/rootuser/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

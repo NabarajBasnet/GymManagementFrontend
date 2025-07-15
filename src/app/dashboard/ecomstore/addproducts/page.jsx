@@ -97,7 +97,7 @@ const AddProducts = () => {
                 taxRate
             };
 
-            const url = 'http://localhost:3000/api/accounting/serviceandproducts'
+            const url = 'https://fitbinary.com/api/accounting/serviceandproducts'
             const response = await fetch(url, {
                 method: "POST",
                 headers: {
