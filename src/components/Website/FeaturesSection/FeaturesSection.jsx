@@ -1,14 +1,15 @@
 "use client";
-
 import { motion } from 'framer-motion';
 import {
   Dumbbell, Network, Users, Calendar, Lock, UserCog, ChartBar,
-  Bell, ArrowRight, CreditCard, Clock, MessageSquare, FileText
+  Bell, ArrowRight, CreditCard, Clock, MessageSquare, FileText,
+  ReceiptText, Mail, CalendarCheck, BarChart, CheckCircle
 } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
+import Image from 'next/image';
 import { useState } from 'react';
 
-const FeatureCard = ({ icon, title, description, delay }) => {
+const FeatureDetail = ({ icon, title, description, image, index, isEven, highlights }) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -17,22 +18,96 @@ const FeatureCard = ({ icon, title, description, delay }) => {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
-      className="relative h-full"
+      initial={{ opacity: 0, y: 60 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay: index * 0.1 }}
+      className="py-24 border-b border-white/5 last:border-b-0"
     >
-      <div className="h-full bg-white/5 backdrop-blur-sm rounded-xl p-6 border border-white/10 hover:border-blue-400/30 transition-colors duration-200">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-lg flex items-center justify-center mb-4">
-          {icon}
-        </div>
-        <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
-        <p className="text-gray-400 mb-6">{description}</p>
+      <div className="container mx-auto px-6 lg:px-8">
+        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-16 lg:gap-20`}>
+          {/* Content Section */}
+          <div className="lg:w-1/2 space-y-8">
+            {/* Icon */}
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-cyan-500 shadow-lg shadow-blue-500/25">
+              {icon}
+            </div>
 
-        <button className="flex items-center gap-1 text-blue-400 hover:text-white text-sm font-medium transition-colors duration-200">
-          Learn more
-          <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
-        </button>
+            {/* Title */}
+            <h3 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+              {title}
+            </h3>
+
+            {/* Description */}
+            <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
+              {description}
+            </p>
+
+            {/* Key Highlights */}
+            {highlights && (
+              <div className="space-y-3">
+                {highlights.map((highlight, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={inView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ duration: 0.5, delay: (index * 0.1) + (idx * 0.1) }}
+                    className="flex items-center gap-3"
+                  >
+                    <CheckCircle size={20} className="text-green-400 flex-shrink-0" />
+                    <span className="text-gray-300">{highlight}</span>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
+            {/* CTA Button */}
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium transition-all duration-300 shadow-lg shadow-blue-500/20 group"
+            >
+              <span>Explore Feature</span>
+              <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform duration-300" />
+            </motion.button>
+          </div>
+
+          {/* Image Section */}
+          <div className="lg:w-1/2">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={inView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ duration: 0.8, delay: index * 0.1 }}
+              className="relative group"
+            >
+              {/* Main Image Container */}
+              <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-white/10 shadow-2xl shadow-black/20">
+                {/* Decorative Elements */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-50"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+
+                {/* Image */}
+                <div className="relative p-1">
+                  <Image
+                    src={image}
+                    alt={title}
+                    width={800}
+                    height={500}
+                    className="w-full h-auto object-cover rounded-2xl"
+                  />
+                  {/* Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-2xl"></div>
+                </div>
+              </div>
+
+              {/* Floating Elements */}
+              <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 opacity-80 blur-sm"></div>
+              <div className="absolute -bottom-6 -left-6 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 opacity-60 blur-md"></div>
+
+              {/* Hover Effect */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </motion.div>
   );
@@ -43,154 +118,169 @@ const FeaturesSection = () => {
     triggerOnce: true,
     threshold: 0.1,
   });
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
 
-  const initialFeatures = [
+  const features = [
     {
-      icon: <Users className="text-white" size={24} />,
-      title: "Member Management",
-      description: "Track memberships, renewals, and member activity with detailed profiles and history."
+      icon: <Calendar className="text-white" size={32} />,
+      title: "QR & Geo-based Attendance",
+      description: "Advanced attendance system with QR codes and real-time location verification to ensure members are physically present at your gym.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "QR code scanning with location verification",
+        "Geofencing technology prevents buddy punching",
+        "Comprehensive attendance analytics"
+      ]
     },
     {
-      icon: <Calendar className="text-white" size={24} />,
-      title: "Attendance Tracking",
-      description: "Monitor gym attendance with QR code check-ins and generate detailed reports."
+      icon: <Lock className="text-white" size={32} />,
+      title: "Smart Locker Management",
+      description: "Digital locker management system with automated assignments, real-time availability tracking, and expiration alerts.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Automated locker assignments",
+        "Real-time availability tracking",
+        "Expiration alerts and renewals"
+      ]
     },
     {
-      icon: <Lock className="text-white" size={24} />,
-      title: "Locker Management",
-      description: "Assign lockers to members and manage locker availability and maintenance."
+      icon: <ReceiptText className="text-white" size={32} />,
+      title: "Automated Billing & Invoicing",
+      description: "Eliminate manual billing errors with automated invoicing, recurring payments, and detailed financial reporting.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Professional automated invoices",
+        "Recurring payment processing",
+        "Detailed financial reporting"
+      ]
     },
     {
-      icon: <UserCog className="text-white" size={24} />,
-      title: "Staff Management",
-      description: "Handle staff scheduling, staff attendance, payroll, and performance tracking in one place."
+      icon: <Mail className="text-white" size={32} />,
+      title: "Email Notifications & Alerts",
+      description: "Keep members engaged with personalized automated communications and branded email templates.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Personalized automated emails",
+        "Customizable branded templates",
+        "Smart notification scheduling"
+      ]
     },
     {
-      icon: <ChartBar className="text-white" size={24} />,
-      title: "Business Analytics",
-      description: "Get insights into revenue, membership growth, and other key performance indicators."
+      icon: <UserCog className="text-white" size={32} />,
+      title: "Staff & Role Management",
+      description: "Role-based access control with custom permissions, staff tracking, and performance metrics.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Role-based access control",
+        "Staff performance tracking",
+        "Integrated shift scheduling"
+      ]
     },
     {
-      icon: <Dumbbell className="text-white" size={24} />,
-      title: "Personal Training",
-      description: "Manage personal training sessions, assign trainers, and track client progress effortlessly."
+      icon: <Network className="text-white" size={32} />,
+      title: "Multi-Branch Management",
+      description: "Manage multiple locations from a single dashboard with consolidated reporting and member transfers.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Single dashboard for all locations",
+        "Consolidated reporting system",
+        "Easy member transfers between branches"
+      ]
     },
     {
-      icon: <Bell className="text-white" size={24} />,
-      title: "Automated Notifications",
-      description: "Send automated reminders for payments, class schedules, and membership renewals."
+      icon: <CalendarCheck className="text-white" size={32} />,
+      title: "Class Booking System",
+      description: "Intuitive booking platform with waitlists, capacity management, and real-time instructor updates.",
+      image: "/images/rootdashboard.png",
+      highlights: [
+        "Real-time class booking",
+        "Waitlist management",
+        "Instructor scheduling tools"
+      ]
     },
     {
-      icon: <Network className="text-white" size={24} />,
-      title: "Multi-Branch Support",
-      description: "Manage multiple gym branches from a single platform with centralized control and insights."
-    }
-  ];
-
-  const additionalFeatures = [
-    {
-      icon: <CreditCard className="text-white" size={24} />,
-      title: "Billing & Payments",
-      description: "Automated billing, payment processing, and invoice generation with multiple payment options."
+      icon: <CreditCard className="text-white" size={32} />,
+      title: "Flexible Plan Management",
+      description: "Create unlimited membership tiers with customizable pricing, benefits, and automated billing cycles.",
+      image: "/images/tenantdashboard.png",
+      highlights: [
+        "Unlimited membership tiers",
+        "Automated billing cycles",
+        "Pro-rated charges and upgrades"
+      ]
     },
     {
-      icon: <Clock className="text-white" size={24} />,
-      title: "Class Schedules",
-      description: "Create and manage class schedules with capacity limits and waitlist functionality."
-    },
-    {
-      icon: <FileText className="text-white" size={24} />,
-      title: "Activity Logs",
-      description: "Detailed logs of all system activities for security and compliance purposes."
-    },
-    {
-      icon: <MessageSquare className="text-white" size={24} />,
-      title: "Real-time Communication",
-      description: "Integrated messaging system for staff and members with push notifications."
-    },
-    {
-      icon: <Dumbbell className="text-white" size={24} />,
-      title: "Equipment Maintenance",
-      description: "Track gym equipment maintenance schedules and service history."
-    },
-    {
-      icon: <Users className="text-white" size={24} />,
-      title: "Group Challenges",
-      description: "Create and manage fitness challenges to engage your members."
-    },
-    {
-      icon: <ChartBar className="text-white" size={24} />,
-      title: "Goal Tracking",
-      description: "Help members set and track fitness goals with progress visualization."
-    },
-    {
-      icon: <Calendar className="text-white" size={24} />,
-      title: "Resource Booking",
-      description: "Allow members to book courts, pools, or other facilities online."
+      icon: <BarChart className="text-white" size={32} />,
+      title: "Business Analytics & Reports",
+      description: "Make data-driven decisions with comprehensive analytics, revenue tracking, and performance metrics.",
+      image: "/images/userdashboard.png",
+      highlights: [
+        "Real-time business dashboards",
+        "Revenue and retention analytics",
+        "Exportable custom reports"
+      ]
     }
   ];
 
   return (
-    <section id="features" className="w-full py-28 bg-gray-900/40 relative overflow-hidden">
+    <section id="features" className="relative overflow-hidden bg-gradient-to-b from-gray-900 via-gray-900 to-black">
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-900/10 to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-tl from-cyan-900/10 to-transparent"></div>
+      </div>
 
-      <div className="container w-full mx-auto px-4 relative z-10">
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full opacity-40 animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-3 h-3 bg-cyan-400 rounded-full opacity-30 animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute bottom-40 left-20 w-1 h-1 bg-blue-300 rounded-full opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
+      </div>
+
+      <div className="container mx-auto px-6 lg:px-8 py-32 relative z-10">
+        {/* Section Header */}
         <motion.div
           ref={headingRef}
-          className="text-center w-full mx-auto mb-20"
-          initial={{ opacity: 0, y: 20 }}
-          animate={headingInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ duration: 0.4 }}
+          className="text-center max-w-5xl mx-auto mb-32"
+          initial={{ opacity: 0, y: 30 }}
+          animate={headingInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Powerful <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Features</span>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={headingInView ? { opacity: 1, scale: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 mb-8"
+          >
+            <Dumbbell size={18} className="text-blue-400" />
+            <span className="text-blue-400 font-medium">Complete Gym Management</span>
+          </motion.div>
+
+          <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
+            Professional{' '}
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500">
+              Fitness Solutions
+            </span>
           </h2>
-          <p className="text-lg text-gray-400 max-w-3xl mx-auto">
-            Everything you need to run your fitness business efficiently, all in one integrated platform.
+
+          <p className="text-xl md:text-2xl text-gray-300 leading-relaxed max-w-4xl mx-auto">
+            Streamline operations, engage members, and accelerate growth with our comprehensive gym management platform designed for modern fitness businesses.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {initialFeatures.map((feature, index) => (
-            <FeatureCard
-              key={`initial-${index}`}
+        {/* Features List */}
+        <div className="space-y-0">
+          {features.map((feature, index) => (
+            <FeatureDetail
+              key={index}
               icon={feature.icon}
               title={feature.title}
               description={feature.description}
-              delay={index * 0.05}
+              image={feature.image}
+              index={index}
+              isEven={index % 2 === 0}
+              highlights={feature.highlights}
             />
           ))}
-        </div>
-
-        {showAllFeatures && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            transition={{ duration: 0.5 }}
-            className="mt-12"
-          >
-            <h3 className="text-2xl font-bold text-white mb-8 text-center">More Amazing Features</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {additionalFeatures.map((feature, index) => (
-                <FeatureCard
-                  key={`additional-${index}`}
-                  icon={feature.icon}
-                  title={feature.title}
-                  description={feature.description}
-                  delay={index * 0.05}
-                />
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        <div className="text-center mt-20">
-          <button
-            onClick={() => setShowAllFeatures(!showAllFeatures)}
-            className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:opacity-90 transition-opacity duration-200"
-          >
-            {showAllFeatures ? 'Hide Additional Features' : 'See All Features'}
-          </button>
         </div>
       </div>
     </section>
