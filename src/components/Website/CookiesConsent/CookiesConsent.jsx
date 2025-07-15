@@ -27,11 +27,7 @@ const CookieConsent = () => {
     return (
         <AnimatePresence>
             {showConsent && (
-                <motion.div
-                    initial={{ opacity: 0, y: 100 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 100 }}
-                    transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+                <div
                     className="fixed inset-x-0 bottom-0 z-50"
                 >
                     <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
@@ -70,7 +66,7 @@ const CookieConsent = () => {
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             )}
         </AnimatePresence>
     );

@@ -136,21 +136,11 @@ const ContactForm = () => {
     if (submitStatus === 'success') {
         return (
             <section id="contact" className="relative w-full min-h-screen bg-gray-950 overflow-hidden">
-                {/* Same background effects */}
-                <div className="absolute inset-0 z-0">
-                    <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-                    <div className="absolute bottom-20 right-10 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[32rem] h-[32rem] bg-blue-400/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }} />
-                    <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }} />
-                    <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-teal-500/8 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }} />
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-transparent to-cyan-900/5" />
-                    <div className={`absolute inset-0 bg-[url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='53' cy='7' r='1'/%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3Ccircle cx='7' cy='53' r='1'/%3E%3Ccircle cx='53' cy='53' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")] opacity-40`} />
-                </div>
 
                 <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
                     <div className="w-full max-w-2xl mx-auto text-center">
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12">
-                            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-full mb-6">
+                            <div className="inline-flex items-center justify-center w-16 h-16  rounded-full mb-6">
                                 <CheckCircle className="w-8 h-8 text-green-400" />
                             </div>
 
