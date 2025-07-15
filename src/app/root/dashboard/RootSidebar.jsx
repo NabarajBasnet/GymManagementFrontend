@@ -90,7 +90,7 @@ const RootSidebar = ({ activeTab }) => {
 
     const logOutRootUser = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/rootuser/logout`, {
+            const response = await fetch(`http://localhost:3000/api/rootuser/logout`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -136,7 +136,7 @@ const PersonalTrainingBooking = () => {
   // Update the getTrainingDetails function
   const getTrainingDetails = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/${id}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
       const { personalTraining } = await response.json();
 
       if (response.ok && personalTraining) {
@@ -180,7 +180,7 @@ const PersonalTrainingBooking = () => {
 
   const getCurrentBranch = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/organizationbranch/by-system-user`);
+      const response = await fetch(`http://localhost:3000/api/organizationbranch/by-system-user`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -229,8 +229,8 @@ const PersonalTrainingBooking = () => {
 
     try {
       const url = isEditMode
-        ? `https://fitbinary.com/api/personaltraining/${editId}`
-        : 'https://fitbinary.com/api/personaltraining';
+        ? `http://localhost:3000/api/personaltraining/${editId}`
+        : 'http://localhost:3000/api/personaltraining';
 
       const method = isEditMode ? 'PATCH' : 'POST';
 
@@ -378,7 +378,7 @@ const PersonalTrainingBooking = () => {
   // Get all staffs
   const getAllTrainers = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
+      const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -397,7 +397,7 @@ const PersonalTrainingBooking = () => {
   // Get all members
   const getAllMembers = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/members`);
+      const response = await fetch(`http://localhost:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -416,7 +416,7 @@ const PersonalTrainingBooking = () => {
   // Get all packages
   const getAllPackages = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/packages`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -452,7 +452,7 @@ const PersonalTrainingBooking = () => {
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
     const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -471,7 +471,7 @@ const PersonalTrainingBooking = () => {
   // Delete personal training booking
   const deletePersonalTrainingBooking = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/personaltraining/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
         method: 'DELETE'
       });
       const responseBody = await response.json();

@@ -96,27 +96,6 @@ const DemoSection = () => {
                             </div>
                         </motion.div>
 
-                        <motion.div
-                            className="flex items-center gap-6"
-                            initial={{ opacity: 0 }}
-                            animate={inView ? { opacity: 1 } : { opacity: 0 }}
-                            transition={{ delay: 0.8 }}
-                        >
-                            <div className="flex-shrink-0">
-                                <img
-                                    src="https://images.pexels.com/photos/8851691/pexels-photo-8851691.jpeg?auto=compress&cs=tinysrgb&w=150"
-                                    alt="Customer"
-                                    className="w-14 h-14 rounded-full object-cover border-2 border-blue-500"
-                                />
-                            </div>
-                            <div>
-                                <p className="text-gray-300 italic mb-2">
-                                    "Fitbinary has transformed how we manage our gym. The interface is intuitive, and the support is exceptional."
-                                </p>
-                                <p className="text-white font-medium">Sarah Johnson</p>
-                                <p className="text-sm text-gray-400">Fitness Center Owner</p>
-                            </div>
-                        </motion.div>
                     </motion.div>
 
                     {/* Right side - Demo Form */}

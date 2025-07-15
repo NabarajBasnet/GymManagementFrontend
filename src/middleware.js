@@ -15,7 +15,7 @@ export const middleware = async (request) => {
   let member = null;
   let tenant = null;
   // let root = null;
-
+  
   try {
     if (token) user = jwtDecode(token);
     if (staffToken) staff = jwtDecode(staffToken);

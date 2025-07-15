@@ -318,7 +318,6 @@ const HeroSection = () => {
       </section>
 
       <FeaturesSection />
-      {/* <TrustedBySection /> */}
       <PricingSection />
       <CTASection />
       <DemoSection />
