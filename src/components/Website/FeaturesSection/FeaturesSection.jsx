@@ -74,37 +74,97 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
           {/* Image Section */}
           <div className="lg:w-1/2">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="relative group"
+              initial={{ opacity: 0, scale: 0.95, rotateY: isEven ? -15 : 15 }}
+              animate={inView ? { opacity: 1, scale: 1, rotateY: 0 } : {}}
+              transition={{ duration: 0.8, delay: index * 0.1, type: "spring", stiffness: 100 }}
+              className="relative group perspective-1000"
+              style={{ transformStyle: 'preserve-3d' }}
             >
               {/* Main Image Container */}
-              <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-white/10 shadow-2xl shadow-black/20">
+              <div className={`relative rounded-3xl overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-sm border border-white/10 shadow-2xl shadow-black/20 transform transition-transform duration-500 hover:scale-105 ${isEven ? 'hover:rotate-2' : 'hover:-rotate-2'}`}>
                 {/* Decorative Elements */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 opacity-50"></div>
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
 
-                {/* Image */}
-                <div className="relative p-1">
-                  <Image
-                    src={image}
-                    alt={title}
-                    width={800}
-                    height={500}
-                    className="w-full h-auto object-cover rounded-2xl"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent rounded-2xl"></div>
+                {/* Browser-like Header */}
+                <div className="flex items-center gap-2 px-4 py-3 bg-gray-800/80 border-b border-white/10">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                  </div>
+                  <div className="flex-1 mx-4">
+                    <div className="bg-gray-700/50 rounded-md px-3 py-1 text-xs text-gray-400">
+                      dashboard.gymmanager.com
+                    </div>
+                  </div>
+                </div>
+
+                {/* Image with Enhanced Display */}
+                <div className="relative p-2">
+                  <div className="relative rounded-xl overflow-hidden shadow-lg">
+                    <Image
+                      src={image}
+                      alt={title}
+                      width={800}
+                      height={500}
+                      className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    />
+                    {/* Smart Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+
+                    {/* Interactive Elements */}
+                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
+                      <span className="text-white text-xs font-medium">Live Preview</span>
+                    </div>
+
+                    {/* Feature Highlight Dots */}
+                    <div className="absolute bottom-4 left-4 flex gap-2">
+                      <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+                      <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" style={{ animationDelay: '1s' }}></div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Floating Elements */}
-              <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 opacity-80 blur-sm"></div>
-              <div className="absolute -bottom-6 -left-6 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 opacity-60 blur-md"></div>
+              {/* Enhanced Floating Elements */}
+              <div className={`absolute -top-6 ${isEven ? '-right-6' : '-left-6'} w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 opacity-80 blur-sm animate-pulse`}></div>
+              <div className={`absolute -bottom-8 ${isEven ? '-left-8' : '-right-8'} w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 opacity-60 blur-md animate-pulse`} style={{ animationDelay: '1s' }}></div>
 
-              {/* Hover Effect */}
-              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              {/* Floating UI Elements */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: (index * 0.1) + 0.3 }}
+                className={`absolute top-8 ${isEven ? '-left-8' : '-right-8'} bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
+                    {icon}
+                  </div>
+                  <div>
+                    <div className="text-white text-sm font-medium">Active</div>
+                    <div className="text-gray-400 text-xs">Real-time data</div>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Stats Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: (index * 0.1) + 0.5 }}
+                className={`absolute bottom-8 ${isEven ? '-right-8' : '-left-8'} bg-black/50 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl`}
+              >
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-white">99%</div>
+                  <div className="text-gray-400 text-xs">Uptime</div>
+                </div>
+              </motion.div>
+
+              {/* Hover Glow Effect */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
             </motion.div>
           </div>
         </div>
