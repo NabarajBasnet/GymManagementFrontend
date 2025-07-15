@@ -8,41 +8,28 @@ export const middleware = async (request) => {
   const staffToken = request.cookies.get("staffLoginToken")?.value || "";
   const memberToken = request.cookies.get("memberLoginToken")?.value || "";
   const tenantToken = request.cookies.get("tenantLoginToken")?.value || "";
+  const rootToken = request.cookies.get("rootUserLoginToken")?.value || "";
 
   let user = null;
   let staff = null;
   let member = null;
   let tenant = null;
+  let root = null;
 
   try {
     if (token) user = jwtDecode(token);
     if (staffToken) staff = jwtDecode(staffToken);
     if (memberToken) member = jwtDecode(memberToken);
     if (tenantToken) tenant = jwtDecode(tenantToken);
+    if (rootToken) root = jwtDecode(rootToken);
 
     // 🧿 MEMBER LOGIC
-    if (!member && path.startsWith("/member")) {
+    if (!member && path.startsWith("/member") && path !== "/memberlogin") {
       return NextResponse.redirect(new URL("/memberlogin", request.url));
     }
 
-    // if (
-    //   member &&
-    //   (path.startsWith("/dashboard") ||
-    //     path.startsWith("/StaffLogin") ||
-    //     path === "/login" ||
-    //     path === "/register" ||
-    //     path === "/clientarea" ||
-    //     path === "/userlogin" ||
-    //     path === "/signup" ||
-    //     path.startsWith("/MyProfile"))
-    // ) {
-    //   return NextResponse.redirect(
-    //     new URL(`/member/${member.id}/qrcode`, request.url)
-    //   );
-    // }
-
     // 🧿 STAFF LOGIC
-    if (!staff && path.startsWith("/MyProfile")) {
+    if (!staff && path === "/MyProfile") {
       return NextResponse.redirect(new URL("/StaffLogin", request.url));
     } else if (staff && path === "/StaffLogin") {
       return NextResponse.redirect(new URL("/MyProfile", request.url));
@@ -57,16 +44,23 @@ export const middleware = async (request) => {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    if (!tenant && path.startsWith("/clientarea/")) {
+    // 🧿 TENANT LOGIC
+    if (!tenant && path.startsWith("/clientarea") && path !== "/login") {
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if (tenant && path.startsWith("/login")) {
+    if (tenant && path === "/login") {
       return NextResponse.redirect(
         new URL("/clientarea/dashboard", request.url)
       );
     }
 
+    // 🧿 ROOT LOGIC
+    if (!root && path.startsWith("/root") && path !== "/root/login") {
+      return NextResponse.redirect(new URL("/root/login", request.url));
+    }
+
+    // 🧿 GYM ADMIN RESTRICTIONS
     if (
       user?.role === "Gym Admin" &&
       (path.includes("/users") || path.includes("/staffmanagement/staffs"))

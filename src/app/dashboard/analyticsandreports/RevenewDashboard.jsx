@@ -53,7 +53,7 @@ const RevenewDashboard = () => {
     const getNewMembersRevenewData = async ({ queryKey }) => {
         const [, startDate, endDate, currentPage, limit] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/revenew/new-admission-revenue?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/revenew/new-admission-revenue?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -74,7 +74,7 @@ const RevenewDashboard = () => {
     const getRenewedMembersRevenewData = async ({ queryKey }) => {
         const [, startDate, endDate, currentPage, limit] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/revenew/renewd-members?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/revenew/renewd-members?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -95,7 +95,7 @@ const RevenewDashboard = () => {
     const getLockersRevenueData = async ({ queryKey }) => {
         const [, startDate, endDate, currentPage, limit] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/revenew/revenue-lockers?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/revenew/revenue-lockers?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
