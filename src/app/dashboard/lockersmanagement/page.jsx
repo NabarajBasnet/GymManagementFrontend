@@ -45,10 +45,13 @@ import * as React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const Lockers = () => {
 
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
+    const user = useUser();
+    const loggedInUser = user?.user?.user;
     const [lockerFormState, setLockerFormState] = useState(false);
 
     const [renderDropdown, setRenderDropdown] = useState(false);
@@ -337,18 +340,6 @@ const Lockers = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-
-                {/* Enhanced Card */}
-                <div className="w-full dark:border-none bg-white dark:bg-gray-700 p-6 rounded-md shadow-sm border border-gray-100 dark:border-gray-700">
-                    <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="p-2 rounded-lg">
-                                <BsBoxSeam className="w-5 h-5 text-primary dark:text-primary/90" />
-                            </div>
-                            <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             {
@@ -846,7 +837,7 @@ const Lockers = () => {
                                                                 ['Renew Date', new Date(locker.renewDate).toLocaleDateString()],
                                                                 ['Duration', locker.duration],
                                                                 ['Expire Date', new Date(locker.expireDate).toLocaleDateString()],
-                                                                ['Fee', `$${locker.fee}`],
+                                                                ['Fee', `${loggedInUser?.organization?.currency} ${locker.fee}`],
                                                                 ['Size', `${locker.lockerSize}`]
                                                             ].map(([label, value]) => (
                                                                 <div
