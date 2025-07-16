@@ -64,7 +64,7 @@ const ClassBooking = () => {
     // Fetch all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/schedules?search=${debouncedSearchQuery}&category=${selectedCategory}&page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/schedules?search=${debouncedSearchQuery}&category=${selectedCategory}&page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -138,7 +138,7 @@ const ClassBooking = () => {
     const handleBookClass = async (scheduleId) => {
         setIsBooking(true);
         try {
-            const response = await fetch(`https://fitbinary.com/api/schedules/${scheduleId}/book`, {
+            const response = await fetch(`http://localhost:3000/api/schedules/${scheduleId}/book`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',

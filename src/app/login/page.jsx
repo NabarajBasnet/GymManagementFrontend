@@ -8,11 +8,11 @@ export const generateMetadata = () => {
     openGraph: {
       title: "Login | Fitbinary",
       description: "Access your Fitbinary gym management dashboard.",
-      url: "https://fitbinary.com/login",
+      url: "http://localhost:3000/login",
       siteName: "Fitbinary",
       images: [
         {
-          url: "https://fitbinary.com/og-image.png",
+          url: "http://localhost:3000/og-image.png",
           width: 1200,
           height: 630,
           alt: "Fitbinary Login",
@@ -23,7 +23,7 @@ export const generateMetadata = () => {
       card: "summary_large_image",
       title: "Login | Fitbinary",
       description: "Login to manage your gym with Fitbinary.",
-      images: ["https://fitbinary.com/og-image.png"],
+      images: ["http://localhost:3000/og-image.png"],
     },
   };
 };

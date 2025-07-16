@@ -139,31 +139,6 @@ const HeroSection = () => {
                 </p>
               </div>
             </motion.div>
-
-            {/* Simple Stats */}
-            <motion.div
-              className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto mb-20"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1 }}
-            >
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400 mb-2">50+</div>
-                <div className="text-gray-400 text-sm">Enterprise Clients</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400 mb-2">
-                  5000K+
-                </div>
-                <div className="text-gray-400 text-sm">Members Managed</div>
-              </div>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-blue-400 mb-2">
-                  99.9%
-                </div>
-                <div className="text-gray-400 text-sm">Uptime SLA</div>
-              </div>
-            </motion.div>
           </div>
 
           {/* Enhanced Platform Preview Section */}

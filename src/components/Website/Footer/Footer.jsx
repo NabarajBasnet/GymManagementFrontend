@@ -39,9 +39,9 @@ const Footer = () => {
     };
 
     const socialLinks = [
-        { icon: <Facebook className="w-5 h-5" />, href: "#", label: "Facebook" },
+        { icon: <Facebook className="w-5 h-5" />, href: "https://www.facebook.com/profile.php?id=61577705351919", label: "Facebook" },
         { icon: <Twitter className="w-5 h-5" />, href: "#", label: "Twitter" },
-        { icon: <Instagram className="w-5 h-5" />, href: "#", label: "Instagram" },
+        { icon: <Instagram className="w-5 h-5" />, href: "https://www.instagram.com/fit_binary/", label: "Instagram" },
         { icon: <Linkedin className="w-5 h-5" />, href: "#", label: "LinkedIn" }
     ];
 
@@ -102,7 +102,7 @@ const Footer = () => {
                             className="text-2xl font-bold text-white mb-4"
                             whileHover={{ scale: 1.05 }}
                         >
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">FitLoft</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Fitbinary</span>
                         </motion.div>
                         <p className="text-gray-400 text-sm mb-6">
                             The complete gym management solution trusted by fitness businesses worldwide.
