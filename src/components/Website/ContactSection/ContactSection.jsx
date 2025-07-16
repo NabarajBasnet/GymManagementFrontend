@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
     Send,
     User,
@@ -16,43 +17,9 @@ import {
 } from 'lucide-react';
 
 const ContactForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        gymSize: '',
-        message: ''
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
     const [submitStatus, setSubmitStatus] = useState(null);
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSubmitting(true);
-
-        // Simulate form submission
-        setTimeout(() => {
-            setSubmitStatus('success');
-            setIsSubmitting(false);
-            // Reset form after successful submission
-            setFormData({
-                name: '',
-                email: '',
-                phone: '',
-                company: '',
-                gymSize: '',
-                message: ''
-            });
-        }, 2000);
-    };
+    const [errorMessage, setErrorMessage] = useState('');
 
     const gymSizes = [
         { value: 'small', label: 'Small Gym (1-50 members)' },
@@ -62,7 +29,37 @@ const ContactForm = () => {
         { value: 'chain', label: 'Gym Chain/Franchise' }
     ];
 
-    const InputField = ({ icon: Icon, label, type = 'text', name, value, onChange, placeholder, required = false }) => (
+    const onSubmit = async (data) => {
+        try {
+            const response = await fetch('http://localhost:3000/api/contact/create-contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    fullName: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    gymName: data.company,
+                    gymSize: data.gymSize,
+                    message: data.message
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to submit form');
+            }
+
+            setSubmitStatus('success');
+            reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            setSubmitStatus('error');
+            setErrorMessage(error.message || 'Something went wrong. Please try again.');
+        }
+    };
+
+    const InputField = ({ icon: Icon, label, type = 'text', name, placeholder, required = false }) => (
         <div className="group">
             <label className="block text-sm font-medium text-white/70 mb-2">
                 {label} {required && <span className="text-red-400">*</span>}
@@ -73,18 +70,16 @@ const ContactForm = () => {
                 </div>
                 <input
                     type={type}
-                    name={name}
-                    value={value}
-                    onChange={onChange}
+                    {...register(name, { required: required && `${label} is required` })}
                     placeholder={placeholder}
-                    required={required}
                     className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:bg-white/10 hover:border-white/20"
                 />
             </div>
+            {errors[name] && <p className="mt-1 text-sm text-red-400">{errors[name].message}</p>}
         </div>
     );
 
-    const SelectField = ({ icon: Icon, label, name, value, onChange, options, required = false }) => (
+    const SelectField = ({ icon: Icon, label, name, options, required = false }) => (
         <div className="group">
             <label className="block text-sm font-medium text-white/70 mb-2">
                 {label} {required && <span className="text-red-400">*</span>}
@@ -94,10 +89,7 @@ const ContactForm = () => {
                     <Icon className="w-5 h-5 text-blue-400/60 group-focus-within:text-blue-400 transition-colors" />
                 </div>
                 <select
-                    name={name}
-                    value={value}
-                    onChange={onChange}
-                    required={required}
+                    {...register(name, { required: required && `${label} is required` })}
                     className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:bg-white/10 hover:border-white/20 appearance-none"
                 >
                     <option value="" className="bg-gray-800 text-white">Select your gym size...</option>
@@ -108,10 +100,11 @@ const ContactForm = () => {
                     ))}
                 </select>
             </div>
+            {errors[name] && <p className="mt-1 text-sm text-red-400">{errors[name].message}</p>}
         </div>
     );
 
-    const TextareaField = ({ icon: Icon, label, name, value, onChange, placeholder, required = false }) => (
+    const TextareaField = ({ icon: Icon, label, name, placeholder, required = false }) => (
         <div className="group">
             <label className="block text-sm font-medium text-white/70 mb-2">
                 {label} {required && <span className="text-red-400">*</span>}
@@ -121,22 +114,19 @@ const ContactForm = () => {
                     <Icon className="w-5 h-5 text-blue-400/60 group-focus-within:text-blue-400 transition-colors" />
                 </div>
                 <textarea
-                    name={name}
-                    value={value}
-                    onChange={onChange}
+                    {...register(name, { required: required && `${label} is required` })}
                     placeholder={placeholder}
-                    required={required}
                     rows="4"
                     className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-300 hover:bg-white/10 hover:border-white/20 resize-none"
                 />
             </div>
+            {errors[name] && <p className="mt-1 text-sm text-red-400">{errors[name].message}</p>}
         </div>
     );
 
     if (submitStatus === 'success') {
         return (
             <section id="contact" className="relative w-full min-h-screen bg-gray-950 overflow-hidden">
-
                 <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
                     <div className="w-full max-w-2xl mx-auto text-center">
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12">
@@ -157,6 +147,37 @@ const ContactForm = () => {
                                 className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105"
                             >
                                 Send Another Message
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        );
+    }
+
+    if (submitStatus === 'error') {
+        return (
+            <section id="contact" className="relative w-full min-h-screen bg-gray-950 overflow-hidden">
+                <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
+                    <div className="w-full max-w-2xl mx-auto text-center">
+                        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-12">
+                            <div className="inline-flex items-center justify-center w-16 h-16  rounded-full mb-6">
+                                <AlertCircle className="w-8 h-8 text-red-400" />
+                            </div>
+
+                            <h2 className="text-3xl font-bold text-white mb-4">
+                                Submission Failed
+                            </h2>
+
+                            <p className="text-white/60 mb-8 leading-relaxed">
+                                {errorMessage}
+                            </p>
+
+                            <button
+                                onClick={() => setSubmitStatus(null)}
+                                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105"
+                            >
+                                Try Again
                             </button>
                         </div>
                     </div>
@@ -235,101 +256,91 @@ const ContactForm = () => {
 
                         {/* Right Column - Contact Form */}
                         <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
-                            <div className="space-y-6">
-                                <div className="text-center mb-8">
-                                    <h2 className="text-2xl font-bold text-white mb-2">
-                                        Get Started Today
-                                    </h2>
-                                    <p className="text-white/60">
-                                        Tell us about your gym and we'll show you how Fitbinary can help
+                            <form onSubmit={handleSubmit(onSubmit)}>
+                                <div className="space-y-6">
+                                    <div className="text-center mb-8">
+                                        <h2 className="text-2xl font-bold text-white mb-2">
+                                            Get Started Today
+                                        </h2>
+                                        <p className="text-white/60">
+                                            Tell us about your gym and we'll show you how Fitbinary can help
+                                        </p>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <InputField
+                                            icon={User}
+                                            label="Full Name"
+                                            name="name"
+                                            placeholder="John Doe"
+                                            required
+                                        />
+                                        <InputField
+                                            icon={Mail}
+                                            label="Email Address"
+                                            type="email"
+                                            name="email"
+                                            placeholder="john@example.com"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <InputField
+                                            icon={Phone}
+                                            label="Phone Number"
+                                            type="tel"
+                                            name="phone"
+                                            placeholder="+1 (555) 123-4567"
+                                        />
+                                        <InputField
+                                            icon={Building}
+                                            label="Gym Name"
+                                            name="company"
+                                            placeholder="Your Gym Name"
+                                            required
+                                        />
+                                    </div>
+
+                                    <SelectField
+                                        icon={Dumbbell}
+                                        label="Gym Size"
+                                        name="gymSize"
+                                        options={gymSizes}
+                                        required
+                                    />
+
+                                    <TextareaField
+                                        icon={MessageCircle}
+                                        label="Message"
+                                        name="message"
+                                        placeholder="Tell us about your gym's needs, current challenges, or any specific questions you have about Fitbinary..."
+                                        required
+                                    />
+
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        {isSubmitting ? (
+                                            <div className="flex items-center justify-center">
+                                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                                                Sending Message...
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center justify-center">
+                                                <Send className="w-5 h-5 mr-2" />
+                                                Send Message
+                                            </div>
+                                        )}
+                                    </button>
+
+                                    <p className="text-center text-white/40 text-sm">
+                                        By submitting this form, you agree to receive communications from Fitbinary about our gym management solutions.
                                     </p>
                                 </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <InputField
-                                        icon={User}
-                                        label="Full Name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="John Doe"
-                                        required
-                                    />
-                                    <InputField
-                                        icon={Mail}
-                                        label="Email Address"
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="john@example.com"
-                                        required
-                                    />
-                                </div>
-
-                                <div className="grid md:grid-cols-2 gap-6">
-                                    <InputField
-                                        icon={Phone}
-                                        label="Phone Number"
-                                        type="tel"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        placeholder="+1 (555) 123-4567"
-                                    />
-                                    <InputField
-                                        icon={Building}
-                                        label="Gym Name"
-                                        name="company"
-                                        value={formData.company}
-                                        onChange={handleChange}
-                                        placeholder="Your Gym Name"
-                                        required
-                                    />
-                                </div>
-
-                                <SelectField
-                                    icon={Dumbbell}
-                                    label="Gym Size"
-                                    name="gymSize"
-                                    value={formData.gymSize}
-                                    onChange={handleChange}
-                                    options={gymSizes}
-                                    required
-                                />
-
-                                <TextareaField
-                                    icon={MessageCircle}
-                                    label="Message"
-                                    name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    placeholder="Tell us about your gym's needs, current challenges, or any specific questions you have about Fitbinary..."
-                                    required
-                                />
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-cyan-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-blue-500/25 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                                >
-                                    {isSubmitting ? (
-                                        <div className="flex items-center justify-center">
-                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                                            Sending Message...
-                                        </div>
-                                    ) : (
-                                        <div className="flex items-center justify-center">
-                                            <Send className="w-5 h-5 mr-2" />
-                                            Send Message
-                                        </div>
-                                    )}
-                                </button>
-
-                                <p className="text-center text-white/40 text-sm">
-                                    By submitting this form, you agree to receive communications from Fitbinary about our gym management solutions.
-                                </p>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
