@@ -22,7 +22,8 @@ import {
     PhoneCall,
     Play,
     Trophy,
-    XCircle
+    XCircle,
+    MessageSquare
 } from "lucide-react";
 import {
     Card,
@@ -48,6 +49,15 @@ import {
     SelectGroup,
     SelectLabel
 } from "@/components/ui/select";
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -56,8 +66,10 @@ import Loader from "@/components/Loader/Loader";
 
 const ContactManagement = () => {
     const queryClient = useQueryClient();
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1);
     const [limit, setLimit] = useState(10);
+    const [selectedMessage, setSelectedMessage] = useState(null);
+    const [isMessageDialogOpen, setIsMessageDialogOpen] = useState(false);
 
     const fetchAllContacts = async ({ queryKey }) => {
         const [, page, limit] = queryKey;
@@ -100,6 +112,11 @@ const ContactManagement = () => {
         updateStatusMutation({ id, status: value });
     };
 
+    const handleViewMessage = (message) => {
+        setSelectedMessage(message);
+        setIsMessageDialogOpen(true);
+    };
+
     const getStatusIcon = (status) => {
         switch (status) {
             case 'Pending': return <Clock className="h-3 w-3" />;
@@ -138,6 +155,24 @@ const ContactManagement = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+            {/* Message Dialog */}
+            <AlertDialog open={isMessageDialogOpen} onOpenChange={setIsMessageDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="flex items-center gap-2">
+                            <MessageSquare className="h-5 w-5 text-blue-500" />
+                            Contact Message
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="mt-4 text-gray-700 dark:text-gray-300">
+                            {selectedMessage || "No message provided"}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Close</AlertDialogCancel>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {/* Header */}
             <div className="border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm sticky top-0 z-10">
                 <div className="px-6 py-6">
@@ -171,7 +206,7 @@ const ContactManagement = () => {
             </div>
 
             {/* Main Content */}
-            <div className="p-6">
+            <div className="p-4">
                 <div className="w-full mx-auto">
 
                     {/* Contact Cards */}
@@ -215,6 +250,12 @@ const ContactManagement = () => {
                                                 <div className="flex items-center space-x-2">
                                                     <Calendar className="h-4 w-4" />
                                                     <span>Date</span>
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className="font-semibold text-gray-900 dark:text-gray-100 py-4">
+                                                <div className="flex items-center space-x-2">
+                                                    <MessageSquare className="h-4 w-4" />
+                                                    <span>Message</span>
                                                 </div>
                                             </TableHead>
                                         </TableRow>
@@ -313,6 +354,18 @@ const ContactManagement = () => {
                                                             })}
                                                         </span>
                                                     </div>
+                                                </TableCell>
+                                                <TableCell className="py-4">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleViewMessage(contact.message)}
+                                                        disabled={!contact.message}
+                                                        className="text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                                                    >
+                                                        <MessageSquare className="h-4 w-4 mr-2" />
+                                                        View
+                                                    </Button>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
