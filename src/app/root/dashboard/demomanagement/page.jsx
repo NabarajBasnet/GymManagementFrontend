@@ -52,6 +52,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import Loader from "@/components/Loader/Loader";
 
 const DemoManagement = () => {
     const queryClient = useQueryClient();
@@ -124,14 +125,7 @@ const DemoManagement = () => {
     };
 
     if (isLoading) return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-6">
-            <div className="flex items-center justify-center h-96">
-                <div className="text-center">
-                    <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto mb-4" />
-                    <p className="text-lg font-medium text-gray-600 dark:text-gray-300">Loading demo requests...</p>
-                </div>
-            </div>
-        </div>
+        <Loader />
     );
 
     if (isError) return (
@@ -183,25 +177,9 @@ const DemoManagement = () => {
             {/* Main Content */}
             <div className="p-6">
                 <div className="w-full mx-auto">
-                    {/* Action Bar */}
-                    {/* <div className="mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                <Input
-                                    placeholder="Search requests..."
-                                    className="pl-10 w-64 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-                                />
-                            </div>
-                            <Button variant="outline" size="sm" className="border-gray-300 dark:border-gray-600">
-                                <Filter className="h-4 w-4 mr-2" />
-                                Filter
-                            </Button>
-                        </div>
-                    </div> */}
 
                     {/* Demo Cards */}
-                    <Card className="shadow-lg border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
+                    <Card className="shadow-md border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm">
                         <CardContent className="p-0">
                             <div className="overflow-x-auto">
                                 <Table>
