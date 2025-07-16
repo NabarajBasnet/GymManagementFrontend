@@ -63,7 +63,7 @@ import { ToggleClientSidebar } from "@/state/slicer";
 import { io } from 'socket.io-client';
 import Link from "next/link";
 
-const socket = io('http://localhost:3000', {
+const socket = io('https://fitbinary.com', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -156,7 +156,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   const logOutTenant = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/tenant/auth/logout`,
+        `https://fitbinary.com/api/tenant/auth/logout`,
         {
           method: "POST",
           headers: {
@@ -208,7 +208,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tenant-notification/get`);
+      const response = await fetch(`https://fitbinary.com/api/tenant-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -244,7 +244,7 @@ const ClientAreaHeader = ({ activeTab }) => {
 
   const markSingleNotificationAsRead = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tenant-notification/single-read/${id}`, {
+      const response = await fetch(`https://fitbinary.com/api/tenant-notification/single-read/${id}`, {
         method: "PATCH",
       });
       const resBody = await response.json();
@@ -263,7 +263,7 @@ const ClientAreaHeader = ({ activeTab }) => {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/api/tenant-notification/bulk-read/`, {
+      const response = await fetch(`https://fitbinary.com/api/tenant-notification/bulk-read/`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
