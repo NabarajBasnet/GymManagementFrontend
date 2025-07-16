@@ -107,6 +107,12 @@ const RootUserHeader = ({ activeTab }) => {
       description: "Plans & Billing Control",
     },
     {
+      id: "/root/dashboard/demomanagement",
+      icon: <CreditCard size={20} />,
+      label: "Demo Management",
+      description: "Handle Demos",
+    },
+    {
       id: "/root/dashboard/settings",
       icon: <Settings size={20} />,
       label: "System Settings",

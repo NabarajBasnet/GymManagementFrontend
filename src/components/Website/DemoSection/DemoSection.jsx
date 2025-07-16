@@ -1,30 +1,51 @@
 "use client";
 
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { ArrowRight, Mail, Check } from 'lucide-react';
+import { ArrowRight, Mail, Check, Phone, MapPin, Building, MessageCircle, User, AlertCircle } from 'lucide-react';
 
 const DemoSection = () => {
-    const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [company, setCompany] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState('');
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset,
+        watch
+    } = useForm();
 
     const [ref, inView] = useInView({
         triggerOnce: true,
         threshold: 0.1,
     });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        console.log({ email, name, company });
-        setSubmitted(true);
+
+    const onSubmit = async (data) => {
+        try {
+            // Here you would typically send the data to your backend
+            console.log('Form Data:', data);
+            console.log('Captcha Token:', captchaToken);
+
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            setSubmitted(true);
+
+            // Reset form after successful submission
+            reset();
+            setCaptchaToken('');
+        } catch (error) {
+            console.error('Submission error:', error);
+        }
     };
 
     return (
         <section id="demo" className="py-28 relative overflow-hidden bg-gray-900/40">
-            {/* Glowing Background Effects - Matching Hero Section */}
+            {/* Glowing Background Effects */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
@@ -95,7 +116,6 @@ const DemoSection = () => {
                                 </div>
                             </div>
                         </motion.div>
-
                     </motion.div>
 
                     {/* Right side - Demo Form */}
@@ -108,58 +128,170 @@ const DemoSection = () => {
                             {!submitted ? (
                                 <>
                                     <h3 className="text-2xl font-bold text-white mb-8">Request Your Demo</h3>
-                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="space-y-6">
+                                        {/* Full Name */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-2">
-                                                Full Name
+                                                <User size={16} className="inline mr-2" />
+                                                Full Name *
                                             </label>
                                             <input
                                                 type="text"
-                                                required
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
+                                                {...register('fullName', {
+                                                    required: 'Full name is required',
+                                                    minLength: { value: 2, message: 'Name must be at least 2 characters' },
+                                                    maxLength: { value: 50, message: 'Name must be less than 50 characters' }
+                                                })}
                                                 className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                                 placeholder="John Doe"
                                             />
+                                            {errors.fullName && (
+                                                <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                                    <AlertCircle size={14} />
+                                                    {errors.fullName.message}
+                                                </p>
+                                            )}
                                         </div>
 
+                                        {/* Email */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-2">
-                                                Work Email
+                                                <Mail size={16} className="inline mr-2" />
+                                                Email Address *
                                             </label>
                                             <input
                                                 type="email"
-                                                required
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
+                                                {...register('email', {
+                                                    required: 'Email is required',
+                                                    pattern: {
+                                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                                        message: 'Please enter a valid email address'
+                                                    }
+                                                })}
                                                 className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
                                                 placeholder="john@example.com"
                                             />
+                                            {errors.email && (
+                                                <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                                    <AlertCircle size={14} />
+                                                    {errors.email.message}
+                                                </p>
+                                            )}
                                         </div>
 
+                                        {/* Phone */}
                                         <div>
                                             <label className="block text-sm font-medium text-gray-300 mb-2">
-                                                Company / Gym Name
+                                                <Phone size={16} className="inline mr-2" />
+                                                Phone Number *
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                {...register('phone', {
+                                                    required: 'Phone number is required',
+                                                    pattern: {
+                                                        value: /^[\+]?[1-9][\d]{0,15}$/,
+                                                        message: 'Please enter a valid phone number'
+                                                    }
+                                                })}
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
+                                                placeholder="+1 (555) 123-4567"
+                                            />
+                                            {errors.phone && (
+                                                <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                                    <AlertCircle size={14} />
+                                                    {errors.phone.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Gym Name */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                <Building size={16} className="inline mr-2" />
+                                                Gym / Business Name
                                             </label>
                                             <input
                                                 type="text"
-                                                required
-                                                value={company}
-                                                onChange={(e) => setCompany(e.target.value)}
+                                                {...register('gymName', {
+                                                    maxLength: { value: 100, message: 'Gym name must be less than 100 characters' }
+                                                })}
                                                 className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
-                                                placeholder="Fitness Center"
+                                                placeholder="Fitness Center Pro"
+                                            />
+                                            {errors.gymName && (
+                                                <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                                    <AlertCircle size={14} />
+                                                    {errors.gymName.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Location */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                <MapPin size={16} className="inline mr-2" />
+                                                Location
+                                            </label>
+                                            <input
+                                                type="text"
+                                                {...register('location')}
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all"
+                                                placeholder="City, State/Country"
                                             />
                                         </div>
 
+                                        {/* Message */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                <MessageCircle size={16} className="inline mr-2" />
+                                                Message
+                                            </label>
+                                            <textarea
+                                                {...register('message', {
+                                                    maxLength: { value: 500, message: 'Message must be less than 500 characters' }
+                                                })}
+                                                rows={4}
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white placeholder-gray-400 transition-all resize-none"
+                                                placeholder="Tell us about your specific needs or requirements..."
+                                            />
+                                            {errors.message && (
+                                                <p className="text-red-400 text-sm mt-1 flex items-center gap-1">
+                                                    <AlertCircle size={14} />
+                                                    {errors.message.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Source */}
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-300 mb-2">
+                                                How did you hear about us?
+                                            </label>
+                                            <select
+                                                {...register('source')}
+                                                className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-white transition-all"
+                                            >
+                                                <option value="" className="bg-gray-800">Select an option</option>
+                                                <option value="google" className="bg-gray-800">Google Search</option>
+                                                <option value="social_media" className="bg-gray-800">Social Media</option>
+                                                <option value="referral" className="bg-gray-800">Referral</option>
+                                                <option value="advertisement" className="bg-gray-800">Advertisement</option>
+                                                <option value="other" className="bg-gray-800">Other</option>
+                                            </select>
+                                        </div>
+
                                         <motion.button
-                                            type="submit"
-                                            className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2"
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleSubmit(onSubmit)}
+                                            disabled={isSubmitting}
+                                            className="w-full bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-4 rounded-lg font-semibold shadow-lg hover:shadow-blue-500/20 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                                            whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                                         >
-                                            Schedule Demo <ArrowRight size={18} />
+                                            {isSubmitting ? 'Submitting...' : 'Schedule Demo'}
+                                            <ArrowRight size={18} />
                                         </motion.button>
-                                    </form>
+                                    </div>
 
                                     <p className="text-xs text-gray-400 mt-6 text-center">
                                         By submitting this form, you agree to our Privacy Policy and Terms of Service.
@@ -177,16 +309,8 @@ const DemoSection = () => {
                                     </div>
                                     <h3 className="text-2xl font-bold text-white mb-3">Thank You!</h3>
                                     <p className="text-gray-300 mb-6">
-                                        We've received your demo request and will contact you shortly at <span className="text-blue-400">{email}</span>.
+                                        We've received your demo request and will contact you shortly at <span className="text-blue-400">{watch('email')}</span>.
                                     </p>
-                                    <motion.button
-                                        onClick={() => setSubmitted(false)}
-                                        className="text-blue-400 font-medium hover:underline"
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        Submit another request
-                                    </motion.button>
                                 </motion.div>
                             )}
                         </div>
