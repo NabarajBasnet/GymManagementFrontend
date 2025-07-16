@@ -95,7 +95,7 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-gray-700/50 rounded-md px-3 py-1 text-xs text-gray-400">
-                      dashboard.gymmanager.com
+                      https://fitbinary.com/dashboard
                     </div>
                   </div>
                 </div>
@@ -112,11 +112,6 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
                     />
                     {/* Smart Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-
-                    {/* Interactive Elements */}
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1">
-                      <span className="text-white text-xs font-medium">Live Preview</span>
-                    </div>
 
                     {/* Feature Highlight Dots */}
                     <div className="absolute bottom-4 left-4 flex gap-2">
@@ -139,15 +134,7 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
                 transition={{ duration: 0.6, delay: (index * 0.1) + 0.3 }}
                 className={`absolute top-8 ${isEven ? '-left-8' : '-right-8'} bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center">
-                    {icon}
-                  </div>
-                  <div>
-                    <div className="text-white text-sm font-medium">Active</div>
-                    <div className="text-gray-400 text-xs">Real-time data</div>
-                  </div>
-                </div>
+
               </motion.div>
 
               {/* Stats Card */}
@@ -184,7 +171,7 @@ const FeaturesSection = () => {
       icon: <Calendar className="text-white" size={32} />,
       title: "QR & Geo-based Attendance",
       description: "Advanced attendance system with QR codes and real-time location verification to ensure members are physically present at your gym.",
-      image: "/images/userdashboard.png",
+      image: "/images/attendancedashboard.png",
       highlights: [
         "QR code scanning with location verification",
         "Geofencing technology prevents buddy punching",
@@ -195,7 +182,7 @@ const FeaturesSection = () => {
       icon: <Lock className="text-white" size={32} />,
       title: "Smart Locker Management",
       description: "Digital locker management system with automated assignments, real-time availability tracking, and expiration alerts.",
-      image: "/images/userdashboard.png",
+      image: "/images/lockerdemo.png",
       highlights: [
         "Automated locker assignments",
         "Real-time availability tracking",
@@ -206,7 +193,7 @@ const FeaturesSection = () => {
       icon: <ReceiptText className="text-white" size={32} />,
       title: "Automated Billing & Invoicing",
       description: "Eliminate manual billing errors with automated invoicing, recurring payments, and detailed financial reporting.",
-      image: "/images/userdashboard.png",
+      image: "/images/invoicepage.png",
       highlights: [
         "Professional automated invoices",
         "Recurring payment processing",
@@ -217,7 +204,7 @@ const FeaturesSection = () => {
       icon: <Mail className="text-white" size={32} />,
       title: "Email Notifications & Alerts",
       description: "Keep members engaged with personalized automated communications and branded email templates.",
-      image: "/images/userdashboard.png",
+      image: "/images/emailnotification.png",
       highlights: [
         "Personalized automated emails",
         "Customizable branded templates",
@@ -228,7 +215,7 @@ const FeaturesSection = () => {
       icon: <UserCog className="text-white" size={32} />,
       title: "Staff & Role Management",
       description: "Role-based access control with custom permissions, staff tracking, and performance metrics.",
-      image: "/images/userdashboard.png",
+      image: "/images/staffspage.png",
       highlights: [
         "Role-based access control",
         "Staff performance tracking",
@@ -239,7 +226,7 @@ const FeaturesSection = () => {
       icon: <Network className="text-white" size={32} />,
       title: "Multi-Branch Management",
       description: "Manage multiple locations from a single dashboard with consolidated reporting and member transfers.",
-      image: "/images/userdashboard.png",
+      image: "/images/branchmanagement.png",
       highlights: [
         "Single dashboard for all locations",
         "Consolidated reporting system",
@@ -250,7 +237,7 @@ const FeaturesSection = () => {
       icon: <CalendarCheck className="text-white" size={32} />,
       title: "Class Booking System",
       description: "Intuitive booking platform with waitlists, capacity management, and real-time instructor updates.",
-      image: "/images/rootdashboard.png",
+      image: "/images/classmanagement.png",
       highlights: [
         "Real-time class booking",
         "Waitlist management",
@@ -261,7 +248,7 @@ const FeaturesSection = () => {
       icon: <CreditCard className="text-white" size={32} />,
       title: "Flexible Plan Management",
       description: "Create unlimited membership tiers with customizable pricing, benefits, and automated billing cycles.",
-      image: "/images/tenantdashboard.png",
+      image: "/images/planmanagement.png",
       highlights: [
         "Unlimited membership tiers",
         "Automated billing cycles",
@@ -272,7 +259,7 @@ const FeaturesSection = () => {
       icon: <BarChart className="text-white" size={32} />,
       title: "Business Analytics & Reports",
       description: "Make data-driven decisions with comprehensive analytics, revenue tracking, and performance metrics.",
-      image: "/images/userdashboard.png",
+      image: "/images/reports.png",
       highlights: [
         "Real-time business dashboards",
         "Revenue and retention analytics",
