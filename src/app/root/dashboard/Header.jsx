@@ -1,6 +1,7 @@
 "use client";
 
 // Icons
+import { MdContactPhone } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import {
@@ -111,6 +112,12 @@ const RootUserHeader = ({ activeTab }) => {
       icon: <CreditCard size={20} />,
       label: "Demo Management",
       description: "Handle Demos",
+    },
+    {
+      id: "/root/dashboard/contactmanagement",
+      icon: <MdContactPhone size={20} />,
+      label: "Contact Management",
+      description: "Handle Contacts",
     },
     {
       id: "/root/dashboard/settings",

@@ -1,5 +1,6 @@
 "use client";
 
+import { MdContactPhone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
 import toast from "react-hot-toast";
@@ -59,6 +60,12 @@ const RootSidebar = ({ activeTab }) => {
             icon: <CreditCard size={20} />,
             label: "Demo Management",
             description: "Handle Demos",
+        },
+        {
+            id: "/root/dashboard/contactmanagement",
+            icon: <MdContactPhone size={20} />,
+            label: "Contact Management",
+            description: "Handle Contacts",
         },
         {
             id: "/root/dashboard/settings",
