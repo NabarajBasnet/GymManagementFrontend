@@ -26,16 +26,19 @@ const DemoSection = () => {
 
     const onSubmit = async (data) => {
         try {
-            // Here you would typically send the data to your backend
-            console.log('Form Data:', data);
-            console.log('Captcha Token:', captchaToken);
-
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 1000));
-
-            setSubmitted(true);
-
-            // Reset form after successful submission
+            const response = await fetch(`http://localhost:3000/api/demo/submit-demo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            if (response.ok) {
+                setSubmitted(true);
+                setTimeout(() => {
+                    setSubmitted(false);
+                }, 7000);
+            }
             reset();
             setCaptchaToken('');
         } catch (error) {
