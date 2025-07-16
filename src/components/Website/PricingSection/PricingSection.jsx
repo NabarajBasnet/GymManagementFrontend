@@ -330,10 +330,10 @@ const PricingSection = () => {
                                         key={index}
                                         className="bg-gray-800/70 backdrop-blur-sm rounded-2xl p-6 lg:p-8 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-lg"
                                     >
-                                        <h3 className="text-lg lg:text-xl font-semibold text-white mb-3">
+                                        <h3 className="text-lg lg:text-xl font-bold text-sky-400 text-white mb-3">
                                             {faq.question}
                                         </h3>
-                                        <p className="text-gray-300 leading-relaxed">
+                                        <p className="text-gray-300 leading-relaxed text-sm">
                                             {faq.answer}
                                         </p>
                                     </div>
