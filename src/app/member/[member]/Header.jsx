@@ -132,7 +132,7 @@ const MemberHeader = ({ activeTab }) => {
   const logOutMember = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/member/auth/member-logout`,
+        `https://fitbinary.com/api/member/auth/member-logout`,
         {
           method: "POST",
           headers: {

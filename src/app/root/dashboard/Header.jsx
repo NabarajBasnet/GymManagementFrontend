@@ -59,7 +59,7 @@ import { ToggleRootSidebar } from "@/state/slicer";
 import { io } from 'socket.io-client';
 import { useQuery } from "@tanstack/react-query";
 
-const socket = io('http://localhost:3000', {
+const socket = io('https://fitbinary.com', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -156,7 +156,7 @@ const RootUserHeader = ({ activeTab }) => {
   const logOutRootUser = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/rootuser/logout`,
+        `https://fitbinary.com/api/rootuser/logout`,
         {
           method: "POST",
           headers: {
@@ -242,7 +242,7 @@ const RootUserHeader = ({ activeTab }) => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/root-notification/get`);
+      const response = await fetch(`https://fitbinary.com/api/root-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -277,7 +277,7 @@ const RootUserHeader = ({ activeTab }) => {
 
   const markSingleNotificationAsRead = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/root-notification/single-read/${id}`, {
+      const response = await fetch(`https://fitbinary.com/api/root-notification/single-read/${id}`, {
         method: "PATCH",
       });
       const resBody = await response.json();
@@ -299,7 +299,7 @@ const RootUserHeader = ({ activeTab }) => {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/api/root-notification/bulk-read/`, {
+      const response = await fetch(`https://fitbinary.com/api/root-notification/bulk-read/`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'

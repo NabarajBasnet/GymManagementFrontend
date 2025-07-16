@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect('https://fitbinary.com');
 
 const MemberChatSection = () => {
     const [message, setMessage] = useState('');
