@@ -10,7 +10,7 @@ const LoggedInUserProvider = ({ children }) => {
 
     const getLoggedInUserDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/me`, {
+            const response = await fetch(`https://fitbinary.com/api/auth/me`, {
                 credentials: 'include',
             });
             if (response.ok) {
