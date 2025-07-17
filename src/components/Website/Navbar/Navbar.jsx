@@ -196,7 +196,7 @@ const Navbar = () => {
                             </Button>
                             <Button
                                 onClick={() => window.location.href = "/register"}
-                                className="px-4 xl:px-6 py-2.5 rounded-full font-medium shadow-lg bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center group text-sm"
+                                className="px-4 xl:px-6 py-2.5 rounded-full font-medium shadow-lg bg-gradient-to-r from-blue-600 to-sky-300 transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center group text-sm"
                             >
                                 <span className="hidden xl:inline">Start 3 Weeks Free Trail</span>
                                 <span className="xl:hidden">Free Trial</span>
@@ -222,7 +222,7 @@ const Navbar = () => {
                 {/* Enhanced Mobile Menu */}
                 <div
                     className={cn(
-                        'lg:hidden fixed inset-x-0 top-16 transition-all duration-300 ease-out bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl z-50 overflow-hidden border-t border-gray-200/20 dark:border-gray-700/20',
+                        'lg:hidden fixed inset-x-0 top-16 transition-all duration-300 ease-out bg-white dark:bg-gray-900/95 backdrop-blur-xl shadow-2xl z-50 overflow-hidden border-t border-gray-200/20 dark:border-gray-700/20',
                         isOpen ? 'translate-y-0 opacity-100 max-h-screen' : '-translate-y-full opacity-0 max-h-0'
                     )}
                 >
@@ -310,7 +310,7 @@ const Navbar = () => {
                                 </a>
                                 <a
                                     href="/register"
-                                    className="block w-full text-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white font-medium shadow-lg hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 flex items-center justify-center group text-sm sm:text-base"
+                                    className="block w-full text-center px-4 sm:px-6 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-blue-600 to-sky-400 text-white font-medium shadow-lg hover:from-indigo-700 hover:to-blue-700 transition-all duration-200 flex items-center justify-center group text-sm sm:text-base"
                                 >
                                     Start 3 Weeks Free Trail
                                     <ArrowRight size={16} className="ml-2 transition-transform duration-200 group-hover:translate-x-1" />

@@ -176,7 +176,7 @@ const HeroSection = () => {
                     Member Experience
                   </span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white">
+                <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 to-sky-100 bg-clip-text text-transparent">
                   Intuitive User Dashboard
                 </h3>
                 <p className="text-lg text-gray-300 leading-relaxed">
@@ -241,7 +241,7 @@ const HeroSection = () => {
                     Enterprise Control
                   </span>
                 </div>
-                <h3 className="text-3xl md:text-4xl font-bold text-white">
+                <h3 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-500 via-sky-300 to-white bg-clip-text text-transparent">
                   Powerful Admin Dashboard
                 </h3>
                 <p className="text-lg text-gray-300 leading-relaxed">
