@@ -65,7 +65,7 @@ const PaymentReceipts = () => {
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/receipt/v2/?page=${page}&limit=${limit}&receiptSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/receipt/v2/?page=${page}&limit=${limit}&receiptSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -88,7 +88,7 @@ const PaymentReceipts = () => {
 
     const deleteReceipt = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/receipt/V2/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/receipt/V2/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();

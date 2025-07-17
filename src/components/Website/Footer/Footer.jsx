@@ -129,7 +129,7 @@ const Footer = () => {
 
                     {/* Products */}
                     <motion.div variants={itemVariants}>
-                        <h3 className="text-lg font-semibold text-white mb-4">Products</h3>
+                        <h3 className="text-lg text-sky-500 font-semibold text-white mb-4">Products</h3>
                         <ul className="space-y-2">
                             {products.map((item) => (
                                 <li key={item.name}>
@@ -146,7 +146,7 @@ const Footer = () => {
 
                     {/* Solutions */}
                     <motion.div variants={itemVariants}>
-                        <h3 className="text-lg font-semibold text-white mb-4">Resources</h3>
+                        <h3 className="text-lg font-semibold text-white mb-4 text-sky-500">Resources</h3>
                         <ul className="space-y-2">
                             {solutions.map((item) => (
                                 <li key={item.name}>
@@ -163,7 +163,7 @@ const Footer = () => {
 
                     {/* Company */}
                     <motion.div variants={itemVariants}>
-                        <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
+                        <h3 className="text-lg font-semibold text-white mb-4 text-sky-500">Company</h3>
                         <ul className="space-y-2">
                             {company.map((item) => (
                                 <li key={item.name}>
@@ -180,7 +180,7 @@ const Footer = () => {
 
                     {/* Trust Badges */}
                     <motion.div variants={itemVariants}>
-                        <h3 className="text-lg font-semibold text-white mb-4">Security</h3>
+                        <h3 className="text-lg font-semibold text-white mb-4 text-sky-500">Security</h3>
                         <div className="space-y-4">
                             <div className="flex items-center text-gray-400">
                                 <Shield className="w-5 h-5 mr-2 text-cyan-400" />
@@ -200,7 +200,7 @@ const Footer = () => {
                     variants={itemVariants}
                 >
                     <div className="max-w-2xl mx-auto text-center">
-                        <h3 className="text-2xl font-bold text-white mb-4">Stay Updated</h3>
+                        <h3 className="text-2xl font-bold text-white mb-4 text-sky-500">Stay Updated</h3>
                         <p className="text-gray-400 mb-6">
                             Subscribe to our newsletter for product updates and fitness industry insights.
                         </p>
