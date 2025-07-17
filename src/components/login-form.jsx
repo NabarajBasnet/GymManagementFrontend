@@ -7,9 +7,6 @@ import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { FaApple, FaGoogle } from "react-icons/fa";
-import { FaMeta } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
 import {
   X,
   AtSign,
@@ -22,14 +19,15 @@ import {
 } from "lucide-react";
 
 export function LoginForm({ className, ...props }) {
-  const router = useRouter();
   const {
     register,
     reset,
     handleSubmit,
-    formState: { isSubmitting, errors },
+    formState: { isSubmitting, errors, isValid, isDirty },
     setError,
-  } = useForm();
+  } = useForm({
+    mode: "onChange",
+  });
 
   const onLoginUser = async (data) => {
     try {
@@ -58,7 +56,7 @@ export function LoginForm({ className, ...props }) {
       }
 
       if (response.status === 400) {
-        setError(["password", "email"], {
+        setError("root", {
           type: "manual",
           message: responseBody.message,
         });
@@ -72,70 +70,10 @@ export function LoginForm({ className, ...props }) {
         toast.error(responseBody.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || "An error occurred during login");
       console.log("Error: ", error);
     }
   };
-
-  const FormField = ({
-    label,
-    name,
-    type = "text",
-    icon,
-    validation,
-    error,
-    placeholder,
-    rightElement,
-  }) => (
-    <div className="space-y-1">
-      <div className="flex items-center">
-        <Label
-          htmlFor={name}
-          className="text-sm font-medium text-gray-700 block"
-        >
-          {label}
-        </Label>
-        {rightElement && rightElement}
-      </div>
-
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          {icon}
-        </div>
-
-        <Input
-          id={name}
-          type={type}
-          className={`pl-10 w-full py-6 bg-white dark:bg-white dark:text-gray-200 rounded-sm dark:text-gray-800 dark:border-gray-100 border-gray-300 transition-all duration-200 ${error ? "border-red-500 focus:border-red-500" : ""
-            }`}
-          placeholder={placeholder}
-          {...register(name, validation)}
-        />
-
-        {error && (
-          <motion.div
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <X className="h-5 w-5 text-red-500" />
-          </motion.div>
-        )}
-      </div>
-
-      {error && (
-        <motion.p
-          className="text-sm font-medium text-red-500 mt-1"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {error.message}
-        </motion.p>
-      )}
-    </div>
-  );
 
   return (
     <div className="w-full flex items-center justify-center md:p-4">
@@ -183,7 +121,6 @@ export function LoginForm({ className, ...props }) {
                   <span>Seamless user experience</span>
                 </div>
               </div>
-
             </motion.div>
           </div>
 
@@ -198,38 +135,66 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <form onSubmit={handleSubmit(onLoginUser)} className="space-y-4">
-                <FormField
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  icon={<AtSign className="text-gray-400" />}
-                  validation={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Please enter a valid email",
-                    },
-                  }}
-                  error={errors.email}
-                  placeholder="john.doe@example.com"
-                />
+                {errors.root && (
+                  <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
+                    {errors.root.message}
+                  </div>
+                )}
 
-                <FormField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  icon={<Lock className="text-gray-400" />}
-                  validation={{
-                    required: "Password is required",
-                  }}
-                  error={errors.password}
-                  placeholder="Enter your password"
-                />
+                <div>
+                  <Label htmlFor="email">Email Address</Label>
+                  <div className="relative">
+                    <Input
+                      id="email"
+                      type="email"
+                      className={`py-6 rounded-sm ${errors.email ? "border-red-500" : ""}`}
+                      placeholder="you@example.com"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
+                    />
+                    <AtSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type="password"
+                      className={`py-6 rounded-sm ${errors.password ? "border-red-500" : ""}`}
+                      placeholder="Enter your password"
+                      {...register("password", {
+                        required: "Password is required",
+                        minLength: {
+                          value: 6,
+                          message: "Password must be at least 6 characters",
+                        },
+                      })}
+                    />
+                    <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
                   className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || !isValid || !isDirty}
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">
@@ -262,15 +227,21 @@ export function LoginForm({ className, ...props }) {
               </form>
 
               <div className="mt-6 text-center">
-                <p className="text-xs text-gray-500">
+                <p className="mt-4 text-xs text-gray-500">
                   By signing in, you agree to our{" "}
-                  <a href="/termsofservice" className="text-blue-600 hover:underline">
+                  <Link
+                    href="/termsofservice"
+                    className="text-blue-600 hover:underline"
+                  >
                     Terms of Service
-                  </a>{" "}
+                  </Link>{" "}
                   and{" "}
-                  <a href="/privacypolicy" className="text-blue-600 hover:underline">
+                  <Link
+                    href="/privacypolicy"
+                    className="text-blue-600 hover:underline"
+                  >
                     Privacy Policy
-                  </a>
+                  </Link>
                   .
                 </p>
 
