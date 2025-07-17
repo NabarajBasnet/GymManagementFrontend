@@ -493,9 +493,9 @@ const Sidebar = () => {
         {userLoading ? (
           <Loader />
         ) : (
-          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 py-3">
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-4 py-3.5">
             <Link href={"/dashboard"} className="flex items-center">
-              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
+              <div className="relative flex items-center justify-center w-12 h-11 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
                 <svg
                   width="24"
                   height="24"
