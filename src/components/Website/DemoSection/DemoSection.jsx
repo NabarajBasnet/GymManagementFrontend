@@ -47,15 +47,7 @@ const DemoSection = () => {
     };
 
     return (
-        <section id="demo" className="py-28 relative overflow-hidden bg-gray-900/40">
-            {/* Glowing Background Effects */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
-                <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
-            </div>
-
+        <section id="demo" className="py-28 relative overflow-hidden bg-gray-950">
             <div className="container mx-auto px-4 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
                     {/* Left side */}

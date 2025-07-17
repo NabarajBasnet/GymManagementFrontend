@@ -269,13 +269,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="relative overflow-hidden bg-gradient-to-b from-gray-900 via-gray-900 to-black">
-      {/* Background Elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-900/10 to-transparent"></div>
-        <div className="absolute bottom-0 right-0 w-full h-full bg-gradient-to-tl from-cyan-900/10 to-transparent"></div>
-      </div>
-
+    <section id="features" className="relative overflow-hidden bg-gray-950 to-black">
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full opacity-40 animate-pulse"></div>

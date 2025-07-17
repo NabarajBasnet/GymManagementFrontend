@@ -61,7 +61,7 @@ const AboutSection = () => {
     ];
 
     return (
-        <section id="about" className="py-28 relative overflow-hidden bg-gray-900/40">
+        <section id="about" className="py-28 relative overflow-hidden bg-gray-950">
 
             <div className="container mx-auto px-4 relative z-10">
                 <motion.div

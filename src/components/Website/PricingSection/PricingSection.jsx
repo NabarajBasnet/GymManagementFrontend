@@ -63,8 +63,8 @@ const PricingSection = () => {
 
     const getPlanGradient = (index) => {
         const gradients = [
-            "from-blue-500 to-cyan-500",
-            "from-purple-500 to-pink-500",
+            "from-blue-500 to-blue-500",
+            "from-sky-400 to-sky-400",
             "from-orange-500 to-red-500"
         ];
         return gradients[index] || "from-gray-500 to-gray-600";
@@ -89,17 +89,7 @@ const PricingSection = () => {
     };
 
     return (
-        <section id="pricing" className="w-full min-h-screen bg-gray-900 relative overflow-hidden flex items-center">
-            {/* Enhanced Glowing Background Effects */}
-            <div className="absolute inset-0 z-0 overflow-hidden">
-                <div className="absolute top-40 left-20 w-72 h-72 bg-blue-400/20 rounded-full blur-3xl animate-float1"></div>
-                <div className="absolute bottom-40 right-20 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-float2"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-cyan-400/15 rounded-full blur-3xl animate-float3"></div>
-                <div className="absolute top-20 right-1/4 w-64 h-64 bg-pink-500/15 rounded-full blur-3xl animate-pulse"></div>
-
-                {/* Subtle grid pattern */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.02)_0%,transparent_70%)]"></div>
-            </div>
+        <section id="pricing" className="w-full min-h-screen bg-gray-950 relative overflow-hidden flex items-center">
 
             <style jsx>{`
                 @keyframes float1 {
@@ -169,7 +159,7 @@ const PricingSection = () => {
                             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
                                 Unlock Your Gym's
                                 <br />
-                                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                                <span className="bg-gradient-to-r from-blue-400 via-sky-200 to-white bg-clip-text text-transparent">
                                     Full Potential
                                 </span>
                             </h1>
@@ -202,7 +192,7 @@ const PricingSection = () => {
                                         {/* Popular Badge */}
                                         {isPopular && (
                                             <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                                                <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
+                                                <div className="bg-gradient-to-r from-blue-600 to-sky-400 text-white px-6 py-2 rounded-full text-sm font-semibold shadow-lg">
                                                     <Star className="w-4 h-4 inline mr-1" />
                                                     Most Popular
                                                 </div>
@@ -299,7 +289,7 @@ const PricingSection = () => {
                         {/* FAQ Section */}
                         <div className="mt-24">
                             <div className="text-center mb-16">
-                                <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+                                <h2 className="text-4xl lg:text-5xl bg-gradient-to-r from-blue-600 via-sky-300 to-white font-bold bg-clip-text text-transparent mb-4">
                                     Frequently Asked Questions
                                 </h2>
                                 <p className="text-lg text-gray-300 max-w-2xl mx-auto">
