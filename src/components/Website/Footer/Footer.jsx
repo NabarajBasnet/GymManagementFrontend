@@ -102,7 +102,7 @@ const Footer = () => {
                             className="text-2xl font-bold text-white mb-4"
                             whileHover={{ scale: 1.05 }}
                         >
-                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-400">Fitbinary</span>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-sky-300 to-white">Fitbinary</span>
                         </motion.div>
                         <p className="text-gray-400 text-sm mb-6">
                             The complete gym management solution trusted by fitness businesses worldwide.
@@ -200,7 +200,7 @@ const Footer = () => {
                     variants={itemVariants}
                 >
                     <div className="max-w-2xl mx-auto text-center">
-                        <h3 className="text-2xl font-bold text-white mb-4 text-sky-500">Stay Updated</h3>
+                        <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-500 via-sky-300 to-white bg-clip-text text-transparent mb-4">Stay Updated</h3>
                         <p className="text-gray-400 mb-6">
                             Subscribe to our newsletter for product updates and fitness industry insights.
                         </p>

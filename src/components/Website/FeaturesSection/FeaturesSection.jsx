@@ -33,7 +33,7 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
             </div>
 
             {/* Title */}
-            <h3 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
+            <h3 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-500 via-sky-200 to-white bg-clip-text text-transparent leading-tight">
               {title}
             </h3>
 
@@ -183,11 +183,6 @@ const FeaturesSection = () => {
       title: "Smart Locker Management",
       description: "Digital locker management system with automated assignments, real-time availability tracking, and expiration alerts.",
       image: "/images/lockerdemo.png",
-      highlights: [
-        "Automated locker assignments",
-        "Real-time availability tracking",
-        "Expiration alerts and renewals"
-      ]
     },
     {
       icon: <ReceiptText className="text-white" size={32} />,
@@ -197,29 +192,26 @@ const FeaturesSection = () => {
       highlights: [
         "Professional automated invoices",
         "Recurring payment processing",
-        "Detailed financial reporting"
       ]
     },
     {
       icon: <Mail className="text-white" size={32} />,
       title: "Email Notifications & Alerts",
-      description: "Keep members engaged with personalized automated communications and branded email templates.",
+      description: "Keep members engaged with personalized automated communications and branded emails.",
       image: "/images/emailnotification.png",
       highlights: [
-        "Personalized automated emails",
-        "Customizable branded templates",
-        "Smart notification scheduling"
+        "Automated emails alerts",
+        "Membership expiration email alerts",
       ]
     },
     {
       icon: <UserCog className="text-white" size={32} />,
       title: "Staff & Role Management",
-      description: "Role-based access control with custom permissions, staff tracking, and performance metrics.",
+      description: "Role-based access control with custom permissions and dynamic shift schedules.",
       image: "/images/staffspage.png",
       highlights: [
         "Role-based access control",
-        "Staff performance tracking",
-        "Integrated shift scheduling"
+        "Dynamic staff schedules",
       ]
     },
     {
@@ -240,8 +232,6 @@ const FeaturesSection = () => {
       image: "/images/classmanagement.png",
       highlights: [
         "Real-time class booking",
-        "Waitlist management",
-        "Instructor scheduling tools"
       ]
     },
     {
@@ -251,8 +241,8 @@ const FeaturesSection = () => {
       image: "/images/planmanagement.png",
       highlights: [
         "Unlimited membership tiers",
-        "Automated billing cycles",
-        "Pro-rated charges and upgrades"
+        "Custom dynamic plan creation",
+        "Unlimited plans storage"
       ]
     },
     {
@@ -298,7 +288,7 @@ const FeaturesSection = () => {
 
           <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-8 leading-tight">
             Professional{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-sky-300 to-white">
               Fitness Solutions
             </span>
           </h2>

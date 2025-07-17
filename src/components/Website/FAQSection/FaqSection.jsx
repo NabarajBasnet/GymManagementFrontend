@@ -52,8 +52,8 @@ const FAQItem = ({ faq, index, isOpen, onToggle }) => {
                     relative bg-white/5 dark:bg-white/5 backdrop-blur-xl 
                     border border-white/10 dark:border-white/10 rounded-2xl 
                     overflow-hidden transition-all duration-300 ease-out
-                    hover:bg-white/10 hover:border-white/20 
-                    hover:shadow-xl hover:shadow-blue-500/10
+                    hover:bg-white/10 
+                    hover:shadow-xl 
                     ${isOpen ? 'bg-white/10 border-white/20 shadow-xl shadow-blue-500/10' : ''}
                 `}
             >
@@ -125,11 +125,10 @@ const FAQSection = () => {
 
     return (
         <section id="faq" className="relative w-full min-h-screen bg-gray-950 overflow-hidden">
-      
 
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
-                <div className="w-full max-w-4xl mx-auto">
+                <div className="w-full max-w-7xl sm:px-4 px-8 mx-auto">
                     {/* Header */}
                     <div className="text-center mb-16">
                         <div className="inline-flex items-center px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6">
