@@ -106,7 +106,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
+            const response = await fetch(`https://fitbinary.com/api/members?page=${0}&limit=${0}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

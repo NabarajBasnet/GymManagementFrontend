@@ -572,25 +572,25 @@ const PaymentInvoice = () => {
                                                     <td className="p-4 align-middle">
                                                         {getInvoiceStatusBadge(invoice?.status)}
                                                     </td>
-                                                    {loggedInUser?.role !== 'Gym Admin' && (
-                                                        <td className="p-4 align-middle text-center">
-                                                            <div className="flex justify-center gap-2">
-                                                                <Tooltip>
-                                                                    <TooltipTrigger asChild>
-                                                                        <Button
-                                                                            variant="ghost"
-                                                                            size="icon"
-                                                                            onClick={() => setViewInvoiceAlert([true, invoice])}
-                                                                            className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                                                                        >
-                                                                            <FiPrinter className="h-4 w-4" />
-                                                                        </Button>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>Print Invoice</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
+                                                    <td className="p-4 align-middle text-center">
+                                                        <div className="flex justify-center gap-2">
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => setViewInvoiceAlert([true, invoice])}
+                                                                        className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+                                                                    >
+                                                                        <FiPrinter className="h-4 w-4" />
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Print Invoice</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
 
+                                                            {loggedInUser?.role !== 'Gym Admin' &&
                                                                 <AlertDialog>
                                                                     <Tooltip>
                                                                         <TooltipTrigger asChild>
@@ -633,53 +633,53 @@ const PaymentInvoice = () => {
                                                                         </AlertDialogFooter>
                                                                     </AlertDialogContent>
                                                                 </AlertDialog>
+                                                            }
 
-                                                                <AlertDialog>
-                                                                    <Tooltip>
-                                                                        <TooltipTrigger asChild>
-                                                                            <AlertDialogTrigger asChild>
-                                                                                <Button
-                                                                                    variant="ghost"
-                                                                                    size="icon"
-                                                                                    className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
-                                                                                >
-                                                                                    <LuSend className="h-4 w-4" />
-                                                                                </Button>
-                                                                            </AlertDialogTrigger>
-                                                                        </TooltipTrigger>
-                                                                        <TooltipContent>Send Invoice</TooltipContent>
-                                                                    </Tooltip>
-
-                                                                    <AlertDialogContent className="bg-white dark:bg-[#1f1f1f] border border-blue-200 dark:border-blue-400 shadow-xl rounded-2xl">
-                                                                        <AlertDialogHeader>
-                                                                            <AlertDialogTitle className="text-blue-600 dark:text-blue-400 text-lg font-semibold">
-                                                                                Send Invoice?
-                                                                            </AlertDialogTitle>
-                                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
-                                                                                This will send invoice{" "}
-                                                                                <span className="font-medium text-black dark:text-white">
-                                                                                    #{invoice.invoiceNo}
-                                                                                </span>{" "}
-                                                                                to the member's email. You can’t undo this action.
-                                                                            </AlertDialogDescription>
-                                                                        </AlertDialogHeader>
-
-                                                                        <AlertDialogFooter className="mt-6">
-                                                                            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
-                                                                                Cancel
-                                                                            </AlertDialogCancel>
-                                                                            <AlertDialogAction
-                                                                                onClick={() => resendInvoiceToMember(invoice?.customer?._id, invoice?._id)}
-                                                                                className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-blue-500"
+                                                            <AlertDialog>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <AlertDialogTrigger asChild>
+                                                                            <Button
+                                                                                variant="ghost"
+                                                                                size="icon"
+                                                                                className="h-8 w-8 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                                                                             >
-                                                                                Send Invoice
-                                                                            </AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </AlertDialogContent>
-                                                                </AlertDialog>
-                                                            </div>
-                                                        </td>
-                                                    )}
+                                                                                <LuSend className="h-4 w-4" />
+                                                                            </Button>
+                                                                        </AlertDialogTrigger>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>Send Invoice</TooltipContent>
+                                                                </Tooltip>
+
+                                                                <AlertDialogContent className="bg-white dark:bg-[#1f1f1f] border border-blue-200 dark:border-blue-400 shadow-xl rounded-2xl">
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle className="text-blue-600 dark:text-blue-400 text-lg font-semibold">
+                                                                            Send Invoice?
+                                                                        </AlertDialogTitle>
+                                                                        <AlertDialogDescription className="text-gray-600 dark:text-gray-300">
+                                                                            This will send invoice{" "}
+                                                                            <span className="font-medium text-black dark:text-white">
+                                                                                #{invoice.invoiceNo}
+                                                                            </span>{" "}
+                                                                            to the member's email. You can’t undo this action.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+
+                                                                    <AlertDialogFooter className="mt-6">
+                                                                        <AlertDialogCancel className="bg-gray-100 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700">
+                                                                            Cancel
+                                                                        </AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() => resendInvoiceToMember(invoice?.customer?._id, invoice?._id)}
+                                                                            className="bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600 focus-visible:ring-blue-500"
+                                                                        >
+                                                                            Send Invoice
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>

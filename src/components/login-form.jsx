@@ -41,6 +41,7 @@ export function LoginForm({ className, ...props }) {
       });
 
       const responseBody = await response.json();
+      console.log(responseBody)
       if (response.status === 404) {
         setError("email", {
           type: "manual",
