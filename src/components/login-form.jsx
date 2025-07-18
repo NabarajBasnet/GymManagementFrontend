@@ -31,7 +31,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch("https://fitbinary.com/api/auth/login", {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -147,7 +147,7 @@ export function LoginForm({ className, ...props }) {
                     <Input
                       id="email"
                       type="email"
-                      className={`py-6 rounded-sm ${errors.email ? "border-red-500" : ""}`}
+                      className={`py-6 bg-white dark:border-gray-200 border-gray-200 rounded-sm ${errors.email ? "border-red-500" : ""}`}
                       placeholder="you@example.com"
                       {...register("email", {
                         required: "Email is required",
@@ -172,7 +172,7 @@ export function LoginForm({ className, ...props }) {
                     <Input
                       id="password"
                       type="password"
-                      className={`py-6 rounded-sm ${errors.password ? "border-red-500" : ""}`}
+                      className={`py-6 bg-white dark:border-gray-200 border-gray-200 rounded-sm ${errors.password ? "border-red-500" : ""}`}
                       placeholder="Enter your password"
                       {...register("password", {
                         required: "Password is required",
