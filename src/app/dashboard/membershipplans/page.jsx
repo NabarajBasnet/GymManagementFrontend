@@ -29,7 +29,7 @@ const ViewPlans = () => {
 
   const getAllMembershipPlans = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/membershipplans/by-org?search=${debouncedSearchQuery}`);
+      const response = await fetch(`https://fitbinary.com/api/membershipplans/by-org?search=${debouncedSearchQuery}`);
       const data = await response.json();
       return data;
     } catch (error) {

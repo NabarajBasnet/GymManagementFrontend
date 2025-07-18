@@ -99,7 +99,7 @@ const LockersOverview = () => {
                 lockerSize: selectedSize
             });
 
-            const req = await fetch(`http://localhost:3000/api/lockers/by-tenant?${queryParams}`);
+            const req = await fetch(`https://fitbinary.com/api/lockers/by-tenant?${queryParams}`);
             const res = await req.json();
             return res;
         } catch (error) {

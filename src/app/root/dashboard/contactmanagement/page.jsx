@@ -73,13 +73,13 @@ const ContactManagement = () => {
 
     const fetchAllContacts = async ({ queryKey }) => {
         const [, page, limit] = queryKey;
-        const response = await fetch(`http://localhost:3000/api/contact/fetch-contact?page=${page}&limit=${limit}`);
+        const response = await fetch(`https://fitbinary.com/api/contact/fetch-contact?page=${page}&limit=${limit}`);
         if (!response.ok) throw new Error('Failed to fetch contacts');
         return await response.json();
     };
 
     const updateStatus = async ({ id, status }) => {
-        const response = await fetch(`http://localhost:3000/api/contact/change-contact-status`, {
+        const response = await fetch(`https://fitbinary.com/api/contact/change-contact-status`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
