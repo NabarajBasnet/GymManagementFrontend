@@ -249,7 +249,7 @@ const MemberDetails = ({ memberId }) => {
 
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/members/${memberId}`,
+        `http://localhost:3000/api/members/${memberId}`,
         {
           method: "PATCH",
           headers: {
@@ -289,7 +289,7 @@ const MemberDetails = ({ memberId }) => {
 
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/members/hold-membership/${memberId}`,
+        `http://localhost:3000/api/members/hold-membership/${memberId}`,
         {
           method: "PATCH",
           headers: {
@@ -318,7 +318,7 @@ const MemberDetails = ({ memberId }) => {
     const membershipHoldData = { status: 'Active' };
 
     try {
-      const response = await fetch(`https://fitbinary.com/api/members/resume-membership/${memberId}`, {
+      const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
@@ -340,7 +340,7 @@ const MemberDetails = ({ memberId }) => {
   const getAactionTakers = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/staffsmanagement/actiontakers?actionTakers=${[
+        `http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${[
           "Gym Admin",
           "Super Admin",
           "Operational Manager",
@@ -372,7 +372,7 @@ const MemberDetails = ({ memberId }) => {
   const GetMembershipPlans = async () => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/membershipplans/by-org`
+        `http://localhost:3000/api/membershipplans/by-org?page=${0}&limit=${0}`
       );
       const responseBody = await response.json();
       return responseBody;
@@ -489,7 +489,7 @@ const MemberDetails = ({ memberId }) => {
             <BreadcrumbSeparator className="text-gray-400 dark:text-gray-500" />
             <BreadcrumbItem>
               <span className="text-primary font-medium dark:text-primary">
-                {data ? `${member.fullName || "Member Name"}` : "Loading..."}
+                {data ? `${member?.fullName || "Member Name"}` : "Loading..."}
               </span>
             </BreadcrumbItem>
           </BreadcrumbList>
@@ -643,7 +643,7 @@ const MemberDetails = ({ memberId }) => {
                         Paused Days
                       </p>
                       <p className="text-base dark:text-gray-300 font-semibold text-gray-800">
-                        {data ? member.pausedDays : ""}
+                        {data ? member?.pausedDays : ""}
                       </p>
                     </div>
                     <div className="bg-green-50 p-3 dark:bg-gray-900 dark:border-none rounded-lg border border-green-200">
@@ -651,7 +651,7 @@ const MemberDetails = ({ memberId }) => {
                         Remaining Days
                       </p>
                       <p className="text-base dark:text-gray-300 font-semibold text-gray-800">
-                        {data ? member.remainingDaysOfMembership : ""}
+                        {data ? member?.remainingDaysOfMembership : ""}
                       </p>
                     </div>
                     <div className="bg-amber-50 p-3 dark:bg-gray-900 dark:border-none rounded-lg border border-amber-200">
@@ -660,7 +660,7 @@ const MemberDetails = ({ memberId }) => {
                       </p>
                       <p className="text-base font-semibold dark:text-gray-300 text-gray-800">
                         {data?.member?.resumedDate
-                          ? new Date(data.member.resumedDate)
+                          ? new Date(data?.member?.resumedDate)
                             .toISOString()
                             .split("T")[0]
                           : "N/A"}
