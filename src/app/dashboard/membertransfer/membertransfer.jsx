@@ -99,7 +99,7 @@ const MemberTransfer = () => {
     queryKey: ["members"],
     queryFn: async () => {
       try {
-        const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
+        const response = await fetch(`https://fitbinary.com/api/members?page=${0}&limit=${0}`);
         return await response.json();
       } catch (error) {
         toast.error(error.message);
