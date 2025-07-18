@@ -867,7 +867,7 @@ const Lockers = () => {
                                                                 : locker.status === 'Booked'
                                                                     ? 'bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800'
                                                                     : locker.status === 'Empty'
-                                                                        ? 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800'
+                                                                        ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-4 focus:ring-yellow-200 dark:focus:ring-yellow-800'
                                                                         : 'bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700'
                                                                 } focus:outline-none active:scale-95`}
                                                         >
