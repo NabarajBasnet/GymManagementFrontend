@@ -126,7 +126,7 @@ const Lockers = () => {
     // Pululate lockers data
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch`);
+            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch?page=${0}&limit=${0}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
