@@ -85,9 +85,7 @@ const MemberDetails = ({ memberId }) => {
   const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
   const [membershipDurationDays, setMembershipDurationDays] = useState();
   const [planId, setPlanId] = useState("");
-  const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
-    new Date()
-  );
+  const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(null);
 
   // Member Hooks
   const { getSingleUserDetails } = useMember();
@@ -156,7 +154,7 @@ const MemberDetails = ({ memberId }) => {
     if (isNaN(duration)) return;
     const expireDate = new Date(member?.membershipExpireDate);
     expireDate.setDate(expireDate.getDate() + parseInt(duration));
-    setPrevMembershipExpireDate(expireDate);
+    setPrevMembershipExpireDate(new Date(expireDate));
   }
   useEffect(() => {
     handleMembershipExpireDate(membershipDurationDays);
@@ -1024,9 +1022,14 @@ const MemberDetails = ({ memberId }) => {
                                   {...register("membershipExpireDate")}
                                   type="date"
                                   disabled={userRole === 'Gym Admin'}
-                                  value={new Date(prevMembershipExpireDate).toISOString().split("T")[0]}
+                                  value={prevMembershipExpireDate && !isNaN(new Date(prevMembershipExpireDate))
+                                    ? new Date(prevMembershipExpireDate).toISOString().split("T")[0]
+                                    : ''}
                                   onChange={(e) => {
-                                    setPrevMembershipExpireDate(e.target.value);
+                                    const date = new Date(e.target.value);
+                                    if (!isNaN(date)) {
+                                      setPrevMembershipExpireDate(date);
+                                    }
                                   }}
                                   className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 />
