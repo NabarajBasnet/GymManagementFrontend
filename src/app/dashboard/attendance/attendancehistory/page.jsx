@@ -97,7 +97,7 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/org-members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
@@ -298,8 +298,8 @@ const AttendanceHistory = () => {
                     <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                         <CardHeader className="pb-2">
                             <Alert className="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 mb-4">
-                                <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                                <AlertDescription className="text-blue-700 dark:text-blue-300 text-sm ml-2">
+                                <InfoIcon className="h-4 mt-1 w-4 text-blue-600 dark:text-blue-400" />
+                                <AlertDescription className="mt-1 text-blue-700 dark:text-blue-300 text-sm ml-2">
                                     Showing data from the beginning of the current month. Adjust dates below to view different periods.
                                 </AlertDescription>
                             </Alert>
@@ -384,7 +384,7 @@ const AttendanceHistory = () => {
                                         </div>
 
                                         {renderDropdown && (
-                                            <div className="absolute z-50 w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
+                                            <div className="absolute z-[60] w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
                                                 {isLoading ? (
                                                     <div className="p-4 space-y-2">
                                                         <Skeleton className="h-6 w-full dark:bg-gray-700" />

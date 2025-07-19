@@ -251,17 +251,13 @@ const Header = () => {
 
       if (response.ok) {
         setLoading(false);
-        soonerToast.success(responseBody.message, {
-          description: "Logout successful",
-        });
+        soonerToast.success(responseBody.message);
         router.push("/userlogin");
         window.location.reload();
       }
     } catch (error) {
       console.log("Error: ", error);
-      soonerToast.error(error.message, {
-        description: "Internal server error",
-      });
+      soonerToast.error(error.message);
     }
   };
 

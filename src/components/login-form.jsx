@@ -79,14 +79,14 @@ export function LoginForm({ className, ...props }) {
   return (
     <div className="w-full flex items-center justify-center md:p-4">
       <motion.div
-        className="w-full rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
+        className="w-full rounded-2xl overflow-hidden bg-gray-900/90 backdrop-blur-lg border border-gray-700 shadow-2xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 text-white">
+          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600">
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -103,21 +103,21 @@ export function LoginForm({ className, ...props }) {
                 <User className="w-8 h-8 text-white" />
               </motion.div>
 
-              <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
+              <h1 className="text-3xl font-bold mb-4 text-white">Welcome Back</h1>
               <p className="text-white/80 md:mb-8">
                 Log in to access your dashboard.
               </p>
 
               <div className="hidden md:flex flex-col space-y-4 mb-8">
-                <div className="flex items-center space-x-3 text-sm">
+                <div className="flex items-center space-x-3 text-sm text-white/90">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Secure account access</span>
                 </div>
-                <div className="flex items-center space-x-3 text-sm">
+                <div className="flex items-center space-x-3 text-sm text-white/90">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Personalized dashboard</span>
                 </div>
-                <div className="flex items-center space-x-3 text-sm">
+                <div className="flex items-center space-x-3 text-sm text-white/90">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Seamless user experience</span>
                 </div>
@@ -126,29 +126,29 @@ export function LoginForm({ className, ...props }) {
           </div>
 
           {/* Right side - Form */}
-          <div className="lg:w-7/12 p-8 bg-white/95">
+          <div className="lg:w-7/12 p-8 bg-gray-900">
             <div className="w-full md:mx-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
-                <p className="text-gray-600">
+                <h2 className="text-2xl font-bold text-white">Sign In</h2>
+                <p className="text-gray-400">
                   Fill in your credentials to access your account
                 </p>
               </div>
 
               <form onSubmit={handleSubmit(onLoginUser)} className="space-y-4">
                 {errors.root && (
-                  <div className="p-3 bg-red-100 text-red-700 rounded-md text-sm">
+                  <div className="p-3 bg-red-900/20 text-red-400 rounded-md text-sm border border-red-800">
                     {errors.root.message}
                   </div>
                 )}
 
                 <div>
-                  <Label htmlFor="email">Email Address</Label>
+                  <Label htmlFor="email" className="text-gray-300">Email Address</Label>
                   <div className="relative">
                     <Input
                       id="email"
                       type="email"
-                      className={`py-6 bg-white dark:border-gray-200 border-gray-200 rounded-sm ${errors.email ? "border-red-500" : ""}`}
+                      className={`py-6 bg-gray-800 border-gray-700 text-white rounded-sm focus:border-blue-500 focus:ring-blue-500/20 ${errors.email ? "border-red-500" : ""}`}
                       placeholder="you@example.com"
                       {...register("email", {
                         required: "Email is required",
@@ -158,22 +158,22 @@ export function LoginForm({ className, ...props }) {
                         },
                       })}
                     />
-                    <AtSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <AtSign className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                   </div>
                   {errors.email && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-red-400">
                       {errors.email.message}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-gray-300">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type="password"
-                      className={`py-6 bg-white dark:border-gray-200 border-gray-200 rounded-sm ${errors.password ? "border-red-500" : ""}`}
+                      className={`py-6 bg-gray-800 border-gray-700 text-white rounded-sm focus:border-blue-500 focus:ring-blue-500/20 ${errors.password ? "border-red-500" : ""}`}
                       placeholder="Enter your password"
                       {...register("password", {
                         required: "Password is required",
@@ -183,10 +183,10 @@ export function LoginForm({ className, ...props }) {
                         },
                       })}
                     />
-                    <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    <Lock className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                   </div>
                   {errors.password && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p className="mt-1 text-sm text-red-400">
                       {errors.password.message}
                     </p>
                   )}
@@ -232,14 +232,14 @@ export function LoginForm({ className, ...props }) {
                   By signing in, you agree to our{" "}
                   <Link
                     href="/termsofservice"
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-400 hover:underline"
                   >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
                   <Link
                     href="/privacypolicy"
-                    className="text-blue-600 hover:underline"
+                    className="text-blue-400 hover:underline"
                   >
                     Privacy Policy
                   </Link>
@@ -249,13 +249,13 @@ export function LoginForm({ className, ...props }) {
                 <div className="mt-6 flex items-center justify-center space-x-4">
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-gray-500 transition-colors"
+                    className="text-gray-500 hover:text-gray-400 transition-colors"
                   >
                     <Github className="h-5 w-5" />
                   </a>
                   <a
                     href="#"
-                    className="text-gray-400 hover:text-gray-500 transition-colors"
+                    className="text-gray-500 hover:text-gray-400 transition-colors"
                   >
                     <Linkedin className="h-5 w-5" />
                   </a>
