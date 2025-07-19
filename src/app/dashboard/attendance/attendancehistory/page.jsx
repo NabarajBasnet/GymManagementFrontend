@@ -61,6 +61,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { toast } from "sonner";
 
 const AttendanceHistory = () => {
     const { user } = useUser();
@@ -88,6 +89,7 @@ const AttendanceHistory = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [persons, setPersons] = useState([]);
+    const [staffs, setStaffs] = useState([]);
 
     const [activeTab, setActiveTab] = useState('filters');
     const limit = 10;
@@ -97,12 +99,13 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
             return responseBody.members;
         } catch (error) {
+            toast.error(error.message)
             console.log("Error: ", error);
             setIsLoading(false);
         }
@@ -112,14 +115,15 @@ const AttendanceHistory = () => {
     const fetchAllStaffs = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
-            setPersons(responseBody.staffs);
+            setStaffs(responseBody.staffs);
             setIsLoading(false);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
             setIsLoading(false);
+            toast.error(error.message)
         }
     };
 
@@ -147,8 +151,8 @@ const AttendanceHistory = () => {
 
         try {
             setIsLoading(true);
-            const staffsAttendanceURL = `https://fitbinary.com/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `https://fitbinary.com/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
 
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
@@ -168,6 +172,7 @@ const AttendanceHistory = () => {
         } catch (error) {
             console.log("Error: ", error);
             setIsLoading(false);
+            toast.error(error.message)
         }
     };
 
@@ -383,36 +388,70 @@ const AttendanceHistory = () => {
                                             />
                                         </div>
 
-                                        {renderDropdown && (
-                                            <div className="absolute z-[60] w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
-                                                {isLoading ? (
-                                                    <div className="p-4 space-y-2">
-                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
-                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
-                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
-                                                    </div>
-                                                ) : persons?.length > 0 ? (
-                                                    persons
-                                                        .filter((person) =>
-                                                            person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-                                                        )
-                                                        .map((person) => (
-                                                            <div
-                                                                key={person._id}
-                                                                onClick={() => handlePersonSelect(person)}
-                                                                className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                                                            >
-                                                                <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                                                                <span className="text-gray-900 dark:text-gray-100">{person.fullName}</span>
-                                                            </div>
-                                                        ))
-                                                ) : (
-                                                    <div className="p-4 text-center text-gray-500 dark:text-gray-400">
-                                                        No {membershipType.toLowerCase()} found
-                                                    </div>
-                                                )}
-                                            </div>
+                                        {membershipType === 'Members' ? (
+                                            renderDropdown && (
+                                                <div className="absolute z-[60] w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
+                                                    {isLoading ? (
+                                                        <div className="p-4 space-y-2">
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                        </div>
+                                                    ) : persons?.length > 0 ? (
+                                                        persons
+                                                            .filter((person) =>
+                                                                person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                                                            )
+                                                            .map((person) => (
+                                                                <div
+                                                                    key={person._id}
+                                                                    onClick={() => handlePersonSelect(person)}
+                                                                    className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                                                >
+                                                                    <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                                                    <span className="text-gray-900 dark:text-gray-100">{person.fullName}</span>
+                                                                </div>
+                                                            ))
+                                                    ) : (
+                                                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                                                            No {membershipType.toLowerCase()} found
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )
+                                        ) : (
+                                            renderDropdown && (
+                                                <div className="absolute z-[60] w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
+                                                    {isLoading ? (
+                                                        <div className="p-4 space-y-2">
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                            <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                        </div>
+                                                    ) : staffs?.length > 0 ? (
+                                                        staffs
+                                                            .filter((staff) =>
+                                                                staff.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                                                            )
+                                                            .map((staff) => (
+                                                                <div
+                                                                    key={staff._id}
+                                                                    onClick={() => handlePersonSelect(staff)}
+                                                                    className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                                                                >
+                                                                    <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                                                    <span className="text-gray-900 dark:text-gray-100">{staff.fullName}</span>
+                                                                </div>
+                                                            ))
+                                                    ) : (
+                                                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                                                            No {membershipType.toLowerCase()} found
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )
                                         )}
+
                                     </div>
                                 </div>
                             </div>

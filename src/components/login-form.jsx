@@ -31,7 +31,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch("https://fitbinary.com/api/auth/login", {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +79,7 @@ export function LoginForm({ className, ...props }) {
   return (
     <div className="w-full flex items-center justify-center md:p-4">
       <motion.div
-        className="w-full rounded-2xl overflow-hidden bg-gray-900/90 backdrop-blur-lg border border-gray-700 shadow-2xl"
+        className="w-full rounded-2xl overflow-hidden bg-gray-900/90 backdrop-blur-lg border border-none shadow-2xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}

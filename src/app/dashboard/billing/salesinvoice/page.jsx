@@ -135,7 +135,7 @@ const PaymentInvoice = () => {
     const getAllInvoices = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`https://fitbinary.com/api/invoice/v2?page=${page}&limit=${limit}&invoiceSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/invoice/v2?page=${page}&limit=${limit}&invoiceSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -166,7 +166,7 @@ const PaymentInvoice = () => {
     const resendInvoiceToMember = async (memberId, invoiceId) => {
         setResendingInvoice(true);
         try {
-            const response = await fetch(`https://fitbinary.com/api/invoice/v2/resend-invoice?memberId=${memberId}&invoiceId=${invoiceId}`)
+            const response = await fetch(`http://localhost:3000/api/invoice/v2/resend-invoice?memberId=${memberId}&invoiceId=${invoiceId}`)
             const resBody = await response.json();
             if (response.ok) {
                 toast.success(resBody.message);
@@ -185,7 +185,7 @@ const PaymentInvoice = () => {
     // Delete bulk billing
     const deleteSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`https://fitbinary.com/api/invoice/V2/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/invoice/V2/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
@@ -207,7 +207,7 @@ const PaymentInvoice = () => {
         }
 
         try {
-            const response = await fetch('https://fitbinary.com/api/invoice/v2/bulk-delete', {
+            const response = await fetch('http://localhost:3000/api/invoice/v2/bulk-delete', {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

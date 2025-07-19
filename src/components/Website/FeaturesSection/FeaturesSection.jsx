@@ -95,7 +95,7 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
                   </div>
                   <div className="flex-1 mx-4">
                     <div className="bg-gray-700/50 rounded-md px-3 py-1 text-xs text-gray-400">
-                      https://fitbinary.com/dashboard
+                      http://localhost:3000/dashboard
                     </div>
                   </div>
                 </div>
