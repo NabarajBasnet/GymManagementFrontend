@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { TbLiveViewFilled } from "react-icons/tb";
 import { RiUserLocationFill } from "react-icons/ri";
 import { MdAdd } from "react-icons/md";
@@ -84,10 +85,23 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
+import { io } from 'socket.io-client';
+
+const socket = io('http://localhost:3000', {
+  transports: ['websocket'],
+  reconnection: true,
+  reconnectionAttempts: Infinity,
+  reconnectionDelay: 1000,
+  reconnectionDelayMax: 5000,
+  timeout: 20000,
+});
 
 const Sidebar = () => {
   const { user, loading: userLoading } = useUser();
   const loggedInUser = user?.user;
+
+  // Join notification room
+  socket.emit("join-user-notification-room");
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -98,7 +112,6 @@ const Sidebar = () => {
   );
   const [activeItem, setActiveItem] = useState("");
   const [hoveredItem, setHoveredItem] = useState(null);
-  const [notifications, setNotifications] = useState(3);
 
   // Set active item based on current route
   useEffect(() => {
@@ -111,7 +124,7 @@ const Sidebar = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -299,11 +312,11 @@ const Sidebar = () => {
         //   link: "/dashboard/members/membershiplogs",
         // },
         // {
-        //     icon: MdAutoGraph,
-        //     title: 'Member Performance',
-        //     link: '/dashboard/members/memberperformance',
-        //     badge: 'Pro',
-        //     badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
+        //   icon: MdAutoGraph,
+        //   title: 'Member Performance',
+        //   link: '/dashboard/members/memberperformance',
+        //   badge: 'Pro',
+        //   badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
         // },
         // {
         //   icon: FaRulerHorizontal,
@@ -331,13 +344,16 @@ const Sidebar = () => {
           title: "Personal Training",
           link: "/dashboard/personaltraining",
           subObj: [
-            ...(loggedInUser?.role !== 'Gym Admin' ? [
-              {
-                icon: FaDumbbell,
-                title: "Training Packages",
-                link: "/dashboard/personaltraining/trainingpackages",
-              },
-            ] : []),
+            ...(loggedInUser?.role !== 'Gym Admin'
+              ? [
+                {
+                  icon: FaDumbbell,
+                  title: "Training Packages",
+                  link: "/dashboard/personaltraining/trainingpackages",
+                },
+              ]
+              : []
+            ),
             {
               icon: FaDumbbell,
               title: "Book Training",
@@ -390,30 +406,38 @@ const Sidebar = () => {
       ],
     },
     // Staff Operations
-    {
-      category: "Staff",
-      items: [
+    ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'
+      ? [
         {
-          icon: FaUsersGear,
-          title: "Staff Management",
-          link: "/dashboard/staffmanagement",
-          subObj: [
+          category: "Staff",
+          items: [
             {
-              icon: IoPeopleSharp,
+              icon: FaUsersGear,
               title: "Staff Management",
-              link: "/dashboard/staffmanagement/staffs",
+              link: "/dashboard/staffmanagement",
+              subObj: [
+                {
+                  icon: IoPeopleSharp,
+                  title: "Staff Management",
+                  link: "/dashboard/staffmanagement/staffs",
+                },
+                ...(loggedInUser?.role === 'Gym Admin'
+                  ? []
+                  : [
+                    {
+                      icon: FcParallelTasks,
+                      title: "Task Management",
+                      link: "/dashboard/staffmanagement/taskmanagement",
+                    },
+                  ]
+                ),
+              ],
             },
-            ...(loggedInUser?.role === 'Gym Admin' ? [] : [
-              {
-                icon: FcParallelTasks,
-                title: "Task Management",
-                link: "/dashboard/staffmanagement/taskmanagement",
-              },
-            ])
           ],
         },
-      ],
-    },
+      ]
+      : []
+    ),
     // Financial Management
     {
       category: "Financial",
@@ -480,6 +504,85 @@ const Sidebar = () => {
   // Function to determine if a link is active
   const isActive = (link) => {
     return activeItem === link || activeItem.startsWith(link + "/");
+  };
+
+  // get notifications
+  const getNotifications = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/user-notification/get`);
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    };
+  };
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ['notifications'],
+    queryFn: getNotifications
+  });
+
+  // Listen to emit event
+  useEffect(() => {
+
+    const getNotificationHandler = (data) => {
+      refetch();
+    }
+
+    socket.on('new_notification', getNotificationHandler);
+    return () => {
+      socket.off('new_notification', getNotificationHandler);
+    }
+  }, [, refetch, loggedInUser]);
+
+  const { notifications } = data || {};
+
+  const unreadedNotifications = notifications?.filter((notif) => {
+    return notif.status === 'Unread'
+  })
+
+  const markSingleNotificationAsRead = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/user-notification/single-read/${id}`, {
+        method: "PATCH",
+      });
+      const resBody = await response.json();
+      if (response.ok) {
+        refetch()
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
+
+  const markBulkNotificationAsRead = async () => {
+    try {
+      const unreadedNotificationsIds = notifications?.filter((notif) => notif.status === 'Unread').map((notif) => notif._id);
+
+      if (!unreadedNotificationsIds || unreadedNotificationsIds.length === 0) {
+        toast.error("No unread notifications");
+        return;
+      }
+
+      const response = await fetch(`http://localhost:3000/api/user-notification/bulk-read/`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ unreadedNotificationsIds })
+      });
+      const resBody = await response.json();
+      if (response.ok) {
+        refetch()
+        toast.success(resBody.message || "Notifications marked as read");
+      };
+      refetch();
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -791,18 +894,99 @@ const Sidebar = () => {
           {sidebarMinimized ? (
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="w-full mb-2 h-12 relative flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"
-                >
-                  <Bell className="h-5 w-5 text-gray-500" />
-                  {notifications > 0 && (
-                    <span className="absolute top-2 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
-                      {notifications}
-                    </span>
-                  )}
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="w-full mb-2 h-12 relative flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"
+                    >
+                      <Bell className="h-5 w-5 text-gray-500" />
+                      {unreadedNotifications?.length > 0 && (
+                        <span className="absolute top-2 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
+                          {unreadedNotifications?.length}
+                        </span>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none"
+                    align="end"
+                    side="right"
+                    sideOffset={20}
+                  >
+                    <DropdownMenuLabel className="flex justify-between items-center px-2">
+                      <span>Notifications</span>
+                      <button
+                        onClick={markBulkNotificationAsRead}
+                        className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+                      >
+                        Mark all as read
+                      </button>
+                    </DropdownMenuLabel>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Scrollable notification list */}
+                    <div className="flex-1 overflow-y-auto">
+                      <DropdownMenuGroup>
+                        {unreadedNotifications?.length >= 1 ? (
+                          unreadedNotifications?.map((notif) => (
+                            <DropdownMenuItem
+                              onClick={() => markSingleNotificationAsRead(notif._id)}
+                              key={notif._id}
+                              className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
+                            >
+                              <div>
+                                <p className="font-medium">{notif.type || 'N/A'}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                  {new Date(notif.createdAt).toLocaleString("en-US", {
+                                    weekday: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </p>
+                              </div>
+                              {notif.status === 'Unread' && (
+                                <span
+                                  className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
+                                      ? 'bg-red-600'
+                                      : notif.priority.toString() === 'Normal'
+                                        ? 'bg-yellow-600'
+                                        : notif.priority.toString() === 'Low'
+                                          ? 'bg-green-600'
+                                          : 'bg-gray-600'
+                                    }`}
+                                />
+                              )}
+                            </DropdownMenuItem>
+                          ))
+                        ) : (
+                          <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                            <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                              <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium">No notifications yet</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">You're all caught up!</p>
+                            </div>
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuGroup>
+                    </div>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Footer always visible */}
+                    <DropdownMenuItem className="justify-center cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
+                      View all notifications
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TooltipTrigger>
               <TooltipContent
                 side="right"
@@ -814,24 +998,103 @@ const Sidebar = () => {
             </Tooltip>
           ) : (
             <div className="">
-              <Button
-                variant="ghost"
-                className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
-              >
-                <div className="flex items-center">
-                  <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
-                    <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
+                  >
+                    <div className="flex items-center">
+                      <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
+                        <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <span className="font-medium text-gray-700 dark:text-gray-200">
+                        Notifications
+                      </span>
+                    </div>
+                    {unreadedNotifications?.length > 0 && (
+                      <Badge className="bg-red-500 text-white hover:bg-red-600">
+                        {unreadedNotifications.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none"
+                  align="end"
+                >
+                  <DropdownMenuLabel className="flex justify-between items-center px-2">
+                    <span>Notifications</span>
+                    <button
+                      onClick={markBulkNotificationAsRead}
+                      className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline"
+                    >
+                      Mark all as read
+                    </button>
+                  </DropdownMenuLabel>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Scrollable notification list */}
+                  <div className="flex-1 overflow-y-auto">
+                    <DropdownMenuGroup>
+                      {unreadedNotifications?.length >= 1 ? (
+                        unreadedNotifications.map((notif) => (
+                          <DropdownMenuItem
+                            onClick={() => markSingleNotificationAsRead(notif._id)}
+                            key={notif._id}
+                            className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
+                          >
+                            <div>
+                              <p className="font-medium">{notif.type || 'N/A'}</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                {new Date(notif.createdAt).toLocaleString("en-US", {
+                                  weekday: "short",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                  day: "numeric",
+                                  month: "short",
+                                  year: "numeric",
+                                })}
+                              </p>
+                            </div>
+                            {notif.status === 'Unread' && (
+                              <span
+                                className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
+                                    ? 'bg-red-600'
+                                    : notif.priority.toString() === 'Normal'
+                                      ? 'bg-yellow-600'
+                                      : notif.priority.toString() === 'Low'
+                                        ? 'bg-green-600'
+                                        : 'bg-gray-600'
+                                  }`}
+                              />
+                            )}
+                          </DropdownMenuItem>
+                        ))
+                      ) : (
+                        <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                          <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                            <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                          </div>
+                          <div>
+                            <p className="font-medium">No notifications yet</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">You're all caught up!</p>
+                          </div>
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuGroup>
                   </div>
-                  <span className="font-medium text-gray-700 dark:text-gray-200">
-                    Notifications
-                  </span>
-                </div>
-                {notifications > 0 && (
-                  <Badge className="bg-red-500 text-white hover:bg-red-600">
-                    {notifications}
-                  </Badge>
-                )}
-              </Button>
+
+                  <DropdownMenuSeparator />
+
+                  {/* Footer always visible */}
+                  <DropdownMenuItem className="justify-center cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
+                    View all notifications
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
 

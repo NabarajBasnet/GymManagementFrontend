@@ -132,7 +132,7 @@ import { FaUsersGear } from "react-icons/fa6";
 
 import { io } from 'socket.io-client';
 
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:3000', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -240,7 +240,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
+      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -337,14 +337,16 @@ const Header = () => {
           title: "New Member",
           link: "/dashboard/newmember",
         },
-        ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin' ?
-          [{
-            icon: ImUsers,
-            title: "Member Transfer",
-            link: "/dashboard/membertransfer",
-            highlight: true,
-          },
-          ] : []
+        ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'
+          ? [
+            {
+              icon: ImUsers,
+              title: "Member Transfer",
+              link: "/dashboard/membertransfer",
+              highlight: true,
+            },
+          ]
+          : []
         ),
         {
           icon: FaUsers,
@@ -414,13 +416,16 @@ const Header = () => {
           title: "Personal Training",
           link: "/dashboard/personaltraining",
           subObj: [
-            ...(loggedInUser?.role !== 'Gym Admin' ? [
-              {
-                icon: FaDumbbell,
-                title: "Training Packages",
-                link: "/dashboard/personaltraining/trainingpackages",
-              },
-            ] : []),
+            ...(loggedInUser?.role !== 'Gym Admin'
+              ? [
+                {
+                  icon: FaDumbbell,
+                  title: "Training Packages",
+                  link: "/dashboard/personaltraining/trainingpackages",
+                },
+              ]
+              : []
+            ),
             {
               icon: FaDumbbell,
               title: "Book Training",
@@ -473,30 +478,38 @@ const Header = () => {
       ],
     },
     // Staff Operations
-    {
-      category: "Staff Management",
-      items: [
+    ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'
+      ? [
         {
-          icon: FaUsersGear,
-          title: "Staff Management",
-          link: "/dashboard/staffmanagement",
-          subObj: [
+          category: "Staff Management",
+          items: [
             {
-              icon: IoPeopleSharp,
+              icon: FaUsersGear,
               title: "Staff Management",
-              link: "/dashboard/staffmanagement/staffs",
+              link: "/dashboard/staffmanagement",
+              subObj: [
+                {
+                  icon: IoPeopleSharp,
+                  title: "Staff Management",
+                  link: "/dashboard/staffmanagement/staffs",
+                },
+                ...(loggedInUser?.role === 'Gym Admin'
+                  ? []
+                  : [
+                    {
+                      icon: FcParallelTasks,
+                      title: "Task Management",
+                      link: "/dashboard/staffmanagement/taskmanagement",
+                    },
+                  ]
+                ),
+              ],
             },
-            ...(loggedInUser?.role === 'Gym Admin' ? [] : [
-              {
-                icon: FcParallelTasks,
-                title: "Task Management",
-                link: "/dashboard/staffmanagement/taskmanagement",
-              },
-            ])
           ],
         },
-      ],
-    },
+      ]
+      : []
+    ),
     // Financial Management
     {
       category: "Financial",
@@ -570,7 +583,7 @@ const Header = () => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/user-notification/get`);
+      const response = await fetch(`http://localhost:3000/api/user-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -605,7 +618,7 @@ const Header = () => {
 
   const markSingleNotificationAsRead = async (id) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/user-notification/single-read/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/user-notification/single-read/${id}`, {
         method: "PATCH",
       });
       const resBody = await response.json();
@@ -627,7 +640,7 @@ const Header = () => {
         return;
       }
 
-      const response = await fetch(`https://fitbinary.com/api/user-notification/bulk-read/`, {
+      const response = await fetch(`http://localhost:3000/api/user-notification/bulk-read/`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'
