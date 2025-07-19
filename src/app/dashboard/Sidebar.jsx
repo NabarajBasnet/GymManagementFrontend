@@ -52,7 +52,8 @@ import {
   LayoutDashboard,
   Bell,
   Crown,
-  Loader2
+  Loader2,
+  MessageSquare
 } from "lucide-react";
 import { IoMdCart } from "react-icons/io";
 
@@ -954,12 +955,12 @@ const Sidebar = () => {
                               {notif.status === 'Unread' && (
                                 <span
                                   className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
-                                      ? 'bg-red-600'
-                                      : notif.priority.toString() === 'Normal'
-                                        ? 'bg-yellow-600'
-                                        : notif.priority.toString() === 'Low'
-                                          ? 'bg-green-600'
-                                          : 'bg-gray-600'
+                                    ? 'bg-red-600'
+                                    : notif.priority.toString() === 'Normal'
+                                      ? 'bg-yellow-600'
+                                      : notif.priority.toString() === 'Low'
+                                        ? 'bg-green-600'
+                                        : 'bg-gray-600'
                                     }`}
                                 />
                               )}
@@ -1062,12 +1063,12 @@ const Sidebar = () => {
                             {notif.status === 'Unread' && (
                               <span
                                 className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
-                                    ? 'bg-red-600'
-                                    : notif.priority.toString() === 'Normal'
-                                      ? 'bg-yellow-600'
-                                      : notif.priority.toString() === 'Low'
-                                        ? 'bg-green-600'
-                                        : 'bg-gray-600'
+                                  ? 'bg-red-600'
+                                  : notif.priority.toString() === 'Normal'
+                                    ? 'bg-yellow-600'
+                                    : notif.priority.toString() === 'Low'
+                                      ? 'bg-green-600'
+                                      : 'bg-gray-600'
                                   }`}
                               />
                             )}

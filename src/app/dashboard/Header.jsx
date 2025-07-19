@@ -878,25 +878,104 @@ const Header = () => {
                 ))}
               </div>
 
+
+
+
               <div className="mt-auto border-t border-gray-100 dark:border-gray-800 px-3 pt-3 pb-4">
-                <Button
-                  variant="ghost"
-                  className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
-                >
-                  <div className="flex items-center">
-                    <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
-                      <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                {/* Notification Real*/}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
+                    >
+                      <div className="flex items-center">
+                        <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
+                          <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                        </div>
+                        <span className="font-medium text-gray-700 dark:text-gray-200">
+                          Notifications
+                        </span>
+                      </div>
+                      {unreadedNotifications?.length > 0 && (
+                        <Badge className="bg-red-500 text-white hover:bg-red-600 px-4 rounded-full">
+                          {unreadedNotifications?.length || 0}
+                        </Badge>
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-80 md:w-96 max-h-[70vh] flex flex-col dark:bg-gray-900 dark:border-none" align="end">
+                    <DropdownMenuLabel className="flex justify-between items-center px-2">
+                      <span>Notifications</span>
+                      <button
+                        onClick={markBulkNotificationAsRead}
+                        className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">
+                        Mark all as read
+                      </button>
+                    </DropdownMenuLabel>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Scrollable notification list */}
+                    <div className="flex-1 overflow-y-auto">
+                      <DropdownMenuGroup>
+                        {unreadedNotifications?.length >= 1 ? (
+                          unreadedNotifications.map((notif) => (
+                            <DropdownMenuItem
+                              onClick={() => markSingleNotificationAsRead(notif._id)}
+                              key={notif._id}
+                              className="flex cursor-pointer items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800"
+                            >
+                              <div>
+                                <p className="font-medium">{notif.type || 'N/A'}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">{notif.message || 'N/A'}</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                                  {new Date(notif.createdAt).toLocaleString("en-US", {
+                                    weekday: "short",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                    day: "numeric",
+                                    month: "short",
+                                    year: "numeric",
+                                  })}
+                                </p>
+                              </div>
+                              {notif.status === 'Unread' && (
+                                <span
+                                  className={`ml-auto w-2 h-2 rounded-full ${notif.priority.toString() === 'High'
+                                    ? 'bg-red-600'
+                                    : notif.priority.toString() === 'Normal'
+                                      ? 'bg-yellow-600'
+                                      : notif.priority.toString() === 'Low'
+                                        ? 'bg-green-600'
+                                        : 'bg-gray-600'
+                                    }`}
+                                />
+                              )}
+                            </DropdownMenuItem>
+                          ))
+                        ) : (
+                          <DropdownMenuItem className="flex items-start gap-3 py-3 hover:bg-indigo-50/50 dark:hover:bg-gray-800">
+                            <div className="bg-indigo-100 dark:bg-indigo-900/50 p-2 rounded-full">
+                              <MessageSquare className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                            </div>
+                            <div>
+                              <p className="font-medium">No notifications yet</p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">You're all caught up!</p>
+                            </div>
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuGroup>
                     </div>
-                    <span className="font-medium text-gray-700 dark:text-gray-200">
-                      Notifications
-                    </span>
-                  </div>
-                  {notifications > 0 && (
-                    <Badge className="bg-red-500 text-white hover:bg-red-600 px-4 rounded-full">
-                      {notifications}
-                    </Badge>
-                  )}
-                </Button>
+
+                    <DropdownMenuSeparator />
+
+                    {/* Footer always visible */}
+                    <DropdownMenuItem className="justify-center cursor-pointer text-indigo-600 dark:text-indigo-400 hover:underline">
+                      View all notifications
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 <div
                   className={`flex items-center rounded-xl cursor-pointer p-2 px-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}
