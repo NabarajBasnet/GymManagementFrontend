@@ -132,7 +132,7 @@ import { FaUsersGear } from "react-icons/fa6";
 
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000', {
+const socket = io('https://fitbinary.com', {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: Infinity,
@@ -240,7 +240,7 @@ const Header = () => {
   const logoutUser = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+      const response = await fetch(`https://fitbinary.com/api/auth/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -579,7 +579,7 @@ const Header = () => {
   // get notifications
   const getNotifications = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user-notification/get`);
+      const response = await fetch(`https://fitbinary.com/api/user-notification/get`);
       const resBody = await response.json();
       return resBody;
     } catch (error) {
@@ -614,7 +614,7 @@ const Header = () => {
 
   const markSingleNotificationAsRead = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user-notification/single-read/${id}`, {
+      const response = await fetch(`https://fitbinary.com/api/user-notification/single-read/${id}`, {
         method: "PATCH",
       });
       const resBody = await response.json();
@@ -636,7 +636,7 @@ const Header = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:3000/api/user-notification/bulk-read/`, {
+      const response = await fetch(`https://fitbinary.com/api/user-notification/bulk-read/`, {
         method: "PATCH",
         headers: {
           'Content-Type': 'application/json'

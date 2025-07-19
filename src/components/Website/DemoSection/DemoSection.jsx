@@ -26,7 +26,7 @@ const DemoSection = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/demo/submit-demo`, {
+            const response = await fetch(`https://fitbinary.com/api/demo/submit-demo`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
