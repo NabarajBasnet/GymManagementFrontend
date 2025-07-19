@@ -132,7 +132,7 @@ const MembershipPlanManagement = () => {
     const getUserRelatedBranch = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
+                `https://fitbinary.com/api/gymbranch/tenant/${user?.user?.company?._id}`
             );
             const responseBody = await response.json();
             return responseBody;
@@ -183,8 +183,8 @@ const MembershipPlanManagement = () => {
 
         try {
             const url = isEditMode
-                ? `http://localhost:3000/api/membershipplans/${editingPlan._id}`
-                : "http://localhost:3000/api/membershipplans";
+                ? `https://fitbinary.com/api/membershipplans/${editingPlan._id}`
+                : "https://fitbinary.com/api/membershipplans";
 
             const method = isEditMode ? "PUT" : "POST";
 
@@ -284,7 +284,7 @@ const MembershipPlanManagement = () => {
         ] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`
+                `https://fitbinary.com/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`
             );
             const data = await response.json();
             return data;
@@ -312,7 +312,7 @@ const MembershipPlanManagement = () => {
     const deleteMembershipPlan = async (id) => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/membershipplans/${id}`,
+                `https://fitbinary.com/api/membershipplans/${id}`,
                 {
                     method: "DELETE",
                 }
