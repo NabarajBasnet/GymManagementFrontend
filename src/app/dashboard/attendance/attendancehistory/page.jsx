@@ -97,7 +97,7 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`https://fitbinary.com/api/org-members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
