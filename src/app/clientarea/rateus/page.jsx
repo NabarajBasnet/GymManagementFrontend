@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import { useState } from "react";
 import { FaStar, FaUser, FaPen } from "react-icons/fa";
 
@@ -21,7 +20,15 @@ export default function CreateTestimonial() {
 
     const onSubmit = async (data) => {
         try {
-            await axios.post("http://localhost:3000/api/testimonials", data);
+            const response = await fetch('http://localhost:3000/api/testimonals/create', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            const resBody = await response.json();
+            console.log(resBody);
             setMessage("✅ Testimonial submitted successfully!");
             reset();
             setHoverRating(0);
@@ -82,7 +89,7 @@ export default function CreateTestimonial() {
                     </label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                         <div className="flex items-center justify-center sm:justify-start">
-                            {[1, 2, 3, 4, 5].map((star) => (
+                            {[1, 2, 3, 4, 5, 6].map((star) => (
                                 <button
                                     type="button"
                                     key={star}

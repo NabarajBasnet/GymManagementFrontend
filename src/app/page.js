@@ -14,6 +14,7 @@ import FAQSection from "@/components/Website/FAQSection/FaqSection";
 import ContactSection from "@/components/Website/ContactSection/ContactSection";
 import BackToTop from "@/components/Website/BackToTop/BackToTop";
 import CookieConsent from "@/components/Website/CookiesConsent/CookiesConsent";
+import ClientTestimonals from "@/components/Website/Testimonal/Testimonal";
 
 const HeroSection = () => {
   return (
@@ -293,6 +294,7 @@ const HeroSection = () => {
       </section>
 
       <FeaturesSection />
+      <ClientTestimonals />
       <PricingSection />
       <CTASection />
       <DemoSection />
