@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const ClientTestimonials = () => {
     const getAllTestimonials = async () => {
         try {
-            const response = await fetch("http://localhost:3000/api/testimonals/return-all");
+            const response = await fetch("https://fitbinary.com/api/testimonals/return-all");
             const resBody = await response.json();
             return resBody;
         } catch (error) {
