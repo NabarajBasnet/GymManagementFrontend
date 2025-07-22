@@ -1,5 +1,5 @@
 "use client";
-
+import { FaCamera } from "react-icons/fa";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -10,18 +10,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import { MdSettings } from "react-icons/md";
-import { FaMoneyBillWave } from "react-icons/fa";
-import { PiCardsThreeFill } from "react-icons/pi";
 import { FaBuilding } from "react-icons/fa6";
 import { RiUserSettingsFill } from "react-icons/ri";
-import { MapPin, CreditCard, Building2, Globe, FileText } from "lucide-react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
-import { FaLock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useEffect, useState } from "react";
 import {
@@ -36,16 +31,6 @@ import {
   Trash2,
   ChevronRight,
 } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import OrgDetailsForm from "./OrgDetailsForm";
 import LocationAndLocaleForm from "./LocationAndLocaleForm";
@@ -69,9 +54,6 @@ const TenantSetting = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
     reset,
-    watch,
-    setValue,
-    control,
   } = useForm();
 
   // Toggle notifications
@@ -111,32 +93,7 @@ const TenantSetting = () => {
   const changePersonalDetails = async (data) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/tenant/change-personal-details`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-      const responseBody = await response.json();
-      if (response.ok) {
-        sonnerToast.success(responseBody.message);
-      } else {
-        sonnerToast.error(responseBody.message);
-      }
-    } catch (error) {
-      console.log("Error: ", error);
-      sonnerToast.error(error.message);
-    }
-  };
-
-  // Change basic details
-  const changePassword = async (data) => {
-    try {
-      const response = await fetch(
-        `https://fitbinary.com/api/tenant/change-password`,
+        `http://localhost:3000/api/tenant/change-personal-details`,
         {
           method: "PATCH",
           headers: {
@@ -162,7 +119,7 @@ const TenantSetting = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://fitbinary.com/api/tenant/save-notification-settings",
+        "http://localhost:3000/api/tenant/save-notification-settings",
         {
           method: "PATCH",
           headers: {
@@ -238,6 +195,8 @@ const TenantSetting = () => {
     }
   };
 
+  const handleImageUpload = () => {};
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="w-full mx-auto p-4">
@@ -289,137 +248,191 @@ const TenantSetting = () => {
 
           <Card className="w-full p-3 md:p-6 dark:bg-gray-800 dark:border-none">
             <TabsContent value="accountdetails">
-              <div className="w-11/12 lg:w-10/12 mx-auto px-4 sm:px-0 lg:px-8 py-8">
+              <div className="w-11/12 lg:w-full mx-auto px-4 sm:px-0 lg:px-8 py-8">
                 {/* Personal Information */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
-                  <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 dark:bg-gray-800 bg-gray-50">
-                    <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
-                      <FaUser className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-200" />
-                      Personal Information
-                    </h3>
-                  </div>
-                  <div className="p-6">
-                    <form onSubmit={handleSubmit(changePersonalDetails)}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <label
-                            htmlFor="fullName"
-                            className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                          >
-                            Full Name
-                          </label>
-                          <input
-                            type="text"
-                            id="fullName"
-                            name="fullName"
-                            {...register("fullName")}
-                            className={`block w-full p-2 py-3 border dark:border-none ${
-                              errors.fullName
-                                ? "border-red-300"
-                                : "border-gray-300"
-                            } rounded-sm shadow-sm dark:border-gray-500 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                          />
-                          {errors.fullName && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center">
-                              <AlertTriangle className="mr-1 h-4 w-4" />
-                              {errors.fullName}
-                            </p>
+                  <div className="flex flex-col md:flex-row">
+                    {/* Image Uploader/Preview Section - Now properly centered */}
+                    <div className="w-full md:w-3/12 p-6 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-500 min-h-[300px] md:min-h-full">
+                      <div className="flex flex-col items-center">
+                        <div className="relative w-32 h-32 rounded-full bg-gray-200 dark:bg-gray-700 mb-4 overflow-hidden flex items-center justify-center">
+                          {loggedInTenant?.profileImage ? (
+                            <img
+                              src={profileImage}
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <FaUser className="h-16 w-16 text-gray-400 dark:text-gray-500" />
+                            </div>
                           )}
+                          <label
+                            htmlFor="profile-upload"
+                            className="absolute bottom-4 right-7 bg-indigo-600 text-white p-2 rounded-full cursor-pointer hover:bg-indigo-700 transition shadow-md"
+                            style={{ transform: "translate(25%, 25%)" }}
+                          >
+                            <FaCamera className="h-4 w-4" />
+                            <input
+                              id="profile-upload"
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={handleImageUpload}
+                            />
+                          </label>
                         </div>
-
-                        <div>
-                          <label
-                            htmlFor="address"
-                            className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                          >
-                            Address
-                          </label>
-                          <input
-                            type="text"
-                            id="address"
-                            name="address"
-                            {...register("address")}
-                            className={`block w-full p-2 py-3 border dark:border-none ${
-                              errors.address
-                                ? "border-red-300"
-                                : "border-gray-300"
-                            } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                          />
-                          {errors.lastName && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center">
-                              <AlertTriangle className="mr-1 h-4 w-4" />
-                              {errors.lastName}
-                            </p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label
-                            htmlFor="email"
-                            className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                          >
-                            Email Address
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            {...register("email")}
-                            className={`block w-full p-2 py-3 border dark:border-none ${
-                              errors.email
-                                ? "border-red-300"
-                                : "border-gray-300"
-                            } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                          />
-                          {errors.email && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center">
-                              <AlertTriangle className="mr-1 h-4 w-4" />
-                              {errors.email}
-                            </p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label
-                            htmlFor="phone"
-                            className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                          >
-                            Phone Number
-                          </label>
-                          <input
-                            type="tel"
-                            id="phone"
-                            name="phone"
-                            {...register("phone")}
-                            className={`block w-full p-2 py-3 border dark:border-none ${
-                              errors.phone
-                                ? "border-red-300"
-                                : "border-gray-300"
-                            } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                          />
-                          {errors.phone && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center">
-                              <AlertTriangle className="mr-1 h-4 w-4" />
-                              {errors.phone}
-                            </p>
-                          )}
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Profile Photo
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            JPG, PNG (Max 2MB)
+                          </p>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="mt-6">
-                        <button
-                          type="submit"
-                          disabled={isSubmitting}
-                          className={`px-4 py-2 rounded-md text-white ${
-                            isSubmitting
-                              ? "bg-indigo-400"
-                              : "bg-indigo-600 hover:bg-indigo-700"
-                          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                        >
-                          {isSubmitting ? "Saving..." : "Update Information"}
-                        </button>
+                    {/* Personal Information Section */}
+                    <div className="flex-1">
+                      <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 dark:bg-gray-800 bg-gray-50">
+                        <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
+                          <FaUser className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-200" />
+                          Personal Information
+                        </h3>
                       </div>
-                    </form>
+                      <div className="p-6">
+                        <form onSubmit={handleSubmit(changePersonalDetails)}>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Form fields remain the same */}
+                            <div>
+                              <label
+                                htmlFor="fullName"
+                                className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
+                              >
+                                Full Name
+                              </label>
+                              <input
+                                type="text"
+                                id="fullName"
+                                name="fullName"
+                                {...register("fullName")}
+                                className={`block w-full p-2 py-3 border dark:border-none ${
+                                  errors.fullName
+                                    ? "border-red-300"
+                                    : "border-gray-300"
+                                } rounded-sm shadow-sm dark:border-gray-500 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                              />
+                              {errors.fullName && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center">
+                                  <AlertTriangle className="mr-1 h-4 w-4" />
+                                  {errors.fullName.message}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label
+                                htmlFor="address"
+                                className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
+                              >
+                                Address
+                              </label>
+                              <input
+                                type="text"
+                                id="address"
+                                name="address"
+                                {...register("address")}
+                                className={`block w-full p-2 py-3 border dark:border-none ${
+                                  errors.address
+                                    ? "border-red-300"
+                                    : "border-gray-300"
+                                } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                              />
+                              {errors.address && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center">
+                                  <AlertTriangle className="mr-1 h-4 w-4" />
+                                  {errors.address.message}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label
+                                htmlFor="email"
+                                className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
+                              >
+                                Email Address
+                              </label>
+                              <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                {...register("email")}
+                                className={`block w-full p-2 py-3 border dark:border-none ${
+                                  errors.email
+                                    ? "border-red-300"
+                                    : "border-gray-300"
+                                } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                              />
+                              {errors.email && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center">
+                                  <AlertTriangle className="mr-1 h-4 w-4" />
+                                  {errors.email.message}
+                                </p>
+                              )}
+                            </div>
+
+                            <div>
+                              <label
+                                htmlFor="phone"
+                                className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
+                              >
+                                Phone Number
+                              </label>
+                              <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                {...register("phone")}
+                                className={`block w-full p-2 py-3 border dark:border-none ${
+                                  errors.phone
+                                    ? "border-red-300"
+                                    : "border-gray-300"
+                                } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                              />
+                              {errors.phone && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center">
+                                  <AlertTriangle className="mr-1 h-4 w-4" />
+                                  {errors.phone.message}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="mt-6 flex justify-end">
+                            <button
+                              type="submit"
+                              disabled={isSubmitting}
+                              className={`px-6 py-3 rounded-md text-white ${
+                                isSubmitting
+                                  ? "bg-indigo-400"
+                                  : "bg-indigo-600 hover:bg-indigo-700"
+                              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors`}
+                            >
+                              {isSubmitting ? (
+                                <span className="flex items-center">
+                                  <FaSpinner className="animate-spin mr-2" />
+                                  Saving...
+                                </span>
+                              ) : (
+                                "Update Information"
+                              )}
+                            </button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

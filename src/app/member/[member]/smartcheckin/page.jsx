@@ -38,7 +38,7 @@ import { Card } from "@/components/ui/card";
 import { MdClose } from "react-icons/md";
 import { io } from 'socket.io-client';
 
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:3000', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
