@@ -28,18 +28,18 @@ export const metadata = {
     "Fitbinary is a powerful, enterprise-grade gym management system designed to streamline operations, manage memberships, and grow your fitness business effortlessly.",
   keywords:
     "gym management software, fitness software, Fitbinary, membership management, gym billing system, personal trainer software, gym CRM",
-  authors: [{ name: "Fitbinary", url: "http://localhost:3000" }],
+  authors: [{ name: "Fitbinary", url: "https://fitbinary.com" }],
   creator: "Fitbinary",
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL("https://fitbinary.com"),
   openGraph: {
     title: "Fitbinary | Enterprise Gym Management Software",
     description:
       "Manage your gym like a pro with Fitbinary's powerful, easy-to-use fitness management system.",
-    url: "http://localhost:3000",
+    url: "https://fitbinary.com",
     siteName: "Fitbinary",
     images: [
       {
-        url: "http://localhost:3000/og-image.jpg",
+        url: "https://fitbinary.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Fitbinary Gym Software",
@@ -54,7 +54,7 @@ export const metadata = {
     description:
       "Fitbinary is a robust platform to manage memberships, billings, trainers, attendance, and more.",
     creator: "@fitbinary",
-    images: ["http://localhost:3000/twitter-card.jpg"],
+    images: ["https://fitbinary.com/twitter-card.jpg"],
   },
   icons: {
     icon: "/favicon.ico",

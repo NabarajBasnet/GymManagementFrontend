@@ -92,7 +92,7 @@ const MembershipPaymentReminder = () => {
     const getPaymentReminderList = async ({ queryKey }) => {
         const [, page, limit, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/org-members/member-payment-reminders?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`https://fitbinary.com/api/org-members/member-payment-reminders?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -129,7 +129,7 @@ const MembershipPaymentReminder = () => {
         setSendingReminder(true);
         setSendingIds(selectedMembers);
         try {
-            const response = await fetch(`http://localhost:3000/api/org-members/send-bulk-payment-reminder`, {
+            const response = await fetch(`https://fitbinary.com/api/org-members/send-bulk-payment-reminder`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'
@@ -155,7 +155,7 @@ const MembershipPaymentReminder = () => {
         setSendingIds(id);
         try {
             setSendingReminder(true);
-            const response = await fetch(`http://localhost:3000/api/org-members/send-single-payment-reminder/${id}`, {
+            const response = await fetch(`https://fitbinary.com/api/org-members/send-single-payment-reminder/${id}`, {
                 method: "PUT"
             });
             const resBody = await response.json();

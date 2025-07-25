@@ -31,7 +31,7 @@ const ContactForm = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/contact/create-contact', {
+            const response = await fetch('https://fitbinary.com/api/contact/create-contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

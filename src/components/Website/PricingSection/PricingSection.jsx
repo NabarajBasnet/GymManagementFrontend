@@ -39,7 +39,7 @@ const PricingSection = () => {
     const fetchPlans = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3000/api/subscription/getall`
+                `https://fitbinary.com/api/subscription/getall`
             );
             const responseBody = await response.json();
             return responseBody;

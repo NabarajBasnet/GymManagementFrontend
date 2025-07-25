@@ -36,7 +36,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3000', {
+const socket = io('https://fitbinary.com', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
@@ -94,7 +94,7 @@ const SmartStaffCheckin = () => {
                 const currentTime = new Date();
 
                 if (data.split('-')[1].length >= 24 && currentTime) {
-                    const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
+                    const response = await fetch(`https://fitbinary.com/api/validate-staff/checkedin`, {
                         method: "POST",
                         headers: { 'Content-Type': "application/json" },
                         body: JSON.stringify({ iv: data.split('-')[1], currentTime })
@@ -113,7 +113,7 @@ const SmartStaffCheckin = () => {
     const checkInStaff = async () => {
         try {
             const currentDateTime = new Date();
-            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+            const response = await fetch(`https://fitbinary.com/api/validate-staff`, {
                 method: "POST",
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
@@ -162,7 +162,7 @@ const SmartStaffCheckin = () => {
     const checkoutStaff = async () => {
         const currentDateTime = new Date();
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
+            const response = await fetch(`https://fitbinary.com/api/validate-staff/checkout`, {
                 method: "POST",
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
@@ -252,7 +252,7 @@ const SmartStaffCheckin = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+                `https://fitbinary.com/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
             );
             return await response.json();
         } catch (error) {

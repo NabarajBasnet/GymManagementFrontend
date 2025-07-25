@@ -20,7 +20,7 @@ export default function CreateTestimonial() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/testimonals/create', {
+            const response = await fetch('https://fitbinary.com/api/testimonals/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
