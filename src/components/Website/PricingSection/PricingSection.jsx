@@ -147,8 +147,8 @@ const PricingSection = () => {
                 <div className="w-full relative z-10">
 
                     {/* Hero Section */}
-                    <div className="pt-20 pb-16">
-                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div className="w-full pt-20 pb-16">
+                        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 text-center">
                             <div className="inline-flex items-center gap-2 bg-gray-800/80 backdrop-blur-sm border border-gray-700 rounded-full px-4 py-2 mb-8">
                                 <Sparkles className="w-4 h-4 text-blue-400" />
                                 <span className="text-sm font-medium text-gray-300">
@@ -172,7 +172,7 @@ const PricingSection = () => {
                     </div>
 
                     {/* Plans Grid */}
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+                    <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 pb-20">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
                             {subscriptions.map((plan, index) => {
                                 const Icon = getPlanIcon(index);
@@ -287,7 +287,7 @@ const PricingSection = () => {
                         </div>
 
                         {/* FAQ Section */}
-                        <div className="mt-24">
+                        <div className="w-full mt-24">
                             <div className="text-center mb-16">
                                 <h2 className="text-4xl lg:text-5xl bg-gradient-to-r from-blue-600 via-sky-300 to-white font-bold bg-clip-text text-transparent mb-4">
                                     Frequently Asked Questions
@@ -297,7 +297,7 @@ const PricingSection = () => {
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 w-full mx-auto">
                                 {[
                                     {
                                         question: "Can I change my plan later?",

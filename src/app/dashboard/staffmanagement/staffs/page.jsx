@@ -85,6 +85,7 @@ const StaffManagement = () => {
   const [shifts, setShifts] = useState([
     { id: 1, role: "", type: "", checkIn: "", checkOut: "" },
   ]);
+  console.log(shifts)
   const numberOfShifts = watch("numberOfShifts") || 1;
 
   // Update shifts array when number of shifts changes
@@ -169,7 +170,7 @@ const StaffManagement = () => {
   const [editStaff, setEditStaff] = useState(false);
   const [staffDetails, setStaffDetails] = useState(null);
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
 
@@ -282,7 +283,6 @@ const StaffManagement = () => {
       contactNo,
       email,
       currentAddress,
-      permanentAddress,
       role,
       joinedDate,
       salary,
@@ -301,7 +301,6 @@ const StaffManagement = () => {
       contactNo,
       email,
       currentAddress,
-      permanentAddress,
       role,
       joinedDate,
       numberOfShifts,
@@ -399,43 +398,22 @@ const StaffManagement = () => {
       // set current address value
       setValue(
         "currentAddress.street",
-        responseBody.staff.permanentAddress.street
+        responseBody.staff.currentAddress.street
       );
-      setValue("currentAddress.city", responseBody.staff.permanentAddress.city);
+      setValue("currentAddress.city", responseBody.staff.currentAddress.city);
       setValue(
         "currentAddress.state",
-        responseBody.staff.permanentAddress.state
+        responseBody.staff.currentAddress.state
       );
       setValue(
         "currentAddress.postalCode",
-        responseBody.staff.permanentAddress.postalCode
+        responseBody.staff.currentAddress.postalCode
       );
       setValue(
         "currentAddress.country",
-        responseBody.staff.permanentAddress.country
+        responseBody.staff.currentAddress.country
       );
 
-      // set permanent address value
-      setValue(
-        "permanentAddress.street",
-        responseBody.staff.permanentAddress.street
-      );
-      setValue(
-        "permanentAddress.city",
-        responseBody.staff.permanentAddress.city
-      );
-      setValue(
-        "permanentAddress.state",
-        responseBody.staff.permanentAddress.state
-      );
-      setValue(
-        "permanentAddress.postalCode",
-        responseBody.staff.permanentAddress.postalCode
-      );
-      setValue(
-        "permanentAddress.country",
-        responseBody.staff.permanentAddress.country
-      );
     } catch (error) {
       toastMessage.error("Something went wrong!");
     }
@@ -449,7 +427,7 @@ const StaffManagement = () => {
       const responseBody = await response.json();
 
       if (response.ok) {
-        const dbShifts = responseBody.staff.shifts;
+        const dbShifts = responseBody?.staff?.shifts;
 
         if (dbShifts) {
           // Convert shifts object into an array
@@ -1029,7 +1007,7 @@ const StaffManagement = () => {
                         {/* Modal Content */}
                         <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
                           <form className="space-y-8">
-                            <div className="grid lg:grid-cols-2 gap-8">
+                            <div className="w-full">
                               {/* Current Address Section */}
                               <div className="space-y-6">
                                 <div className="border-l-4 border-indigo-500 pl-4">
@@ -1119,86 +1097,6 @@ const StaffManagement = () => {
                                   </div>
                                 </div>
                               </div>
-
-                              {/* Permanent Address Section */}
-                              <div className="space-y-6">
-                                <div className="border-l-4 border-purple-500 pl-4">
-                                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                                    Permanent Address
-                                  </h3>
-                                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                                    Permanent residential information
-                                  </p>
-                                </div>
-
-                                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 space-y-4 border border-purple-200 dark:border-purple-800">
-                                  <div>
-                                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                                      Street Address
-                                    </Label>
-                                    <Input
-                                      {...register("permanentAddress.street")}
-                                      placeholder="Enter street address"
-                                      required
-                                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                    />
-                                  </div>
-
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                                        City
-                                      </Label>
-                                      <Input
-                                        {...register("permanentAddress.city")}
-                                        placeholder="Enter city"
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                                        State
-                                      </Label>
-                                      <Input
-                                        {...register("permanentAddress.state")}
-                                        placeholder="Enter state"
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="grid md:grid-cols-2 gap-4">
-                                    <div>
-                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                                        Postal Code
-                                      </Label>
-                                      <Input
-                                        {...register(
-                                          "permanentAddress.postalCode"
-                                        )}
-                                        placeholder="Enter postal code"
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                      />
-                                    </div>
-                                    <div>
-                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
-                                        Country
-                                      </Label>
-                                      <Input
-                                        {...register(
-                                          "permanentAddress.country"
-                                        )}
-                                        placeholder="Enter country"
-                                        required
-                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
                             </div>
                           </form>
                         </div>
@@ -1238,8 +1136,8 @@ const StaffManagement = () => {
                         {/* Modal Content */}
                         <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
                           <form className="space-y-6">
-                            {shifts.length > 0 ? (
-                              shifts.map((shift, index) => (
+                            {shifts?.length > 0 ? (
+                              shifts?.map((shift, index) => (
                                 <div
                                   key={index}
                                   className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200"
@@ -1275,7 +1173,7 @@ const StaffManagement = () => {
                                       </Label>
                                       <div className="relative">
                                         <Input
-                                          value={shift.role || ""}
+                                          value={shift?.role || ""}
                                           readOnly
                                           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
                                         />
@@ -1296,7 +1194,7 @@ const StaffManagement = () => {
                                       </Label>
                                       <div className="relative">
                                         <Input
-                                          value={shift.type || ""}
+                                          value={shift?.type || ""}
                                           readOnly
                                           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
                                         />
@@ -1318,7 +1216,7 @@ const StaffManagement = () => {
                                       <div className="relative">
                                         <Input
                                           type="time"
-                                          value={shift.checkIn || ""}
+                                          value={shift?.checkIn || ""}
                                           readOnly
                                           className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
                                         />
@@ -1367,7 +1265,7 @@ const StaffManagement = () => {
                                             const diff =
                                               (end - start) /
                                               (1000 * 60 * 60);
-                                            return `${diff} hours`;
+                                            return `${diff.toFixed(2)} hours`;
                                           })()
                                           : "Not calculated"}
                                       </span>
@@ -1707,7 +1605,7 @@ const StaffManagement = () => {
                                           </div>
 
                                           {/* Permanent Address Section */}
-                                          <div className="w-full border-b pb-4 border-indigo-500">
+                                          {/* <div className="w-full border-b pb-4 border-indigo-500">
                                             <h3 className="text-md font-semibold mb-4">
                                               Permanent Address
                                             </h3>
@@ -1768,7 +1666,7 @@ const StaffManagement = () => {
                                                 />
                                               </div>
                                             </div>
-                                          </div>
+                                          </div> */}
                                         </div>
                                       </div>
                                     )}
@@ -2211,69 +2109,6 @@ const StaffManagement = () => {
                                     )}
 
                                     {currentStep === 4 && (
-                                      <div className="pb-4 border-b border-indigo-500">
-                                        <div className="flex items-center space-x-2 mb-4">
-                                          <MdSecurity className="w-6 h-6 text-indigo-500" />
-                                          <h1 className="text-lg font-semibold text-indigo-500">
-                                            Credentials
-                                          </h1>
-                                        </div>
-
-                                        <div>
-                                          <Label>Username</Label>
-                                          <Controller
-                                            name="username"
-                                            control={control}
-                                            render={({ field }) => (
-                                              <Input
-                                                {...field}
-                                                value={field.value}
-                                                onChange={(e) => {
-                                                  field.onChange(e);
-                                                }}
-                                                {...register("username")}
-                                                type="text"
-                                                className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
-                                                placeholder="Username"
-                                              />
-                                            )}
-                                          />
-                                          {errors.username && (
-                                            <p className="text-red-600 font-semibold text-sm">
-                                              {errors.username.message}
-                                            </p>
-                                          )}
-                                        </div>
-
-                                        <div>
-                                          <Label>Password</Label>
-                                          <Controller
-                                            name="password"
-                                            control={control}
-                                            render={({ field }) => (
-                                              <Input
-                                                {...field}
-                                                value={field.value}
-                                                onChange={(e) => {
-                                                  field.onChange(e);
-                                                }}
-                                                {...register("password")}
-                                                type="password"
-                                                className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
-                                                placeholder="Password"
-                                              />
-                                            )}
-                                          />
-                                          {errors.password && (
-                                            <p className="text-red-600 font-semibold text-sm">
-                                              {errors.password.message}
-                                            </p>
-                                          )}
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    {currentStep === 5 && (
                                       <div className="border-b pb-4 border-indigo-500">
                                         <div className="flex items-center space-x-2 mb-4">
                                           <MdContactEmergency className="w-6 h-6 text-indigo-500" />
@@ -2284,35 +2119,6 @@ const StaffManagement = () => {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                           <div>
-                                            <Label>
-                                              Emergency Contact Name
-                                            </Label>
-                                            <Controller
-                                              name="emergencyContactName"
-                                              control={control}
-                                              render={({ field }) => (
-                                                <Input
-                                                  {...field}
-                                                  value={field.value}
-                                                  onChange={(e) => {
-                                                    field.onChange(e);
-                                                  }}
-                                                  {...register(
-                                                    "emergencyContactName"
-                                                  )}
-                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
-                                                  placeholder="Emergency Contact Name"
-                                                />
-                                              )}
-                                            />
-                                            {errors.emergencyContactName && (
-                                              <p className="text-red-600 font-semibold text-sm">
-                                                {
-                                                  errors.emergencyContactName
-                                                    .message
-                                                }
-                                              </p>
-                                            )}
 
                                             <div className="my-2">
                                               <Label>
@@ -2342,33 +2148,6 @@ const StaffManagement = () => {
                                                     errors.emergencyContactNo
                                                       .message
                                                   }
-                                                </p>
-                                              )}
-                                            </div>
-
-                                            <div>
-                                              <Label>Relationship</Label>
-                                              <Controller
-                                                name="relationship"
-                                                control={control}
-                                                render={({ field }) => (
-                                                  <Input
-                                                    {...field}
-                                                    value={field.value}
-                                                    onChange={(e) => {
-                                                      field.onChange(e);
-                                                    }}
-                                                    {...register(
-                                                      "relationship"
-                                                    )}
-                                                    className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
-                                                    placeholder="Relationship"
-                                                  />
-                                                )}
-                                              />
-                                              {errors.relationship && (
-                                                <p className="text-red-600 font-semibold text-sm">
-                                                  {errors.relationship.message}
                                                 </p>
                                               )}
                                             </div>

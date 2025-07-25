@@ -47,9 +47,9 @@ const DemoSection = () => {
     };
 
     return (
-        <section id="demo" className="py-28 relative overflow-hidden bg-gray-950">
-            <div className="container mx-auto px-4 relative z-10">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 max-w-6xl mx-auto">
+        <section id="demo" className="w-full py-28 relative overflow-hidden bg-gray-950">
+            <div className="w-full mx-auto px-4 relative z-10">
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-16 mx-auto">
                     {/* Left side */}
                     <motion.div
                         ref={ref}

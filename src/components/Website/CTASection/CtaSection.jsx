@@ -11,7 +11,7 @@ const CTASection = () => {
     });
 
     return (
-        <div className="relative overflow-hidden">
+        <div className="relative w-full overflow-hidden">
             {/* Background container with tilt */}
             <div className="absolute inset-0 overflow-hidden -skew-y-3 origin-top-left">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-cyan-600"></div>
@@ -20,8 +20,8 @@ const CTASection = () => {
             </div>
             
             {/* Content container */}
-            <section className="cta-section py-32 text-white relative">
-                <div className="container mx-auto px-4 relative z-10 skew-y-3">
+            <section className="w-full cta-section py-32 text-white relative">
+                <div className="w-full mx-auto px-4 relative z-10 skew-y-3">
                     <motion.div
                         ref={ref}
                         initial={{ opacity: 0, y: 20 }}

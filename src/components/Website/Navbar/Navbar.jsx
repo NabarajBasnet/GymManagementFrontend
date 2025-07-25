@@ -104,7 +104,7 @@ const Navbar = () => {
                 scrolled ? 'bg-gray-900/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl border-b border-gray-200/20 dark:border-gray-700/20' : 'bg-transparent'
             )}
         >
-            <div className="container w-full mx-auto px-3 sm:px-4 lg:px-8">
+            <div className="w-full mx-auto px-3 sm:px-4 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Enhanced Responsive Logo */}
                     <div className="flex items-center flex-shrink-0">

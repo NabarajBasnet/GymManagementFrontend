@@ -31,8 +31,8 @@ const HeroSection = () => {
           <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
-        <div className="container w-full mx-auto px-4 py-20 z-10 relative">
-          <div className="text-center max-w-5xl mx-auto">
+        <div className="w-full mx-auto px-4 py-20 z-10 relative">
+          <div className="text-center w-full mx-auto">
             {/* Badge */}
             <motion.div
               className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-8"
@@ -144,7 +144,7 @@ const HeroSection = () => {
 
           {/* Enhanced Platform Preview Section */}
           <motion.div
-            className="max-w-7xl mx-auto mt-32 mb-20"
+            className="w-full mx-auto mt-32 mb-20"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.2, duration: 0.8 }}

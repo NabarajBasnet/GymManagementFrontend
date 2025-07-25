@@ -128,7 +128,7 @@ const FAQSection = () => {
 
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
-                <div className="w-full max-w-7xl sm:px-4 px-8 mx-auto">
+                <div className="w-full w-full sm:px-4 px-8 mx-auto">
                     {/* Header */}
                     <div className="text-center mb-16">
                         <div className="inline-flex items-center px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-6">

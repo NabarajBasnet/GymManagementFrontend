@@ -55,31 +55,18 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       username: staff.staff.username,
       password: staff.staff.password,
 
-      emergencyContactName: staff.staff.emergencyContactName,
       emergencyContactNo: staff.staff.emergencyContactNo,
-      relationship: staff.staff.relationship,
     });
 
     // set current address value
-    setValue("currentAddress.street", staff.staff.permanentAddress.street);
-    setValue("currentAddress.city", staff.staff.permanentAddress.city);
-    setValue("currentAddress.state", staff.staff.permanentAddress.state);
+    setValue("currentAddress.street", staff?.staff?.currentAddress?.street);
+    setValue("currentAddress.city", staff?.staff?.currentAddress?.city);
+    setValue("currentAddress.state", staff?.staff?.currentAddress?.state);
     setValue(
       "currentAddress.postalCode",
-      staff.staff.permanentAddress.postalCode
+      staff?.staff?.currentAddress?.postalCode
     );
-    setValue("currentAddress.country", staff.staff.permanentAddress.country);
-
-    // set permanent address value
-    setValue("permanentAddress.street", staff.staff.permanentAddress.street);
-    setValue("permanentAddress.city", staff.staff.permanentAddress.city);
-    setValue("permanentAddress.state", staff.staff.permanentAddress.state);
-    setValue(
-      "permanentAddress.postalCode",
-      staff.staff.permanentAddress.postalCode
-    );
-    setValue("permanentAddress.country", staff.staff.permanentAddress.country);
-
+    setValue("currentAddress.country", staff?.staff?.currentAddress?.country);
     const dbShifts = staff.staff.shifts;
 
     // Populate time in form
@@ -171,7 +158,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
   const [openForm, setOpenForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
 
-  const totalSteps = 5;
+  const totalSteps = 4;
 
   const handleNext = () => {
     if (currentStep < totalSteps) {
@@ -203,7 +190,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       contactNo,
       email,
       currentAddress,
-      permanentAddress,
       role,
       joinedDate,
       salary,
@@ -223,7 +209,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       contactNo,
       email,
       currentAddress,
-      permanentAddress,
       role,
       joinedDate,
       numberOfShifts,
@@ -533,66 +518,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 <Label className="text-white">Country</Label>
                                 <Input
                                   {...register("currentAddress.country")}
-                                  placeholder="Enter country"
-                                  required
-                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
-                                />
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Permanent Address Section */}
-                          <div className="w-full border-b pb-4 border-indigo-500">
-                            <h3 className="text-md font-semibold mb-4 dark:text-white">
-                              Permanent Address
-                            </h3>
-                            <div className="grid md:grid-cols-2 gap-4">
-                              <div>
-                                <Label className="text-white">
-                                  Street Address
-                                </Label>
-                                <Input
-                                  {...register("permanentAddress.street")}
-                                  placeholder="Enter street address"
-                                  required
-                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-white">City</Label>
-                                <Input
-                                  {...register("permanentAddress.city")}
-                                  placeholder="Enter city"
-                                  required
-                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-white">State</Label>
-                                <Input
-                                  {...register("permanentAddress.state")}
-                                  placeholder="Enter state"
-                                  required
-                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-white">
-                                  Postal Code
-                                </Label>
-                                <Input
-                                  {...register("permanentAddress.postalCode")}
-                                  placeholder="Enter postal code"
-                                  required
-                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
-                                />
-                              </div>
-                              <div className="md:col-span-2">
-                                <Label className="dark:text-white">
-                                  Country
-                                </Label>
-                                <Input
-                                  {...register("permanentAddress.country")}
                                   placeholder="Enter country"
                                   required
                                   className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
@@ -980,69 +905,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                     )}
 
                     {currentStep === 4 && (
-                      <div className="pb-4 border-b border-indigo-500">
-                        <div className="flex items-center space-x-2 mb-4">
-                          <MdSecurity className="w-6 h-6 text-indigo-500" />
-                          <h1 className="text-lg font-semibold text-indigo-500">
-                            Credentials
-                          </h1>
-                        </div>
-
-                        <div>
-                          <Label className="dark:text-white">Username</Label>
-                          <Controller
-                            name="username"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                value={field.value}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                }}
-                                {...register("username")}
-                                type="text"
-                                className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                placeholder="Username"
-                              />
-                            )}
-                          />
-                          {errors.username && (
-                            <p className="text-red-600 font-semibold text-sm">
-                              {errors.username.message}
-                            </p>
-                          )}
-                        </div>
-
-                        <div>
-                          <Label className="dark:text-white">Password</Label>
-                          <Controller
-                            name="password"
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                {...field}
-                                value={field.value}
-                                onChange={(e) => {
-                                  field.onChange(e);
-                                }}
-                                {...register("password")}
-                                type="password"
-                                className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                placeholder="Password"
-                              />
-                            )}
-                          />
-                          {errors.password && (
-                            <p className="text-red-600 font-semibold text-sm">
-                              {errors.password.message}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                    {currentStep === 5 && (
                       <div className="border-b pb-4 border-indigo-500">
                         <div className="flex items-center space-x-2 mb-4">
                           <MdContactEmergency className="w-6 h-6 text-indigo-500" />
@@ -1053,31 +915,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label className="dark:text-white">
-                              Emergency Contact Name
-                            </Label>
-                            <Controller
-                              name="emergencyContactName"
-                              control={control}
-                              render={({ field }) => (
-                                <Input
-                                  {...field}
-                                  value={field.value}
-                                  onChange={(e) => {
-                                    field.onChange(e);
-                                  }}
-                                  {...register("emergencyContactName")}
-                                  className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                  placeholder="Emergency Contact Name"
-                                />
-                              )}
-                            />
-                            {errors.emergencyContactName && (
-                              <p className="text-red-600 font-semibold text-sm">
-                                {errors.emergencyContactName.message}
-                              </p>
-                            )}
-
                             <div className="my-2">
                               <Label className="dark:text-white">
                                 Emergency Contact Number
@@ -1101,33 +938,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                               {errors.emergencyContactNo && (
                                 <p className="text-red-600 font-semibold text-sm">
                                   {errors.emergencyContactNo.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <div>
-                              <Label className="dark:text-white">
-                                Relationship
-                              </Label>
-                              <Controller
-                                name="relationship"
-                                control={control}
-                                render={({ field }) => (
-                                  <Input
-                                    {...field}
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      field.onChange(e);
-                                    }}
-                                    {...register("relationship")}
-                                    className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                    placeholder="Relationship"
-                                  />
-                                )}
-                              />
-                              {errors.relationship && (
-                                <p className="text-red-600 font-semibold text-sm">
-                                  {errors.relationship.message}
                                 </p>
                               )}
                             </div>

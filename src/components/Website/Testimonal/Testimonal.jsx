@@ -25,8 +25,8 @@ const ClientTestimonials = () => {
 
     if (isLoading) {
         return (
-            <div className="bg-gray-950 py-12">
-                <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="bg-gray-950 w-full py-12">
+                <div className="mx-auto w-full px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center mb-12">
                         <Skeleton className="h-10 w-64 mx-auto" />
                         <Skeleton className="h-6 w-48 mx-auto mt-2" />
@@ -43,8 +43,8 @@ const ClientTestimonials = () => {
 
     if (!data || data.length === 0) {
         return (
-            <div className="bg-gray-950 py-12">
-                <div className="mx-auto max-w-7xl px-6 lg:px-8">
+            <div className="w-full bg-gray-950 py-12">
+                <div className="mx-auto w-full px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
                         <span className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-sky-300 to-white">
                             No testimonials yet
@@ -62,14 +62,14 @@ const ClientTestimonials = () => {
         return (
             <div
                 className={cn(
-                    "relative cursor-pointer overflow-hidden rounded-xl border p-4",
+                    "w-full relative cursor-pointer overflow-hidden rounded-xl border p-4",
                     "border-gray-800 bg-gray-900 hover:bg-gray-800",
                     "transform-gpu transition-all duration-300 ease-in-out hover:scale-105",
                     "w-[300px] h-[200px] flex flex-col justify-between"
                 )}
             >
                 <div>
-                    <div className="flex items-center gap-2">
+                    <div className="w-full flex items-center gap-2">
                         {testimonial.organizationId?.logoUrl ? (
                             <img
                                 src={testimonial.organizationId.logoUrl}
@@ -115,7 +115,7 @@ const ClientTestimonials = () => {
     return (
         <div className="w-full bg-gray-950 py-12">
             <div className="mx-auto w-full px-6 lg:px-8">
-                <div className="mx-auto max-w-2xl text-center mb-12">
+                <div className="mx-auto w-full text-center mb-12">
                     <span className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-500 via-sky-300 to-white">
                         Client Testimonials
                     </span>
@@ -125,12 +125,12 @@ const ClientTestimonials = () => {
                 </div>
 
                 <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden rounded-lg">
-                    <Marquee pauseOnHover className="[--duration:40s]">
+                    <Marquee pauseOnHover className="w-full [--duration:40s]">
                         {firstRow.map((testimonial) => (
                             <ReviewCard key={testimonial._id} testimonial={testimonial} />
                         ))}
                     </Marquee>
-                    <Marquee reverse pauseOnHover className="[--duration:40s]">
+                    <Marquee reverse pauseOnHover className="w-full [--duration:40s]">
                         {secondRow.map((testimonial) => (
                             <ReviewCard key={testimonial._id} testimonial={testimonial} />
                         ))}

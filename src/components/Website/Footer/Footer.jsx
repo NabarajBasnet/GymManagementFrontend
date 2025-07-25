@@ -77,7 +77,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="bg-gray-900 border-t border-gray-400 text-gray-300 relative overflow-hidden">
+        <footer className="w-full bg-gray-900 border-t border-gray-400 text-gray-300 relative overflow-hidden">
             {/* Background elements */}
             <div className="absolute inset-0 overflow-hidden -z-10">
                 <div className="absolute bottom-1/3 left-1/4 w-80 h-80 bg-cyan-400/10 rounded-full filter blur-[80px]"></div>
@@ -86,7 +86,7 @@ const Footer = () => {
 
             {/* Main Footer Content */}
             <motion.div
-                className="container mx-auto px-4 py-16 relative z-10"
+                className="w-full mx-auto px-4 py-16 relative z-10"
                 variants={containerVariants}
                 initial="hidden"
                 whileInView="visible"

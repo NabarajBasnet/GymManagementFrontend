@@ -189,8 +189,8 @@ const ContactForm = () => {
     return (
         <section id="contact" className="relative w-full min-h-screen bg-gray-950 overflow-hidden">
 
-            <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
-                <div className="w-full max-w-6xl mx-auto">
+            <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-screen px-4 py-24 lg:px-10">
+                <div className="w-full w-full mx-auto">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Left Column - Contact Info */}
                         <div className="space-y-8">

@@ -84,9 +84,9 @@ export function LoginForm({ className, ...props }) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-col lg:flex-row">
+        <div className="w-full flex flex-col lg:flex-row">
           {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600">
+          <div className="lg:w-7/12 flex relative flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600">
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -126,7 +126,7 @@ export function LoginForm({ className, ...props }) {
           </div>
 
           {/* Right side - Form */}
-          <div className="lg:w-7/12 p-8 bg-gray-900">
+          <div className="lg:w-5/12 p-8 bg-gray-900">
             <div className="w-full md:mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-white">Sign In</h2>

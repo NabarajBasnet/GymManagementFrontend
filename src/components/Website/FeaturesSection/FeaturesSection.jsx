@@ -23,7 +23,7 @@ const FeatureDetail = ({ icon, title, description, image, index, isEven, highlig
       transition={{ duration: 0.8, delay: index * 0.1 }}
       className="py-24 border-b border-white/5 last:border-b-0"
     >
-      <div className="container mx-auto px-6 lg:px-8">
+      <div className="mx-auto px-6 lg:px-8">
         <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-16 lg:gap-20`}>
           {/* Content Section */}
           <div className="lg:w-1/2 space-y-8">
@@ -259,7 +259,7 @@ const FeaturesSection = () => {
   ];
 
   return (
-    <section id="features" className="relative overflow-hidden bg-gray-950 to-black">
+    <section id="features" className="w-full relative overflow-hidden bg-gray-950 to-black">
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full opacity-40 animate-pulse"></div>
@@ -267,11 +267,11 @@ const FeaturesSection = () => {
         <div className="absolute bottom-40 left-20 w-1 h-1 bg-blue-300 rounded-full opacity-50 animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
-      <div className="container mx-auto px-6 lg:px-8 py-32 relative z-10">
+      <div className="w-full mx-auto px-6 lg:px-8 py-32 relative z-10">
         {/* Section Header */}
         <motion.div
           ref={headingRef}
-          className="text-center max-w-5xl mx-auto mb-32"
+          className="text-center w-full mx-auto mb-32"
           initial={{ opacity: 0, y: 30 }}
           animate={headingInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
