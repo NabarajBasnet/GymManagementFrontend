@@ -93,7 +93,7 @@ const TenantSetting = () => {
   const changePersonalDetails = async (data) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/tenant/change-personal-details`,
+        `http://localhost:3000/api/tenant/change-personal-details`,
         {
           method: "PATCH",
           headers: {
@@ -119,7 +119,7 @@ const TenantSetting = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://fitbinary.com/api/tenant/save-notification-settings",
+        "http://localhost:3000/api/tenant/save-notification-settings",
         {
           method: "PATCH",
           headers: {

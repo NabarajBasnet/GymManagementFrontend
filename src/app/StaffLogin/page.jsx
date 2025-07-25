@@ -19,7 +19,7 @@ function App() {
         const { email, password } = data;
         const finalData = { email, password };
         try {
-            const response = await fetch(`https://fitbinary.com/api/staff-login/login`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -60,24 +60,21 @@ function App() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
             <Toaster position="top-center" reverseOrder={false} />
-            <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:shadow-3xl">
+            <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:shadow-3xl dark:hover:shadow-gray-700">
                 {/* Logo and Title */}
                 <div className="text-center mb-8">
-                    <div className="inline-block p-4 rounded-full bg-emerald-50 mb-4">
-                        <UserCircle className="w-12 h-12 text-emerald-600" />
+                    <div className="inline-block p-4 rounded-full bg-emerald-50 dark:bg-gray-700 mb-4">
+                        <UserCircle className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        Revive Fitness
-                    </h1>
-                    <h2 className="text-lg text-gray-600">Staff Login</h2>
+                    <h2 className="text-lg text-gray-600 dark:text-gray-300">Staff Login</h2>
                 </div>
 
                 <form onSubmit={handleSubmit(onLogin)} className="space-y-6">
                     {/* Email Field */}
                     <div className="space-y-2">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Email Address
                         </label>
                         <div className="relative">
@@ -87,16 +84,16 @@ function App() {
                                 id="email"
                                 className={`
                                     w-full pl-12 pr-4 py-3 rounded-lg border 
-                                    ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                    ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500 dark:focus:ring-emerald-400'} 
                                     focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                                    bg-gray-50
+                                    bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400
                                 `}
                                 placeholder="Enter your email"
                             />
-                            <UserCircle className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                            <UserCircle className="absolute left-4 top-3.5 h-5 w-5 text-gray-400 dark:text-gray-300" />
                         </div>
                         {errors.email && (
-                            <p className="text-sm text-red-600 mt-1 flex items-center">
+                            <p className="text-sm text-red-600 dark:text-red-400 mt-1 flex items-center">
                                 {errors.email.message}
                             </p>
                         )}
@@ -104,7 +101,7 @@ function App() {
 
                     {/* Password Field */}
                     <div className="space-y-2">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                             Password
                         </label>
                         <div className="relative">
@@ -114,16 +111,16 @@ function App() {
                                 id="password"
                                 className={`
                                     w-full pl-12 pr-4 py-3 rounded-lg border 
-                                    ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                    ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500 dark:focus:ring-emerald-400'} 
                                     focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                                    bg-gray-50
+                                    bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400
                                 `}
                                 placeholder="Enter your password"
                             />
-                            <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
+                            <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400 dark:text-gray-300" />
                         </div>
                         {errors.password && (
-                            <p className="text-sm text-red-600 mt-1 flex items-center">
+                            <p className="text-sm text-red-600 dark:text-red-400 mt-1 flex items-center">
                                 {errors.password.message}
                             </p>
                         )}
@@ -138,10 +135,10 @@ function App() {
                             flex items-center justify-center space-x-2
                             transition-all duration-200
                             ${isSubmitting
-                                ? 'bg-emerald-400 cursor-not-allowed'
-                                : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800'
+                                ? 'bg-emerald-400 dark:bg-emerald-500 cursor-not-allowed'
+                                : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 dark:bg-emerald-600 dark:hover:bg-emerald-700 dark:active:bg-emerald-800'
                             }
-                            focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
+                            focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-emerald-400
                             transform active:scale-98
                         `}
                     >
@@ -157,7 +154,7 @@ function App() {
                 </form>
 
                 {/* Additional Info */}
-                <p className="mt-6 text-center text-sm text-gray-500">
+                <p className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
                     Having trouble logging in? Contact your administrator
                 </p>
             </div>

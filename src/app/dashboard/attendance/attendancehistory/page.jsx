@@ -99,7 +99,7 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
@@ -115,7 +115,7 @@ const AttendanceHistory = () => {
     const fetchAllStaffs = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`https://fitbinary.com/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setStaffs(responseBody.staffs);
             setIsLoading(false);
@@ -151,8 +151,8 @@ const AttendanceHistory = () => {
 
         try {
             setIsLoading(true);
-            const staffsAttendanceURL = `https://fitbinary.com/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `https://fitbinary.com/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
 
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();

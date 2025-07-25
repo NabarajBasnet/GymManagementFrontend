@@ -91,7 +91,7 @@ const OrderManagement = () => {
 
   const getOrders = async () => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/order/all`, {
+      const response = await fetch(`http://localhost:3000/api/order/all`, {
         credentials: "include",
       });
       const responseBody = await response.json();
@@ -143,7 +143,7 @@ const OrderManagement = () => {
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/order/update-status/${orderId}`,
+        `http://localhost:3000/api/order/update-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -171,7 +171,7 @@ const OrderManagement = () => {
   const handlePaymentStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/order/update-payment-status/${orderId}`,
+        `http://localhost:3000/api/order/update-payment-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -219,7 +219,7 @@ const OrderManagement = () => {
     };
     try {
       const response = await fetch(
-        `https://fitbinary.com/api/order/update-payment-status/${selectedOrder}`,
+        `http://localhost:3000/api/order/update-payment-status/${selectedOrder}`,
         {
           method: "PUT",
           headers: {
@@ -250,7 +250,7 @@ const OrderManagement = () => {
 
   const handleAttachSubscription = async (orderId) => {
     try {
-      const response = await fetch(`https://fitbinary.com/api/order/activate-ordered-subscription/${orderId}`, {
+      const response = await fetch(`http://localhost:3000/api/order/activate-ordered-subscription/${orderId}`, {
         method: "PATCH",
         credentials: "include",
         headers: {

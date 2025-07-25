@@ -36,7 +36,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { io } from 'socket.io-client';
 
-const socket = io('https://fitbinary.com', {
+const socket = io('http://localhost:3000', {
     transports: ['websocket'],
     reconnection: true,
     reconnectionAttempts: Infinity,
@@ -94,7 +94,7 @@ const SmartStaffCheckin = () => {
                 const currentTime = new Date();
 
                 if (data.split('-')[1].length >= 24 && currentTime) {
-                    const response = await fetch(`https://fitbinary.com/api/validate-staff/checkedin`, {
+                    const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
                         method: "POST",
                         headers: { 'Content-Type': "application/json" },
                         body: JSON.stringify({ iv: data.split('-')[1], currentTime })
@@ -113,7 +113,7 @@ const SmartStaffCheckin = () => {
     const checkInStaff = async () => {
         try {
             const currentDateTime = new Date();
-            const response = await fetch(`https://fitbinary.com/api/validate-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
@@ -162,7 +162,7 @@ const SmartStaffCheckin = () => {
     const checkoutStaff = async () => {
         const currentDateTime = new Date();
         try {
-            const response = await fetch(`https://fitbinary.com/api/validate-staff/checkout`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
                 method: "POST",
                 headers: { 'Content-Type': "application/json" },
                 body: JSON.stringify({ iv: staffId, tv: currentDateTime })
@@ -252,7 +252,7 @@ const SmartStaffCheckin = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `https://fitbinary.com/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+                `http://localhost:3000/api/staff-attendance-history/todays?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
             );
             return await response.json();
         } catch (error) {
@@ -271,7 +271,7 @@ const SmartStaffCheckin = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
-            <div className="max-w-screen-2xl mx-auto space-y-6">
+            <div className="w-full mx-auto space-y-6">
 
                 {/* Check-in/out Dialogs */}
                 <AlertDialog open={confirmCheckInState} onOpenChange={setConfirmCheckInState}>
@@ -383,7 +383,7 @@ const SmartStaffCheckin = () => {
                 </AlertDialog>
 
                 {/* Header Section */}
-                <Card className="border border-gray-200 dark:border-none dark:bg-gray-950 shadow-sm mt-2 md:mt-6">
+                <Card className="w-full border border-gray-200 dark:border-none dark:bg-gray-950 shadow-sm mt-2 md:mt-6">
                     <div className="p-6">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                             <div className="flex items-center gap-4">
@@ -414,7 +414,7 @@ const SmartStaffCheckin = () => {
                 </Card>
 
                 {/* Dashboard Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Location Card */}
                     <Card className="border border-gray-200 dark:border-none dark:bg-gray-950">
                         <CardContent className="p-4">
